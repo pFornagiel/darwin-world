@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minHeight="550.0" minWidth="850.0"
+            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+    <bottom>
+        <VBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+            <!-- Basic GridPane -->
+            <GridPane fx:id="gridPane" minWidth="400" maxWidth="400" minHeight="400" maxHeight="400"  gridLinesVisible="true" alignment="CENTER" style="-fx-padding: 10;">
+
+            </GridPane>
+
+            <!-- TextField for entering the list of moves -->
+            <TextField fx:id="movesTextField" promptText="Enter a list of moves here"/>
+
+            <!-- Label to display the move description -->
+            <Label fx:id="moveDescriptionLabel" text="Move description will appear here"/>
+
+            <!-- Button to start the simulation -->
+            <Button
+                    fx:id="startButton"
+                    text="Start"
+                    onAction="#onSimulationStartClicked"
+            />
+
+        </VBox>
+    </bottom>
+</BorderPane>
