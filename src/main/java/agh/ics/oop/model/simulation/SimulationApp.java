@@ -1,4 +1,5 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.simulation;
+import agh.ics.oop.model.worldmap.GrassField;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

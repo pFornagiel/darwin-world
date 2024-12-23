@@ -1,8 +1,15 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.OptionsParser;
-import agh.ics.oop.model.*;
-import agh.ics.oop.model.util.IllegalMoveArgumentException;
+import agh.ics.oop.model.simulation.Simulation;
+import agh.ics.oop.model.simulation.SimulationEngine;
+import agh.ics.oop.model.util.MoveDirection;
+import agh.ics.oop.model.util.OptionsParser;
+import agh.ics.oop.model.exception.IllegalMoveArgumentException;
+import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldmap.Boundary;
+import agh.ics.oop.model.worldmap.MapChangeListener;
+import agh.ics.oop.model.worldmap.WorldMap;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

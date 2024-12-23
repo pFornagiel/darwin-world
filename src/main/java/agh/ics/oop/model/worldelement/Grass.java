@@ -1,4 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldelement;
+
+import agh.ics.oop.model.util.Vector2d;
 
 import java.util.Objects;
 

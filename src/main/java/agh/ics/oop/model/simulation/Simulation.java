@@ -1,6 +1,10 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.simulation;
 
-import agh.ics.oop.model.util.IncorrectPositionException;
+import agh.ics.oop.model.exception.IncorrectPositionException;
+import agh.ics.oop.model.util.MoveDirection;
+import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.worldmap.WorldMap;
 
 import java.util.ArrayList;
 

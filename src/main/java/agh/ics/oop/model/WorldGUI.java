@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.simulation.SimulationApp;
 import javafx.application.Application;
 
 public class WorldGUI {

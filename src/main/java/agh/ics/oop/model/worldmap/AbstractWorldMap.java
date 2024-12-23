@@ -1,11 +1,14 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
 
-import agh.ics.oop.model.util.IncorrectPositionException;
+import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.util.MapVisualizer;
+import agh.ics.oop.model.util.MoveDirection;
+import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.WorldElement;
 
 import java.util.*;
 
-public abstract class AbstractWorldMap<MainElementType extends  WorldElement> implements  WorldMap<MainElementType> {
+public abstract class AbstractWorldMap<MainElementType extends WorldElement> implements WorldMap<MainElementType> {
   protected final HashMap<Vector2d, MainElementType> mainElementPositionMap = new HashMap<>();
   protected final MapVisualizer mapVisualizer;
   protected final LinkedList<MapChangeListener> mapChangeListeners  = new LinkedList<>();

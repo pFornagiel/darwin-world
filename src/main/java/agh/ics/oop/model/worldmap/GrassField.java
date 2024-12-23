@@ -1,7 +1,12 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
 
-import agh.ics.oop.model.util.IncorrectPositionException;
+import agh.ics.oop.model.exception.IncorrectPositionException;
+import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.RandomPositionGenerator;
+import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.worldelement.Grass;
+import agh.ics.oop.model.worldelement.WorldElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +17,7 @@ import static java.lang.Math.sqrt;
 
 //Use WorldElement as generic type, because we wish to get Grass elements with objectAt as well
 //Define grassField to use Animal as mainElement type
-public class GrassField extends AbstractWorldMap<Animal>{
+public class GrassField extends AbstractWorldMap<Animal> {
   private final HashMap<Vector2d, Grass> grassPositionMap = new HashMap<>();
   private static final Vector2d MAP_PADDING = new Vector2d(1, 1);
 

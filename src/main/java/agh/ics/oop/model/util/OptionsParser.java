@@ -1,6 +1,5 @@
-package agh.ics.oop;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.util.IllegalMoveArgumentException;
+package agh.ics.oop.model.util;
+import agh.ics.oop.model.exception.IllegalMoveArgumentException;
 
 import java.util.ArrayList;
 

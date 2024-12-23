@@ -1,4 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldelement;
+
+import agh.ics.oop.model.worldmap.MapDirection;
+import agh.ics.oop.model.util.MoveDirection;
+import agh.ics.oop.model.util.MoveValidator;
+import agh.ics.oop.model.util.Vector2d;
 
 public class Animal implements WorldElement {
   private MapDirection orientation;

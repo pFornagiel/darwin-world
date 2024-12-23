@@ -1,10 +1,13 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
 
 
-import agh.ics.oop.model.util.IncorrectPositionException;
+import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.util.MoveDirection;
+import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.exception.IncorrectPositionException;
 
 //Define animal as mainElement type
-public class RectangularMap extends AbstractWorldMap<Animal>{
+public class RectangularMap extends AbstractWorldMap<Animal> {
   private final static Vector2d MAP_LOWER_BOUND = new Vector2d(0,0);
   private final Vector2d MAP_UPPER_BOUND;
 

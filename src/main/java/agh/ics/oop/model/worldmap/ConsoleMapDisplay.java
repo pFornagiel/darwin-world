@@ -1,6 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.worldmap;
 
-public class ConsoleMapDisplay implements  MapChangeListener {
+public class ConsoleMapDisplay implements MapChangeListener {
   private int amountOfUpdates = 0;
   private static final String UPDATE_MESSAGE = "Map id: %s%nUpdate number: %d%n";
 
