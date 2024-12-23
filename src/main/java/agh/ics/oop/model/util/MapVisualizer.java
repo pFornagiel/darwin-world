@@ -17,7 +17,7 @@ public class MapVisualizer {
   /**
    * Initializes the MapVisualizer with an instance of map to visualize.
    *
-   * @param map
+   * @param map Instance of map to visualise
    */
   public MapVisualizer(WorldMap map) {
     this.map = map;

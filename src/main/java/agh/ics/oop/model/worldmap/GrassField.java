@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
 
 //Use WorldElement as generic type, because we wish to get Grass elements with objectAt as well
