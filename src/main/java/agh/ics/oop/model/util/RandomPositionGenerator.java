@@ -32,6 +32,8 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
     return new Vector2d(number / maxWidth, number % maxHeight);
   }
 
+
+
   @Override
   public Iterator<Vector2d> iterator() {
     return new RandomPositionGeneratorIterator();
