@@ -1,4 +1,4 @@
-package agh.ics.oop.model.exception;
+package agh.ics.oop.model.exception.simulation;
 
 public class IllegalMoveArgumentException extends RuntimeException {
   private static final String ERROR_MESSAGE = "%s is not a legal move specification [f,b,l,r]";
