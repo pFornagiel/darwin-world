@@ -1,5 +1,7 @@
 package agh.ics.oop.model.simulation;
 
+import agh.ics.oop.model.worldmap.GrassField;
+import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +14,7 @@ import java.io.IOException;
 public class SimulationApp extends Application {
 
   private static Stage primaryStage;
+  private static SimulationPresenter presenter;
   private static final String title = "Simulation Parameters";
   @Override
   public void start(Stage stage) throws Exception {
@@ -21,7 +24,11 @@ public class SimulationApp extends Application {
     createStage(viewRoot);
     primaryStage.show();
   }
-
+  public static void initMap() {
+    GrassField grassField = new GrassField(5);
+    presenter.setWorldMap(grassField);
+    grassField.addToListeners(presenter);
+  }
   private static void createStage(Parent viewRoot) {
     Scene scene = new Scene(viewRoot);
     primaryStage.setScene(scene);
@@ -41,6 +48,7 @@ public class SimulationApp extends Application {
     try {
       FXMLLoader loader = new FXMLLoader(SimulationApp.class.getClassLoader().getResource(fxmlFile));
       Parent root = loader.load();
+      presenter = loader.getController();
       createStage(root);
     } catch (IOException e) {
       System.err.println("Failed to load FXML: " + fxmlFile);

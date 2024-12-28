@@ -1,6 +1,7 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.simulation.Simulation;
+import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.OptionsParser;
@@ -25,10 +26,21 @@ import javafx.scene.layout.RowConstraints;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static agh.ics.oop.model.simulation.SimulationApp.initMap;
+
 public class SimulationPresenter implements MapChangeListener {
   private static final String EMPTY_CELL_REPRESENTATION = " ";
   private static final String INVALID_MOVE_PROVIDED = "Invalid moves provided. Valid moves are [f,b,l,r]";
 
+
+  @FXML
+  private TextField mapWidth;
+
+  @FXML
+  private TextField mapHeight;
+
+  @FXML
+  private Button accept;
 
   @FXML
   public TextField movesTextField;
@@ -149,5 +161,24 @@ public class SimulationPresenter implements MapChangeListener {
     moveDescriptionLabel.setText("");
     SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList,directionList,worldMap));
     simulationEngine.runAsync();
+  }
+
+
+  @FXML
+  private void mapWidth() {
+  }
+
+  @FXML
+  private void mapHeight() {
+  }
+
+  @FXML
+  private void accept() {
+    SimulationApp.switchScene("simulation.fxml");
+    SimulationApp.initMap();
+  }
+
+  @FXML
+  private void initialize() {
   }
 }
