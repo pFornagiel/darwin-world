@@ -16,6 +16,7 @@ public class Animal implements WorldElement {
   private int descendantCount;
   private int daysLived;
   private int dayOfDeath;
+
   ArrayList<Integer> genes = new ArrayList<>();
   private static final String[] ORIENTATION_STRING_ARRAY = {"^", ">", "v", "<"};
 

@@ -163,6 +163,16 @@ public class SimulationPresenter implements MapChangeListener {
     simulationEngine.runAsync();
   }
 
+
+  @FXML
+  private void mapWidth() {
+
+  }
+
+  @FXML
+  private void mapHeight() {
+  }
+
   @FXML
   private void accept() {
     SimulationApp.switchScene("simulation.fxml");
