@@ -4,9 +4,11 @@ import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.Animal;
 import agh.ics.oop.model.worldelement.WorldElement;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -15,22 +17,22 @@ import java.util.UUID;
  *
  * @author apohllo, idzik
  */
-public interface WorldMap<MainElementType extends WorldElement> extends MoveValidator {
+public interface WorldMap extends MoveValidator {
 
     /**
      * Place an MainElementType on the map.
      *
-     * @param element The animal to place on the map.
+     * @param animal The animal to place on the map.
      * @throws IncorrectPositionException when trying to place object of MainElementType onto a field
      * that is occupied by other object
      */
-    void place(MainElementType element) throws IncorrectPositionException;
+    void place(Animal animal) throws IncorrectPositionException;
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
-    void move(MainElementType element, MoveDirection direction);
+    void move(Animal animal, MoveDirection direction);
 
     /**
      * Return true if given position on the map is occupied. Should not be
@@ -48,7 +50,7 @@ public interface WorldMap<MainElementType extends WorldElement> extends MoveVali
      * @param position The position of the animal.
      * @return animal or null if the position is not occupied.
      */
-    WorldElement objectAt(Vector2d position);
+    Set<Animal> objectsAt(Vector2d position);
 
     /**
      * Get Arraylist of all elements on map.
@@ -69,7 +71,5 @@ public interface WorldMap<MainElementType extends WorldElement> extends MoveVali
      *
      * @return Boundary record.
      */
-    Boundary getCurrentBounds();
-
-    void removeMainElementsFromWorld();
+    Boundary getBoundaries();
 }

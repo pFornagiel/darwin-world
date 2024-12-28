@@ -74,8 +74,8 @@ public class MapVisualizer {
 
   private String drawObject(Vector2d currentPosition) {
 //    I MODIFIED THIS TO DISPLAY GRASS !!!
-    if (this.map.objectAt(currentPosition) != null) {
-      Object object = this.map.objectAt(currentPosition);
+    if (this.map.isOccupied(currentPosition)) {
+      Object object = this.map.objectsAt(currentPosition);
       if (object != null) {
         return object.toString();
       }
