@@ -5,10 +5,18 @@ import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
 
+import java.util.ArrayList;
+
 public class Animal implements WorldElement {
   private MapDirection orientation;
   private Vector2d position;
-
+  private int energy;
+  private int plantEatenCounter;
+  private int childrenCount;
+  private int descendantCount;
+  private int daysLived;
+  private int dayOfDeath;
+  ArrayList<Integer> genes = new ArrayList<>();
   private static final String[] ORIENTATION_STRING_ARRAY = {"^", ">", "v", "<"};
 
 
