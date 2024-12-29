@@ -1,0 +1,15 @@
+{
+  "mapWidth": "11",
+  "mapHeight": "1",
+  "plantCount": "1",
+  "plantEnergy": "",
+  "animalCount": "",
+  "animalEnergy": "",
+  "breedEnergyNeeded": "",
+  "breedEnergyUsage": "",
+  "minMutations": "",
+  "maxMutations": "",
+  "genesCount": "",
+  "fireMap": false,
+  "insanity": false
+}

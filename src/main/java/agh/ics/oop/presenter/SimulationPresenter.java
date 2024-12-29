@@ -24,7 +24,12 @@ import javafx.scene.layout.RowConstraints;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import static agh.ics.oop.model.simulation.SimulationApp.initMap;
 
 public class SimulationPresenter implements MapChangeListener {
@@ -144,12 +149,46 @@ public class SimulationPresenter implements MapChangeListener {
     });
   }
   @FXML
-  private void save(){
+  private void save() {
+    SimulationConfig config = new SimulationConfig(
+            mapWidth.getText(),
+            mapHeight.getText(),
+            plantCount.getText(),
+            plantEnergy.getText(),
+            animalCount.getText(),
+            animalEnergy.getText(),
+            breedEnergyNeeded.getText(),
+            breedEnergyUsage.getText(),
+            minMutations.getText(),
+            maxMutations.getText(),
+            genesCount.getText(),
+            fireMap.isSelected(),
+            insanity.isSelected()
+    );
 
+    SimulationConfigManager.saveConfig(config);
   }
-  @FXML
-  private void load(){
 
+  @FXML
+  private void load() {
+    SimulationConfig config = SimulationConfigManager.loadConfig();
+    if (config != null) {
+      mapWidth.setText(config.mapWidth);
+      mapHeight.setText(config.mapHeight);
+      plantCount.setText(config.plantCount);
+      plantEnergy.setText(config.plantEnergy);
+      animalCount.setText(config.animalCount);
+      animalEnergy.setText(config.animalEnergy);
+      breedEnergyNeeded.setText(config.breedEnergyNeeded);
+      breedEnergyUsage.setText(config.breedEnergyUsage);
+      minMutations.setText(config.minMutations);
+      maxMutations.setText(config.maxMutations);
+      genesCount.setText(config.genesCount);
+      fireMap.setSelected(config.fireMap);
+      insanity.setSelected(config.insanity);
+
+      System.out.println("Configuration loaded successfully.");
+    }
   }
   @FXML
   private void accept() {
