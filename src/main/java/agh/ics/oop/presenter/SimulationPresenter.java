@@ -16,9 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -30,60 +28,62 @@ import java.util.Set;
 import static agh.ics.oop.model.simulation.SimulationApp.initMap;
 
 public class SimulationPresenter implements MapChangeListener {
-  private static final String EMPTY_CELL_REPRESENTATION = " ";
-  private static final String INVALID_MOVE_PROVIDED = "Invalid moves provided. Valid moves are [f,b,l,r]";
+  @FXML private TextField mapWidth;
+  @FXML private TextField mapHeight;
+  @FXML private TextField plantCount;
+  @FXML private TextField plantEnergy;
+  @FXML private TextField animalCount;
+  @FXML private TextField animalEnergy;
+  @FXML private TextField breedEnergyNeeded;
+  @FXML private TextField breedEnergyUsage;
+  @FXML private TextField minMutations;
+  @FXML private TextField maxMutations;
+  @FXML private TextField genesCount;
+  @FXML private CheckBox fireMap;
+  @FXML private CheckBox insanity;
+  @FXML private Button accept;
+  @FXML private TextField movesTextField;
+  @FXML private Label moveDescriptionLabel;
+  @FXML private Button startButton;
+  @FXML private GridPane gridPane;
 
-
-  @FXML
-  private TextField mapWidth;
-
-  @FXML
-  private TextField mapHeight;
-
-  @FXML
-  private Button accept;
-
-  @FXML
-  public TextField movesTextField;
-  @FXML
-  public Label moveDescriptionLabel;
-  @FXML
-  public Button startButton;
-  @FXML
-  public GridPane gridPane;
-  private Vector2d gridPaneSize = new Vector2d(8,8);
-  private Vector2d gridPaneOffset = new Vector2d(0,0);
-
+  private Vector2d gridPaneSize = new Vector2d(8, 8);
+  private Vector2d gridPaneOffset = new Vector2d(0, 0);
   private WorldMap worldMap;
-  ArrayList<Vector2d> positionList = new ArrayList<>();
+  private ArrayList<Vector2d> positionList = new ArrayList<>();
 
-  public SimulationPresenter(){
+  public SimulationPresenter() {
     Collections.addAll(
-        positionList,
-        new Vector2d(2,2),
-        new Vector2d(1,1),
-        new Vector2d(10,10)
+            positionList,
+            new Vector2d(2, 2),
+            new Vector2d(1, 1),
+            new Vector2d(10, 10)
     );
   }
 
-  private void setGridWidthAndHeight(WorldMap worldMapGeneric){
+  @FXML
+  private void initialize() {
+    System.out.println("SimulationPresenter initialized");
+  }
+
+  private void setGridWidthAndHeight(WorldMap worldMapGeneric) {
     Boundary mapBounds = worldMapGeneric.getBoundaries();
 
     int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX() + 1;
     int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY() + 1;
     int offsetX = mapBounds.lowerBoundary().getX();
     int offsetY = mapBounds.lowerBoundary().getY();
-    gridPaneSize = new Vector2d(mapWidth,mapHeight);
-    gridPaneOffset = new Vector2d(offsetX,offsetY);
+    gridPaneSize = new Vector2d(mapWidth, mapHeight);
+    gridPaneOffset = new Vector2d(offsetX, offsetY);
   }
 
   private void clearGrid() {
-    gridPane.getChildren().retainAll(gridPane.getChildren().getFirst()); // hack to retain visible grid lines
+    gridPane.getChildren().retainAll(gridPane.getChildren().getFirst());
     gridPane.getColumnConstraints().clear();
     gridPane.getRowConstraints().clear();
   }
 
-  private void setGridCell(int xPosition, int yPosition, String labelText){
+  private void setGridCell(int xPosition, int yPosition, String labelText) {
     Label cellLabel = new Label();
     cellLabel.setText(labelText);
     gridPane.add(cellLabel, xPosition, yPosition);
@@ -91,22 +91,21 @@ public class SimulationPresenter implements MapChangeListener {
     GridPane.setValignment(cellLabel, VPos.CENTER);
   }
 
-  private void drawAxes(){
-    setGridCell(0,0,"x/y");
-    for(int i = 1; i< gridPaneSize.getY(); i++){
-      setGridCell(0,i,Integer.toString(gridPaneSize.getY() - 1- i  -gridPaneOffset.getY()));
-
+  private void drawAxes() {
+    setGridCell(0, 0, "x/y");
+    for (int i = 1; i < gridPaneSize.getY(); i++) {
+      setGridCell(0, i, Integer.toString(gridPaneSize.getY() - 1 - i - gridPaneOffset.getY()));
     }
-    for(int j = 1; j< gridPaneSize.getX(); j++){
-      setGridCell(j,0,Integer.toString(j+gridPaneOffset.getX()));
+    for (int j = 1; j < gridPaneSize.getX(); j++) {
+      setGridCell(j, 0, Integer.toString(j + gridPaneOffset.getX()));
     }
   }
 
-  private void updateGridConstraints(){
+  private void updateGridConstraints() {
     RowConstraints rowConstraints = new RowConstraints();
-    rowConstraints.setPercentHeight(100.0/gridPaneSize.getY());
+    rowConstraints.setPercentHeight(100.0 / gridPaneSize.getY());
     ColumnConstraints columnConstraints = new ColumnConstraints();
-    columnConstraints.setPercentWidth(100.0/gridPaneSize.getX());
+    columnConstraints.setPercentWidth(100.0 / gridPaneSize.getX());
     for (int i = 0; i < gridPaneSize.getY(); i++) {
       gridPane.getRowConstraints().add(rowConstraints);
     }
@@ -121,68 +120,132 @@ public class SimulationPresenter implements MapChangeListener {
     updateGridConstraints();
     drawAxes();
   }
-  public void drawMap(){
+
+  public void drawMap() {
     clearGrid();
     setGridWidthAndHeight(worldMap);
     drawAxes();
-//    Set size of each cell using row and column constraints
     updateGridConstraints();
 
-    for(int i = 1; i< gridPaneSize.getY(); i++){
-      for(int j = 1; j< gridPaneSize.getX(); j++){
-        Set<Animal> elementAtCoordinates = worldMap.objectsAt(new Vector2d(j + gridPaneOffset.getX() ,i + gridPaneOffset.getY()));
+    for (int i = 1; i < gridPaneSize.getY(); i++) {
+      for (int j = 1; j < gridPaneSize.getX(); j++) {
+        Set<Animal> elementAtCoordinates = worldMap.objectsAt(new Vector2d(j + gridPaneOffset.getX(), i + gridPaneOffset.getY()));
         int xPosition = j;
-        int yPosition = gridPaneSize.getY() - i-1;
-        String objectRepresentation = elementAtCoordinates.size() != 0? "*" : EMPTY_CELL_REPRESENTATION;
-        setGridCell(xPosition,yPosition,objectRepresentation);
+        int yPosition = gridPaneSize.getY() - i - 1;
+        String objectRepresentation = elementAtCoordinates.size() != 0 ? "*" : " ";
+        setGridCell(xPosition, yPosition, objectRepresentation);
       }
     }
   }
 
   @Override
   public void mapChanged(WorldMap worldMap, String message) {
-    Platform.runLater(()-> {
+    Platform.runLater(() -> {
       drawMap();
       moveDescriptionLabel.setText(message);
     });
   }
 
-  public void onSimulationStartClicked(ActionEvent actionEvent) {
-    String[] arguments = movesTextField.getText().split(" ");
-
-    ArrayList<MoveDirection> directionList = null;
-    try{
-      directionList = OptionsParser.parse(arguments);
-    } catch (IllegalMoveArgumentException e) {
-      moveDescriptionLabel.setText(INVALID_MOVE_PROVIDED);
-      return;
-    }
-
-//    worldMap.removeMainElementsFromWorld();
-    moveDescriptionLabel.setText("");
-    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList,directionList, worldMap));
-    simulationEngine.runAsync();
-  }
-
-
-  @FXML
-  private void mapWidth() {
-
-  }
-
-  @FXML
-  private void mapHeight() {
-  }
-
   @FXML
   private void accept() {
     SimulationApp.switchScene("simulation.fxml");
-    System.out.println(mapWidth.getText());
-    System.out.println(mapHeight.getText());
+    System.out.println("Accept button clicked.");
+    System.out.println("Map Width: " + mapWidth.getText());
+    System.out.println("Map Height: " + mapHeight.getText());
+    System.out.println("Plant Count: " + plantCount.getText());
+    System.out.println("Plant Energy: " + plantEnergy.getText());
+    System.out.println("Animal Count: " + animalCount.getText());
+    System.out.println("Animal Energy: " + animalEnergy.getText());
+    System.out.println("Breed Energy Needed: " + breedEnergyNeeded.getText());
+    System.out.println("Breed Energy Usage: " + breedEnergyUsage.getText());
+    System.out.println("Min Mutations: " + minMutations.getText());
+    System.out.println("Max Mutations: " + maxMutations.getText());
+    System.out.println("Genes Count: " + genesCount.getText());
+    System.out.println("Fire Map: " + (fireMap.isSelected() ? "ENABLED" : "DISABLED"));
+    System.out.println("Insanity: " + (insanity.isSelected() ? "ENABLED" : "DISABLED"));
     SimulationApp.initMap();
   }
 
   @FXML
-  private void initialize() {
+  private void mapWidth(ActionEvent event) {
+    System.out.println("Map Width: " + mapWidth.getText());
+  }
+
+  @FXML
+  private void mapHeight(ActionEvent event) {
+    System.out.println("Map Height: " + mapHeight.getText());
+  }
+
+  @FXML
+  private void plantCount(ActionEvent event) {
+    System.out.println("Plant Count: " + plantCount.getText());
+  }
+
+  @FXML
+  private void plantEnergy(ActionEvent event) {
+    System.out.println("Plant Energy: " + plantEnergy.getText());
+  }
+
+  @FXML
+  private void animalCount(ActionEvent event) {
+    System.out.println("Animal Count: " + animalCount.getText());
+  }
+
+  @FXML
+  private void animalEnergy(ActionEvent event) {
+    System.out.println("Animal Energy: " + animalEnergy.getText());
+  }
+
+  @FXML
+  private void breedEnergyNeeded(ActionEvent event) {
+    System.out.println("Breed Energy Needed: " + breedEnergyNeeded.getText());
+  }
+
+  @FXML
+  private void breedEnergyUsage(ActionEvent event) {
+    System.out.println("Breed Energy Usage: " + breedEnergyUsage.getText());
+  }
+
+  @FXML
+  private void minMutations(ActionEvent event) {
+    System.out.println("Min Mutations: " + minMutations.getText());
+  }
+
+  @FXML
+  private void maxMutations(ActionEvent event) {
+    System.out.println("Max Mutations: " + maxMutations.getText());
+  }
+
+  @FXML
+  private void genesCount(ActionEvent event) {
+    System.out.println("Genes Count: " + genesCount.getText());
+  }
+
+  @FXML
+  private void fireMap(ActionEvent event) {
+    System.out.println("Fire Map checkbox toggled.");
+  }
+
+  @FXML
+  private void insanity(ActionEvent event) {
+    System.out.println("Insanity checkbox toggled.");
+  }
+
+
+  @FXML
+  private void onSimulationStartClicked(ActionEvent actionEvent) {
+    String[] arguments = movesTextField.getText().split(" ");
+
+    ArrayList<MoveDirection> directionList = null;
+    try {
+      directionList = OptionsParser.parse(arguments);
+    } catch (IllegalMoveArgumentException e) {
+      moveDescriptionLabel.setText("Invalid moves provided!");
+      return;
+    }
+
+    moveDescriptionLabel.setText("");
+    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList, directionList, worldMap));
+    simulationEngine.runAsync();
   }
 }
