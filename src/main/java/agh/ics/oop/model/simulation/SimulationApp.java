@@ -1,6 +1,5 @@
 package agh.ics.oop.model.simulation;
 
-import agh.ics.oop.model.worldmap.GrassField;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -25,9 +24,9 @@ public class SimulationApp extends Application {
     primaryStage.show();
   }
   public static void initMap() {
-    GrassField grassField = new GrassField(5);
-    presenter.setWorldMap(grassField);
-    grassField.addToListeners(presenter);
+//    GrassField grassField = new GrassField(5);
+//    presenter.setWorldMap(grassField);
+//    grassField.addToListeners(presenter);
   }
   private static void createStage(Parent viewRoot) {
     Scene scene = new Scene(viewRoot);

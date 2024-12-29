@@ -5,9 +5,9 @@ import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.OptionsParser;
-import agh.ics.oop.model.exception.IllegalMoveArgumentException;
+import agh.ics.oop.model.exception.simulation.IllegalMoveArgumentException;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldelement.Animal;
 import agh.ics.oop.model.worldmap.Boundary;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.model.worldmap.WorldMap;
@@ -25,6 +25,7 @@ import javafx.scene.layout.RowConstraints;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 import static agh.ics.oop.model.simulation.SimulationApp.initMap;
 
@@ -65,8 +66,8 @@ public class SimulationPresenter implements MapChangeListener {
     );
   }
 
-  private void setGridWidthAndHeight(WorldMap worldMap){
-    Boundary mapBounds = worldMap.getCurrentBounds();
+  private void setGridWidthAndHeight(WorldMap worldMapGeneric){
+    Boundary mapBounds = worldMapGeneric.getBoundaries();
 
     int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX() + 1;
     int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY() + 1;
@@ -129,10 +130,10 @@ public class SimulationPresenter implements MapChangeListener {
 
     for(int i = 1; i< gridPaneSize.getY(); i++){
       for(int j = 1; j< gridPaneSize.getX(); j++){
-        WorldElement elementAtCoordinates = worldMap.objectAt(new Vector2d(j + gridPaneOffset.getX() ,i + gridPaneOffset.getY()));
+        Set<Animal> elementAtCoordinates = worldMap.objectsAt(new Vector2d(j + gridPaneOffset.getX() ,i + gridPaneOffset.getY()));
         int xPosition = j;
         int yPosition = gridPaneSize.getY() - i-1;
-        String objectRepresentation = elementAtCoordinates != null ? elementAtCoordinates.toString() : EMPTY_CELL_REPRESENTATION;
+        String objectRepresentation = elementAtCoordinates.size() != 0? "*" : EMPTY_CELL_REPRESENTATION;
         setGridCell(xPosition,yPosition,objectRepresentation);
       }
     }
@@ -157,9 +158,9 @@ public class SimulationPresenter implements MapChangeListener {
       return;
     }
 
-    worldMap.removeMainElementsFromWorld();
+//    worldMap.removeMainElementsFromWorld();
     moveDescriptionLabel.setText("");
-    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList,directionList,worldMap));
+    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList,directionList, worldMap));
     simulationEngine.runAsync();
   }
 

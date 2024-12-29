@@ -16,12 +16,12 @@ public class Simulation implements Runnable {
   ArrayList<Vector2d> defaultPositionList;
   ArrayList<MoveDirection> moveDirectionList;
   ArrayList<Animal> animalList = new ArrayList<>();
-  WorldMap<Animal> map;
+  WorldMap map;
 
   private static final String PLACE_ERROR_MESSAGE = "Could not place animal: %s%n";
   private static final String INTERRUPT_ERROR_MESSAGE = "Engine: Interrupted. Restoring interrupted status. Reason: %s%n";
 
-  public Simulation(ArrayList<Vector2d> defaultPositionList, ArrayList<MoveDirection> moveDirectionList, WorldMap<Animal> map) {
+  public Simulation(ArrayList<Vector2d> defaultPositionList, ArrayList<MoveDirection> moveDirectionList, WorldMap map) {
     this.defaultPositionList = defaultPositionList;
     this.moveDirectionList = moveDirectionList;
     this.map = map;
