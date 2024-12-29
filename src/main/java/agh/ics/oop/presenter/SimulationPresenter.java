@@ -41,10 +41,8 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML private TextField genesCount;
   @FXML private CheckBox fireMap;
   @FXML private CheckBox insanity;
-  @FXML private Button accept;
   @FXML private TextField movesTextField;
   @FXML private Label moveDescriptionLabel;
-  @FXML private Button startButton;
   @FXML private GridPane gridPane;
 
   private Vector2d gridPaneSize = new Vector2d(8, 8);
@@ -145,7 +143,14 @@ public class SimulationPresenter implements MapChangeListener {
       moveDescriptionLabel.setText(message);
     });
   }
+  @FXML
+  private void save(){
 
+  }
+  @FXML
+  private void load(){
+
+  }
   @FXML
   private void accept() {
     SimulationApp.switchScene("simulation.fxml");
