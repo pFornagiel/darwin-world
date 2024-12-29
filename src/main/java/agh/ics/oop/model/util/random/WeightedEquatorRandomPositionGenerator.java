@@ -20,12 +20,12 @@ public class WeightedEquatorRandomPositionGenerator implements Iterable<Vector2d
   private double totalWeight;
 
 
-  public WeightedEquatorRandomPositionGenerator(int maxWidth, int maxHeight, double percentageOfElements) {
+  public WeightedEquatorRandomPositionGenerator(int maxWidth, int maxHeight, int numberOfElements) {
 //    Inclusive range (0,0) - (maxWidth, maxHeight)
     maxWidth += 1;
     maxHeight += 1;
     this.maxHeight = maxHeight;
-    this.numberOfElements = (int) (percentageOfElements * maxWidth * maxHeight);
+    this.numberOfElements = numberOfElements;
 
     for (int i = 0; i < this.maxHeight; i++) {
       ArrayList<Vector2d> row = new ArrayList<>();

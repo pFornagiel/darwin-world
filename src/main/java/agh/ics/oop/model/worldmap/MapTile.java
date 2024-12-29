@@ -16,6 +16,7 @@ public class MapTile {
   public MapTile(Vector2d position) {
     this.position = position;
   }
+
   public MapTile(Vector2d position, boolean isVerdant) {
     this(position);
     this.isVerdant = isVerdant;
@@ -33,9 +34,8 @@ public class MapTile {
   public boolean isPlantGrown() {
     return plantGrown;
   }
-  public boolean growPlant(){
-//    Randomised function to be implemented
-    return true;
+  public void growPlant(){
+    plantGrown = true;
   }
   public void eatPlant(){
     if(!plantGrown){

@@ -11,7 +11,11 @@ import agh.ics.oop.model.util.random.WeightedEquatorRandomPositionGenerator;
 import agh.ics.oop.model.worldelement.Animal;
 import agh.ics.oop.model.worldelement.WorldElement;
 
-import java.util.*;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.ArrayList;
 
 public class BaseWorldMap implements WorldMap {
   private static final Vector2d LOWER_BOUNDARY = new Vector2d(0,0);
@@ -41,7 +45,12 @@ public class BaseWorldMap implements WorldMap {
     this.id = UUID.randomUUID();
     this.mapBoundaries = new Boundary(LOWER_BOUNDARY, new Vector2d(mapWidth,mapHeight));
 
-//    Initialize tileMap
+    initialiseWorldMap(mapWidth,mapHeight,initialNumberOfPlants);
+  }
+
+//  Map initialisation
+  private void initialiseWorldMap(int mapWidth, int mapHeight, int numberOfPlants){
+//    Intialise tileMap HashMap
     for (int x = 0; x <= mapWidth; x++) {
       for (int y = 0; y <= mapHeight; y++) {
         Vector2d position = new Vector2d(x,y);
@@ -49,13 +58,20 @@ public class BaseWorldMap implements WorldMap {
       }
     }
 
-    WeightedEquatorRandomPositionGenerator positionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight, VERDANT_TILES_PERCENTAGE);
-    for(Vector2d verdantTilePosition: positionGenerator){
+//    Set verdant tiles according to gaussian distribution
+    WeightedEquatorRandomPositionGenerator verdantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight,(int)(VERDANT_TILES_PERCENTAGE*mapHeight*mapWidth));
+    for(Vector2d verdantTilePosition: verdantPositionGenerator){
       tileMap.get(verdantTilePosition).setVerdant();
+    }
+
+//    Initialise plants according to gaussian distribution and number of plants provided in constructor
+    WeightedEquatorRandomPositionGenerator initialPlantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight,numberOfPlants);
+    for(Vector2d plantTilePosition: initialPlantPositionGenerator){
+      tileMap.get(plantTilePosition).growPlant();
     }
   }
 
-//  Manage animalMap and tileMap
+//  Manage animalMap and tileMap internally
   private void addAnimalAtPosition(Animal animal, Vector2d position){
     tileMap.get(position).addAnimal(animal);
     animalMap.put(animal, position);
@@ -87,6 +103,18 @@ public class BaseWorldMap implements WorldMap {
       throw new IncorrectPositionException(elementDefaultPosition);
     }
     addAnimalAtPosition(animal, elementDefaultPosition);
+  }
+  public boolean attemptToGrowPlant(Vector2d position){
+    MapTile plantTile = tileMap.get(position);
+    if(plantTile.isPlantGrown()){
+      return true;
+    }
+    boolean randomResult = plantTile.isVerdant() ? chanceGenerator.randomResult() : chanceGenerator.randomResultComplement();
+    if(randomResult){
+      plantTile.growPlant();
+    }
+
+    return randomResult;
   }
 
 //  Listing elements

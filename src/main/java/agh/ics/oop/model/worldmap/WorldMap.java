@@ -35,6 +35,13 @@ public interface WorldMap extends MoveValidator {
     void move(Animal animal, MoveDirection direction);
 
     /**
+     * Attempts to grow plant based on random chance provided in the map context.
+     * @param position Position of MapTile, where plant should be attempted to grow.
+     * @return true if growth was successful, false otherwise
+     */
+    boolean attemptToGrowPlant(Vector2d position);
+
+    /**
      * Return true if given position on the map is occupied. Should not be
      * confused with canMove since there might be empty positions where the animal
      * cannot move.
