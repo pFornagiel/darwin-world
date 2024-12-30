@@ -1,5 +1,6 @@
 package agh.ics.oop.model.worldmap;
 
+import agh.ics.oop.model.exception.worldmap.PlantAlreadyGrownException;
 import agh.ics.oop.model.exception.worldmap.PlantNotGrownException;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.Animal;
@@ -35,6 +36,9 @@ public class MapTile {
     return plantGrown;
   }
   public void growPlant(){
+    if(plantGrown){
+      throw new PlantAlreadyGrownException(position);
+    }
     plantGrown = true;
   }
   public void eatPlant(){

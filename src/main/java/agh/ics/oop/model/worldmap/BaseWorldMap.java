@@ -3,31 +3,27 @@ package agh.ics.oop.model.worldmap;
 import agh.ics.oop.model.exception.worldmap.IllegalMapSizeException;
 import agh.ics.oop.model.exception.worldmap.IllegalNumberOfInitialPlantsError;
 import agh.ics.oop.model.exception.IncorrectPositionException;
+import agh.ics.oop.model.exception.worldmap.PlantAlreadyGrownException;
 import agh.ics.oop.model.util.MapVisualizer;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.random.RandomChanceGenerator;
+import agh.ics.oop.model.util.random.RandomPlantGrowthPositionGenerator;
 import agh.ics.oop.model.util.random.WeightedEquatorRandomPositionGenerator;
 import agh.ics.oop.model.worldelement.Animal;
 import agh.ics.oop.model.worldelement.WorldElement;
 
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.ArrayList;
+import java.util.*;
 
 public class BaseWorldMap implements WorldMap {
   private static final Vector2d LOWER_BOUNDARY = new Vector2d(0,0);
-  private static final double VERDANT_TILES_PERCENTAGE = .2;
-  private static final double GROWTH_SUCCESS_PERCENTAGE = .8;
-  private static final RandomChanceGenerator chanceGenerator = new RandomChanceGenerator(GROWTH_SUCCESS_PERCENTAGE);
 
   protected final Boundary mapBoundaries;
   private final UUID id;
 
   protected final HashMap<Vector2d, MapTile> tileMap = new HashMap<>();
   protected final HashMap<Animal, Vector2d> animalMap = new HashMap<>();
+  protected final HashSet<Vector2d> plantPositionSet = new HashSet<>();
 
   protected final MapVisualizer mapVisualizer;
   protected final LinkedList<MapChangeListener> mapChangeListeners  = new LinkedList<>();
@@ -51,24 +47,21 @@ public class BaseWorldMap implements WorldMap {
 //  Map initialisation
   private void initialiseWorldMap(int mapWidth, int mapHeight, int numberOfPlants){
 //    Intialise tileMap HashMap
-    for (int x = 0; x <= mapWidth; x++) {
-      for (int y = 0; y <= mapHeight; y++) {
+    for (int x = 0; x < mapWidth; x++) {
+      for (int y = 0; y < mapHeight; y++) {
         Vector2d position = new Vector2d(x,y);
         tileMap.put(position, new MapTile(position));
       }
     }
 
 //    Set verdant tiles according to gaussian distribution
-    WeightedEquatorRandomPositionGenerator verdantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight,(int)(VERDANT_TILES_PERCENTAGE*mapHeight*mapWidth));
+    WeightedEquatorRandomPositionGenerator verdantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight);
     for(Vector2d verdantTilePosition: verdantPositionGenerator){
       tileMap.get(verdantTilePosition).setVerdant();
     }
 
-//    Initialise plants according to gaussian distribution and number of plants provided in constructor
-    WeightedEquatorRandomPositionGenerator initialPlantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight,numberOfPlants);
-    for(Vector2d plantTilePosition: initialPlantPositionGenerator){
-      tileMap.get(plantTilePosition).growPlant();
-    }
+//    Initialise the amount of plants provided in the constructor
+    growPlantsAtRandomPositions(numberOfPlants);
   }
 
 //  Manage animalMap and tileMap internally
@@ -104,17 +97,25 @@ public class BaseWorldMap implements WorldMap {
     }
     addAnimalAtPosition(animal, elementDefaultPosition);
   }
-  public boolean attemptToGrowPlant(Vector2d position){
-    MapTile plantTile = tileMap.get(position);
-    if(plantTile.isPlantGrown()){
-      return true;
-    }
-    boolean randomResult = plantTile.isVerdant() ? chanceGenerator.randomResult() : chanceGenerator.randomResultComplement();
-    if(randomResult){
-      plantTile.growPlant();
-    }
 
-    return randomResult;
+//  Plant managing
+  public void growPlantAtPosition(Vector2d position){
+    MapTile plantTile = tileMap.get(position);
+//    growPlant throws a runtime exception if plant is grown already
+    plantTile.growPlant();
+    plantPositionSet.add(position);
+  }
+  public void growPlantsAtRandomPositions(int numberOfPlants){
+    RandomPlantGrowthPositionGenerator initialPlantPositionGenerator = new RandomPlantGrowthPositionGenerator(tileMap, numberOfPlants);
+    for(Vector2d plantTilePosition: initialPlantPositionGenerator){
+      growPlantAtPosition(plantTilePosition);
+    }
+  }
+  public void deletePlantAtPosition(Vector2d position){
+    MapTile plantTile = tileMap.get(position);
+//    eatPlant() throws a runtime exception if plant is not grown
+    plantTile.eatPlant();
+    plantPositionSet.remove(position);
   }
 
 //  Listing elements
@@ -143,8 +144,8 @@ public class BaseWorldMap implements WorldMap {
 //    Temporary solution
     Boundary currentBoundary = getBoundaries();
     String map = "";
-    for(int i=0;i<=currentBoundary.upperBoundary().getY();i++){
-      for(int j=0; j<=currentBoundary.upperBoundary().getX();j++){
+    for(int i=0;i<currentBoundary.upperBoundary().getY();i++){
+      for(int j=0; j<currentBoundary.upperBoundary().getX();j++){
         map += tileMap.get(new Vector2d(j,i)).isVerdant() ? "■ " : "□ ";
       }
       map += "\n";

@@ -9,28 +9,29 @@ import java.util.Random;
 
 public class WeightedEquatorRandomPositionGenerator implements Iterable<Vector2d> {
   private static final Random rand = new Random();
+  private static final double VERDANT_TILES_PERCENTAGE = .2;
   private static final double MEAN_CONSTANT = 2.;
   private static final double VARIANCE_CONSTANT= 8.;
 
   private final int maxHeight;
+  private final int maxWidth;
   private int numberOfElements;
 
-  private final ArrayList<ArrayList<Vector2d>> rowArray = new ArrayList<>();
+  private final ArrayList<ArrayList<Integer>> rowArray = new ArrayList<>();
   private final double[] rowWeights;
   private double totalWeight;
 
 
-  public WeightedEquatorRandomPositionGenerator(int maxWidth, int maxHeight, int numberOfElements) {
-//    Inclusive range (0,0) - (maxWidth, maxHeight)
-    maxWidth += 1;
-    maxHeight += 1;
+  public WeightedEquatorRandomPositionGenerator(int maxWidth, int maxHeight) {
+//    Exclusive range (0,0) : (maxWidth, maxHeight)
     this.maxHeight = maxHeight;
-    this.numberOfElements = numberOfElements;
+    this.maxWidth = maxWidth;
+    this.numberOfElements = (int)(maxWidth * maxHeight * VERDANT_TILES_PERCENTAGE);
 
     for (int i = 0; i < this.maxHeight; i++) {
-      ArrayList<Vector2d> row = new ArrayList<>();
+      ArrayList<Integer> row = new ArrayList<>();
       for (int j = 0; j < maxWidth; j++) {
-        row.add(new Vector2d(j,i));
+        row.add(i*maxHeight + j);
       }
       rowArray.add(row);
     }
@@ -50,14 +51,15 @@ public class WeightedEquatorRandomPositionGenerator implements Iterable<Vector2d
       throw new RandomPositionOutOfRangeException();
     }
 
-    ArrayList<Vector2d> currentRow = rowArray.get(row);
+    ArrayList<Integer> currentRow = rowArray.get(row);
     int idx = rand.nextInt(currentRow.size());
-    Vector2d randomVector = currentRow.get(idx);
+    int currentNumber = currentRow.get(idx);
+    Vector2d currentVector = new Vector2d(currentNumber%this.maxWidth, currentNumber/this.maxHeight);
     currentRow.remove(idx);
     if(currentRow.isEmpty()) {
       totalWeight -= rowWeights[row];
     }
-    return randomVector;
+    return currentVector;
   }
 
   @Override
