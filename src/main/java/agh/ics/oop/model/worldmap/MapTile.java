@@ -6,14 +6,14 @@ import agh.ics.oop.model.worldelement.WorldElement;
 import java.util.Set;
 
 public interface MapTile<E extends WorldElement> {
-  public boolean isVerdant();
-  public void setVerdant();
-  public boolean isPlantGrown();
-  public void growPlant();
-  public void eatPlant();
-  public boolean isOccupied();
-  public boolean addElement(E element);
-  public boolean removeElement(E element);
-  public boolean containsElement(E element);
-  public Set<E> getElementSet();
+  boolean isVerdant();
+  void setVerdant();
+  boolean isPlantGrown();
+  void growPlant();
+  void eatPlant();
+  boolean isOccupied();
+  boolean addElement(E element);
+  boolean removeElement(E element);
+  boolean containsElement(E element);
+  Set<E> getElementSet();
 }

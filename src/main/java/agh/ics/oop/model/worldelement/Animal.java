@@ -5,7 +5,6 @@ import agh.ics.oop.model.worldmap.MapDirection;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldmap.BaseMapTile;
 import agh.ics.oop.model.worldmap.MapTile;
 
 import java.util.ArrayList;

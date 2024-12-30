@@ -2,8 +2,6 @@ package agh.ics.oop.model.util.random;
 
 import agh.ics.oop.model.exception.util.random.RandomPositionOutOfRangeException;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.WorldElement;
-import agh.ics.oop.model.worldmap.BaseMapTile;
 import agh.ics.oop.model.worldmap.MapTile;
 
 import java.util.Random;
