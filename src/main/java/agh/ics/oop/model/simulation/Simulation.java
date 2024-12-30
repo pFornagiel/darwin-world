@@ -45,7 +45,7 @@ public class Simulation implements Runnable {
     int length = animalList.size();
     for(Animal animal: animalList){
       try{
-        map.place(animal);
+        map.placeElement(animal);
       } catch (IncorrectPositionException error){
         System.out.printf(PLACE_ERROR_MESSAGE, error.getMessage());
       }
