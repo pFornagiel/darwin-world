@@ -1,29 +1,31 @@
 package agh.ics.oop.model.worldmap;
 
+import agh.ics.oop.model.exception.worldmap.ElementNotOnTheMapException;
 import agh.ics.oop.model.exception.worldmap.IllegalMapSizeException;
 import agh.ics.oop.model.exception.worldmap.IllegalNumberOfInitialPlantsError;
 import agh.ics.oop.model.exception.IncorrectPositionException;
-import agh.ics.oop.model.exception.worldmap.PlantAlreadyGrownException;
+import agh.ics.oop.model.simulation.WorldElementVisitor;
 import agh.ics.oop.model.util.MapVisualizer;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.util.random.RandomChanceGenerator;
 import agh.ics.oop.model.util.random.RandomPlantGrowthPositionGenerator;
 import agh.ics.oop.model.util.random.WeightedEquatorRandomPositionGenerator;
-import agh.ics.oop.model.worldelement.Animal;
-import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldelement.*;
 
 import java.util.*;
 
-public class BaseWorldMap implements WorldMap {
+public class BaseWorldMap implements WorldMap<Animal> {
   private static final Vector2d LOWER_BOUNDARY = new Vector2d(0,0);
 
   protected final Boundary mapBoundaries;
   private final UUID id;
 
-  protected final HashMap<Vector2d, MapTile> tileMap = new HashMap<>();
+  protected final HashMap<Vector2d, BaseMapTile> tileMap = new HashMap<>();
   protected final HashMap<Animal, Vector2d> animalMap = new HashMap<>();
   protected final HashSet<Vector2d> plantPositionSet = new HashSet<>();
+
+  protected int deadAnimalCount = 0;
+  protected int deadAnimalLifespanSum = 0;
 
   protected final MapVisualizer mapVisualizer;
   protected final LinkedList<MapChangeListener> mapChangeListeners  = new LinkedList<>();
@@ -46,11 +48,11 @@ public class BaseWorldMap implements WorldMap {
 
 //  Map initialisation
   private void initialiseWorldMap(int mapWidth, int mapHeight, int numberOfPlants){
-//    Intialise tileMap HashMap
+//    Initialise tileMap HashMap
     for (int x = 0; x < mapWidth; x++) {
       for (int y = 0; y < mapHeight; y++) {
         Vector2d position = new Vector2d(x,y);
-        tileMap.put(position, new MapTile(position));
+        tileMap.put(position, new BaseMapTile(position));
       }
     }
 
@@ -65,13 +67,20 @@ public class BaseWorldMap implements WorldMap {
   }
 
 //  Manage animalMap and tileMap internally
-  private void addAnimalAtPosition(Animal animal, Vector2d position){
-    tileMap.get(position).addAnimal(animal);
-    animalMap.put(animal, position);
+  private void addElementAtPosition(Animal element, Vector2d position){
+    tileMap.get(position).addElement(element);
+    animalMap.put(element, position);
   }
-  private void deleteAnimalAtPosition(Animal animal){
-    tileMap.get(animal.getPosition()).removeAnimal(animal);
-    animalMap.remove(animal);
+  public void removeElement(Animal element){
+    Vector2d elementPosition = element.getPosition();
+    if(!tileMap.containsKey(elementPosition)){
+      throw new ElementNotOnTheMapException(element);
+    }
+    tileMap.get(elementPosition).removeElement(element);
+    animalMap.remove(element);
+
+    deadAnimalCount += 1;
+    deadAnimalLifespanSum += element.getLifespan();
   }
 
 //  State checking
@@ -84,52 +93,69 @@ public class BaseWorldMap implements WorldMap {
     return position.getY() < mapBoundaries.upperBoundary().getY() && position.getY() > mapBoundaries.lowerBoundary().getY();
   }
 
-//  Moving and placing
+//  Moving, placing, interaction
   @Override
-  public void move(Animal animal, MoveDirection direction) {
+  public void move(LivingCreature element, MoveDirection direction) {
 // To Override
   }
   @Override
-  public void place(Animal animal) throws IncorrectPositionException {
-    Vector2d elementDefaultPosition = animal.getPosition();
+  public void placeElement(Animal element) throws IncorrectPositionException {
+    Vector2d elementDefaultPosition = element.getPosition();
     if(!canMoveTo(elementDefaultPosition)){
       throw new IncorrectPositionException(elementDefaultPosition);
     }
-    addAnimalAtPosition(animal, elementDefaultPosition);
+    addElementAtPosition(element, elementDefaultPosition);
   }
 
-//  Plant managing
+  @Override
+  public void interact(Animal element, WorldElementVisitor visitor) {
+    element.acceptVisitor(visitor);
+  }
+
+  //  Plant managing
   public void growPlantAtPosition(Vector2d position){
-    MapTile plantTile = tileMap.get(position);
+    BaseMapTile plantTile = tileMap.get(position);
 //    growPlant throws a runtime exception if plant is grown already
     plantTile.growPlant();
     plantPositionSet.add(position);
   }
   public void growPlantsAtRandomPositions(int numberOfPlants){
-    RandomPlantGrowthPositionGenerator initialPlantPositionGenerator = new RandomPlantGrowthPositionGenerator(tileMap, numberOfPlants);
+    RandomPlantGrowthPositionGenerator<BaseMapTile> initialPlantPositionGenerator = new RandomPlantGrowthPositionGenerator<>(tileMap, numberOfPlants);
     for(Vector2d plantTilePosition: initialPlantPositionGenerator){
       growPlantAtPosition(plantTilePosition);
     }
   }
   public void deletePlantAtPosition(Vector2d position){
-    MapTile plantTile = tileMap.get(position);
+    BaseMapTile plantTile = tileMap.get(position);
 //    eatPlant() throws a runtime exception if plant is not grown
     plantTile.eatPlant();
     plantPositionSet.remove(position);
   }
 
-//  Listing elements
+  @Override
+  public void consumePlant(LivingCreature consumer, int energy) {
+    Vector2d position = consumer.getPosition();
+//    whether mapTile is needed is to be seen
+    consumer.consume(tileMap.get(position), energy);
+    deletePlantAtPosition(position);
+  }
+
+  //  Listing elements
   @Override
   public Set<Animal> objectsAt(Vector2d position) {
-    return tileMap.get(position).getAnimalSet();
+    return tileMap.get(position).getElementSet();
   }
   @Override
-  public ArrayList<WorldElement> getElements() {
+  public ArrayList<Animal> getElements() {
     return new ArrayList<>(animalMap.keySet());
   }
+//  To return map statistics
+  @Override
+  public void listMapStatistics(WorldMapVisitor visitor) {
+    visitor.visit(this);
+  }
 
-
-//  Getters
+  //  Getters
   @Override
   public Boundary getBoundaries() {
     return this.mapBoundaries;
@@ -137,6 +163,35 @@ public class BaseWorldMap implements WorldMap {
   @Override
   public UUID getId() {
     return id;
+  }
+  public int getAmountOfAnimals(){
+    return animalMap.size();
+  }
+  public int getAmountOfPlants(){
+    return plantPositionSet.size();
+  }
+  public int getAmountOfFreeFields(){
+    Set<Vector2d> fieldsOccupiedByAnimals = new HashSet<>(animalMap.values());
+    return tileMap.size() - Set.of(fieldsOccupiedByAnimals, plantPositionSet).size();
+  }
+//  To implement
+  public List<Genotype> getMostPopularGenotypes(){
+    return null;
+  }
+  public double getAverageEnergy(){
+    return animalMap.keySet().stream()
+        .mapToInt(Animal::getEnergy)
+        .average()
+        .orElse(0.0);
+  }
+  public double getAverageLifespan(){
+    return (double) deadAnimalLifespanSum / deadAnimalCount;
+  }
+  public double getAverageChildren(){
+    return animalMap.keySet().stream()
+        .mapToInt(animal -> animal.getChildren().size())
+        .average()
+        .orElse(0.0);
   }
 
   @Override
@@ -153,6 +208,7 @@ public class BaseWorldMap implements WorldMap {
     return map;
   }
 
+//  Listeners logic
   public void addToListeners(MapChangeListener listener){
     mapChangeListeners.add(listener);
   }
