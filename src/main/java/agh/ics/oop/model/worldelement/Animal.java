@@ -1,13 +1,17 @@
 package agh.ics.oop.model.worldelement;
 
+import agh.ics.oop.model.simulation.WorldElementVisitor;
 import agh.ics.oop.model.worldmap.MapDirection;
 import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldmap.BaseMapTile;
+import agh.ics.oop.model.worldmap.MapTile;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Animal implements WorldElement {
+public class Animal implements WorldElement, LivingCreature {
   private MapDirection orientation;
   private Vector2d position;
   private int energy;
@@ -31,6 +35,26 @@ public class Animal implements WorldElement {
     this.position = position;
   }
 
+  @Override
+  public int getEnergy() {
+    return 0;
+  }
+
+  @Override
+  public int getLifespan() {
+    return 0;
+  }
+
+  @Override
+  public List<LivingCreature> getChildren() {
+    return null;
+  }
+
+  @Override
+  public Genotype getGenotype() {
+    return null;
+  }
+
   public Vector2d getPosition() {
     return position;
   }
@@ -43,6 +67,16 @@ public class Animal implements WorldElement {
     return this.position.equals(position);
   }
 
+  @Override
+  public void acceptVisitor(WorldElementVisitor visitor) {
+
+  }
+
+  @Override
+  public void consume(MapTile mapTile, int energy) {
+
+  }
+
   private Vector2d getNewAnimalPosition(Vector2d nextMove, MoveValidator moveValidator){
     Vector2d newPosition = position.add(nextMove);
     if(moveValidator.canMoveTo(newPosition)){
@@ -51,6 +85,7 @@ public class Animal implements WorldElement {
     return position;
   }
 
+  @Override
   public void move(MoveDirection direction, MoveValidator moveValidator){
     Vector2d nextMove = orientation.toUnitVector();
     switch(direction){

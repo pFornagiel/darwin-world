@@ -2,6 +2,8 @@ package agh.ics.oop.model.util.random;
 
 import agh.ics.oop.model.exception.util.random.RandomPositionOutOfRangeException;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldmap.BaseMapTile;
 import agh.ics.oop.model.worldmap.MapTile;
 
 import java.util.Random;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class RandomPlantGrowthPositionGenerator implements Iterable<Vector2d> {
+public class RandomPlantGrowthPositionGenerator<MapTileType extends MapTile> implements Iterable<Vector2d> {
   private static final Random rand = new Random();
   private static final int VERDANT_TILE_PROBABILITY_MULTIPLIER = 8;
   private static final int NON_VERDANT_TILE_PROBABILITY_MULTIPLIER = 2;
@@ -21,11 +23,11 @@ public class RandomPlantGrowthPositionGenerator implements Iterable<Vector2d> {
   private int verdantTileProbabilisticMeasure;
   private int nonVerdantTileProbabilisticMeasure;
 
-  public RandomPlantGrowthPositionGenerator(HashMap<Vector2d, MapTile> tileMap, int numberOfPlants) {
+  public RandomPlantGrowthPositionGenerator(HashMap<Vector2d, MapTileType> tileMap, int numberOfPlants) {
     this.numberOfPlants = numberOfPlants;
-    for (HashMap.Entry<Vector2d, MapTile> entry : tileMap.entrySet()) {
+    for (HashMap.Entry<Vector2d, MapTileType> entry : tileMap.entrySet()) {
       Vector2d currentPosition = entry.getKey();
-      MapTile currentMapTile = entry.getValue();
+      MapTileType currentMapTile = entry.getValue();
       if (currentMapTile.isPlantGrown()) continue;
       if (currentMapTile.isVerdant()) {
         verdantPositions.add(currentPosition);
