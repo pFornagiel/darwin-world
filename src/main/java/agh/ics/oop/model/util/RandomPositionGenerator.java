@@ -20,7 +20,6 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
     for (int i = 0; i < currentLenght; i++) {
       numberArray[i] = i;
     }
-
   }
 
   public Vector2d get(int index) {
