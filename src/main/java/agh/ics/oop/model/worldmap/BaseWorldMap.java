@@ -6,7 +6,6 @@ import agh.ics.oop.model.exception.worldmap.IllegalNumberOfInitialPlantsError;
 import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.simulation.WorldElementVisitor;
 import agh.ics.oop.model.util.MapVisualizer;
-import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.random.RandomPlantGrowthPositionGenerator;
 import agh.ics.oop.model.util.random.WeightedEquatorRandomPositionGenerator;
@@ -95,7 +94,7 @@ public class BaseWorldMap implements WorldMap<Animal> {
 
 //  Moving, placing, interaction
   @Override
-  public void move(LivingCreature element, MoveDirection direction) {
+  public void move(LivingCreature element, Direction direction) {
 // To Override
   }
   @Override
@@ -136,7 +135,7 @@ public class BaseWorldMap implements WorldMap<Animal> {
   public void consumePlant(LivingCreature consumer, int energy) {
     Vector2d position = consumer.getPosition();
 //    whether mapTile is needed is to be seen
-    consumer.consume(tileMap.get(position), energy);
+    consumer.eat();
     deletePlantAtPosition(position);
   }
 
@@ -223,16 +222,16 @@ public class BaseWorldMap implements WorldMap<Animal> {
     }
   }
 
-  public void notifyAccordingToMove(String objectTypeName, MoveDirection direction, Vector2d oldPosition, Vector2d newPosition){
+  public void notifyAccordingToMove(String objectTypeName, Direction direction, Vector2d oldPosition, Vector2d newPosition){
     switch(direction){
-      case LEFT, RIGHT -> notifyAllListeners("%s at %s turned %s".formatted(objectTypeName, oldPosition, direction));
-      case FORWARD, BACKWARD -> {
-        if(oldPosition != newPosition){
-          notifyAllListeners("%s at %s moved %s to %s".formatted(objectTypeName, oldPosition, direction, newPosition));
-        } else {
-          notifyAllListeners("%s at %s did not move!".formatted(objectTypeName, oldPosition));
-        }
-      }
+//      case LEFT, RIGHT -> notifyAllListeners("%s at %s turned %s".formatted(objectTypeName, oldPosition, direction));
+//      case FORWARD, BACKWARD -> {
+//        if(oldPosition != newPosition){
+//          notifyAllListeners("%s at %s moved %s to %s".formatted(objectTypeName, oldPosition, direction, newPosition));
+//        } else {
+//          notifyAllListeners("%s at %s did not move!".formatted(objectTypeName, oldPosition));
+//        }
+//      }
     }
   }
 

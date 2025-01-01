@@ -2,9 +2,9 @@ package agh.ics.oop.model.worldmap;
 
 import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.simulation.WorldElementVisitor;
-import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.Direction;
 import agh.ics.oop.model.worldelement.LivingCreature;
 import agh.ics.oop.model.worldelement.WorldElement;
 
@@ -40,7 +40,7 @@ public interface WorldMap<E extends WorldElement> extends MoveValidator {
     /**
      * Moves a Moveable element (if it is present on the map) according to specified direction.
      */
-    void move(LivingCreature element, MoveDirection direction);
+    void move(LivingCreature element, Direction direction);
 
     /**
      * Grows plant on the mapTile at given position.

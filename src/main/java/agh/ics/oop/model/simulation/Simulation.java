@@ -1,9 +1,9 @@
 package agh.ics.oop.model.simulation;
 
 import agh.ics.oop.model.exception.IncorrectPositionException;
-import agh.ics.oop.model.util.MoveDirection;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.worldelement.Direction;
 import agh.ics.oop.model.worldmap.WorldMap;
 
 import java.util.ArrayList;
@@ -14,14 +14,14 @@ public class Simulation implements Runnable {
 //  add any data to already existing lists after initialisation - if we did, the LinkedList datatype
 //  would prove more efficient.
   ArrayList<Vector2d> defaultPositionList;
-  ArrayList<MoveDirection> moveDirectionList;
+  ArrayList<Direction> moveDirectionList;
   ArrayList<Animal> animalList = new ArrayList<>();
   WorldMap map;
 
   private static final String PLACE_ERROR_MESSAGE = "Could not place animal: %s%n";
   private static final String INTERRUPT_ERROR_MESSAGE = "Engine: Interrupted. Restoring interrupted status. Reason: %s%n";
 
-  public Simulation(ArrayList<Vector2d> defaultPositionList, ArrayList<MoveDirection> moveDirectionList, WorldMap map) {
+  public Simulation(ArrayList<Vector2d> defaultPositionList, ArrayList<Direction> moveDirectionList, WorldMap map) {
     this.defaultPositionList = defaultPositionList;
     this.moveDirectionList = moveDirectionList;
     this.map = map;
@@ -51,7 +51,7 @@ public class Simulation implements Runnable {
       }
     }
     try{
-      for(MoveDirection direction: moveDirectionList){
+      for(Direction direction: moveDirectionList){
         Animal currentAnimal = animalList.get(index);
         map.move(currentAnimal, direction);
         index = (index+1)%length;

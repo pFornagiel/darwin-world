@@ -3,11 +3,9 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.simulation.SimulationEngine;
-import agh.ics.oop.model.util.MoveDirection;
-import agh.ics.oop.model.util.OptionsParser;
-import agh.ics.oop.model.exception.simulation.IllegalMoveArgumentException;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.worldelement.Direction;
 import agh.ics.oop.model.worldmap.Boundary;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.model.worldmap.WorldMap;
@@ -24,13 +22,6 @@ import javafx.scene.layout.RowConstraints;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import static agh.ics.oop.model.simulation.SimulationApp.initMap;
 
 public class SimulationPresenter implements MapChangeListener {
   @FXML private TextField mapWidth;
@@ -280,13 +271,13 @@ public class SimulationPresenter implements MapChangeListener {
   private void onSimulationStartClicked(ActionEvent actionEvent) {
     String[] arguments = movesTextField.getText().split(" ");
 
-    ArrayList<MoveDirection> directionList = null;
-    try {
-      directionList = OptionsParser.parse(arguments);
-    } catch (IllegalMoveArgumentException e) {
-      moveDescriptionLabel.setText("Invalid moves provided!");
-      return;
-    }
+    ArrayList<Direction> directionList = null;
+//    try {
+//      directionList = OptionsParser.parse(arguments);
+//    } catch (IllegalMoveArgumentException e) {
+//      moveDescriptionLabel.setText("Invalid moves provided!");
+//      return;
+//    }
 
     moveDescriptionLabel.setText("");
     SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList, directionList, worldMap));
