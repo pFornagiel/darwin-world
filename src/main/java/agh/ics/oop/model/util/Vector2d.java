@@ -17,11 +17,11 @@ public class Vector2d {
   }
 
   public boolean precedes(Vector2d other){
-    return other.x <= x && other.y <= y;
+    return x <= other.x && y <= other.y;
   }
 
   public boolean follows(Vector2d other){
-    return other.x >= x && other.y >= y;
+    return x >= other.x && y >= other.y;
   }
 
   public Vector2d add(Vector2d other){

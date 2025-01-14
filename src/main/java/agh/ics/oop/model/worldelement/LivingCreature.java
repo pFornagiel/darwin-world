@@ -1,11 +1,15 @@
 package agh.ics.oop.model.worldelement;
 
-import agh.ics.oop.model.util.MoveValidator;
+import agh.ics.oop.model.util.MoveHandler;
+import agh.ics.oop.model.util.Vector2d;
 
 import java.util.List;
 
 public interface LivingCreature extends WorldElement {
-  void move(Direction direction, MoveValidator moveValidator);
+  Direction getOrientation();
+  void setOrientation(Direction orientation);
+  Vector2d getPosition();
+  void setPosition(Vector2d position);
 
   void eat();
   int getEatenPlants();
@@ -15,16 +19,18 @@ public interface LivingCreature extends WorldElement {
   int gainEnergy(int energy);
   int drainEnergy();
   int drainEnergy(int energy);
+  boolean doesHaveEnoughEnergyToReproduce();
 
   void updateLifespan();
   int getLifespan();
   int getDayOfDeath();
+  boolean isAlive();
   void kill();
 
   Genotype getGenotype();
   int getGene(int geneIndex);
-  int getNextGene();
-  int getRandomGene();
+  int activateNextGene();
+  void rotateAndActivate();
 
   List<LivingCreature> getChildren();
   int getAmountOfChildren();

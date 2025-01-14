@@ -2,6 +2,7 @@ package agh.ics.oop.model.worldelement;
 
 import agh.ics.oop.model.exception.worldelement.NotEnoughEnergyToReproduceException;
 import agh.ics.oop.model.util.random.RandomNonRepeatingNumbersGenerator;
+import agh.ics.oop.model.worldelement.abstracts.Animal;
 
 import java.util.Random;
 
@@ -15,7 +16,7 @@ public class Genotype {
   public Genotype(int numberOfGenes) {
     this.geneArray = new int[numberOfGenes];
     for(int i = 0; i < numberOfGenes; i++){
-      this.geneArray[i] = getRandomGene();
+      this.geneArray[i] = rand.nextInt(DISTINCT_GENES_NUMBER);
     }
   }
 
@@ -29,7 +30,7 @@ public class Genotype {
       int energyNeededToReproduce
   ) {
 //    Validation
-    if(firstAnimal.getEnergy() < energyNeededToReproduce || secondAnimal.getEnergy() < energyNeededToReproduce){
+    if(!firstAnimal.doesHaveEnoughEnergyToReproduce() || !secondAnimal.doesHaveEnoughEnergyToReproduce()){
       throw new NotEnoughEnergyToReproduceException(firstAnimal,secondAnimal,energyNeededToReproduce);
     }
 
@@ -66,13 +67,13 @@ public class Genotype {
     }
   }
 
-  public int getRandomGene(){
+  public int activateRandomGene(){
     int randomIndex = rand.nextInt(geneArray.length);
     currentGeneIndex = (randomIndex + 1) % geneArray.length;
     return geneArray[randomIndex];
   }
 
-  public int getNextGene(){
+  public int activateNextGene(){
     int currentGene =  geneArray[currentGeneIndex];
     currentGeneIndex = (currentGeneIndex+1)%geneArray.length;
     return currentGene;

@@ -1,6 +1,6 @@
 package agh.ics.oop.model.exception.worldelement;
 
-import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.worldelement.abstracts.Animal;
 
 public class NotEnoughEnergyToReproduceException extends RuntimeException {
   private static final String ERROR_MESSAGE = "Animal %s does not have enough energy to reproduce: Needed energy: %d, Animal energy: %d.";

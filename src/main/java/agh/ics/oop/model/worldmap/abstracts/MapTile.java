@@ -1,8 +1,8 @@
-package agh.ics.oop.model.worldmap;
+package agh.ics.oop.model.worldmap.abstracts;
 
-import agh.ics.oop.model.worldelement.Animal;
 import agh.ics.oop.model.worldelement.WorldElement;
 
+import java.util.List;
 import java.util.Set;
 
 public interface MapTile<E extends WorldElement> {
@@ -15,5 +15,6 @@ public interface MapTile<E extends WorldElement> {
   boolean addElement(E element);
   boolean removeElement(E element);
   boolean containsElement(E element);
-  Set<E> getElementSet();
+  Set<E> getAnimalSet();
+  List<E> getElementList();
 }

@@ -1,14 +1,12 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationApp;
-import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.Animal;
+import agh.ics.oop.model.worldelement.BaseAnimal;
 import agh.ics.oop.model.worldelement.Direction;
 import agh.ics.oop.model.worldmap.Boundary;
 import agh.ics.oop.model.worldmap.MapChangeListener;
-import agh.ics.oop.model.worldmap.WorldMap;
+import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -123,7 +121,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     for (int i = 1; i < gridPaneSize.getY(); i++) {
       for (int j = 1; j < gridPaneSize.getX(); j++) {
-        Set<Animal> elementAtCoordinates = worldMap.objectsAt(new Vector2d(j + gridPaneOffset.getX(), i + gridPaneOffset.getY()));
+        Set<BaseAnimal> elementAtCoordinates = worldMap.objectsAt(new Vector2d(j + gridPaneOffset.getX(), i + gridPaneOffset.getY()));
         int xPosition = j;
         int yPosition = gridPaneSize.getY() - i - 1;
         String objectRepresentation = elementAtCoordinates.size() != 0 ? "*" : " ";
@@ -280,7 +278,7 @@ public class SimulationPresenter implements MapChangeListener {
 //    }
 
     moveDescriptionLabel.setText("");
-    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList, directionList, worldMap));
-    simulationEngine.runAsync();
+//    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList, directionList, worldMap));
+//    simulationEngine.runAsync();
   }
 }

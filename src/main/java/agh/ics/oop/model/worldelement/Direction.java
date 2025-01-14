@@ -13,14 +13,14 @@ public enum Direction {
   NORTH_WEST;
 
   private final static Vector2d[] DIRECTION_UNIT_VECTORS = {
-      new Vector2d(0,1),
-      new Vector2d(1,1),
-      new Vector2d(1,0),
-      new Vector2d(1,-1),
       new Vector2d(0,-1),
-      new Vector2d(-1,-1),
-      new Vector2d(-1,0),
+      new Vector2d(1,-1),
+      new Vector2d(1,0),
+      new Vector2d(1,1),
+      new Vector2d(0,1),
       new Vector2d(-1,1),
+      new Vector2d(-1,0),
+      new Vector2d(-1,-1),
   };
 
   private final static String[] DIRECTION_NAMES = {
@@ -85,6 +85,11 @@ public enum Direction {
       case WEST -> EAST;
       case NORTH_WEST -> SOUTH_EAST;
     };
+  }
+
+  public Direction rotate(int n){
+    int currentIndex = this.ordinal();
+    return Direction.values()[(currentIndex + n) % Direction.values().length];
   }
 
   public Vector2d toUnitVector() {

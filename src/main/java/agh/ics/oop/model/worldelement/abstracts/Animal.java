@@ -1,40 +1,40 @@
-package agh.ics.oop.model.worldelement;
+package agh.ics.oop.model.worldelement.abstracts;
 
 import agh.ics.oop.model.exception.worldelement.CreatureAlreadyDeadError;
 import agh.ics.oop.model.exception.worldelement.CreatureStillAliveError;
-import agh.ics.oop.model.simulation.WorldElementVisitor;
-import agh.ics.oop.model.util.MoveValidator;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.Direction;
+import agh.ics.oop.model.worldelement.Genotype;
+import agh.ics.oop.model.worldelement.LivingCreature;
+import agh.ics.oop.model.worldelement.WorldElement;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
-public class Animal implements WorldElement, LivingCreature {
+public abstract class Animal implements WorldElement, LivingCreature, Comparable<Animal> {
 
+  private static final Random rand = new Random();
+  private static final int ENERGY_USED_FOR_MOVEMENT = 1;
   private int energyGainedByEating = 0;
-  private int energyUsedForReproduction = 0;
+  private int energyNeededForReproduction = 0;
 
   private Direction orientation;
   private Vector2d position;
-  private Genotype genotype;
+  protected Genotype genotype;
   private int energy = 0;
   private int plantEatenCounter;
   private int lifespan = 0;
   private int dayOfDeath = -1;
+
+  private final UUID id;
 
   private final HashSet<LivingCreature> childrenSet = new HashSet<>();
 
 //  for testing purposes
   private static final String[] ORIENTATION_STRING_ARRAY = {"^","↗",">","↘","v","↙","<","↖"};
 
-  public Animal(){
-    this.orientation = Direction.NORTH;
-    this.position = new Vector2d(2,2);
-  }
-
   public Animal(Vector2d position){
-    this.orientation = Direction.NORTH;
+    this.id = UUID.randomUUID();
+    this.orientation = Direction.values()[rand.nextInt(Direction.values().length)];
     this.position = position;
   }
 
@@ -62,9 +62,7 @@ public class Animal implements WorldElement, LivingCreature {
   public void setEnergyGainedByEating(int energyGainedByEating){
     this.energyGainedByEating = energyGainedByEating;
   }
-  public void setEnergyUsedForReproduction(int energyUsedForReproduction){
-    this.energyUsedForReproduction = energyUsedForReproduction;
-  }
+  public void setEnergyNeededForReproduction(int energyNeededForReproduction){this.energyNeededForReproduction = energyNeededForReproduction;}
 
 // Energy
   @Override
@@ -78,7 +76,11 @@ public class Animal implements WorldElement, LivingCreature {
   }
   @Override
   public int drainEnergy() {
-    this.energy -= energyUsedForReproduction;
+    this.energy -= ENERGY_USED_FOR_MOVEMENT;
+    return this.energy;
+  }
+  public int drainEnergyDuringReproduction(){
+    this.energy -= energyNeededForReproduction;
     return this.energy;
   }
   @Override
@@ -91,8 +93,11 @@ public class Animal implements WorldElement, LivingCreature {
     this.energy += energy;
     return this.energy;
   }
-
-
+  @Override
+  public boolean doesHaveEnoughEnergyToReproduce(){
+    return energy >= energyNeededForReproduction;
+  }
+  
   //  Lifespan
   @Override
   public int getLifespan() {
@@ -119,7 +124,12 @@ public class Animal implements WorldElement, LivingCreature {
     return dayOfDeath;
   }
 
-//  Children
+  @Override
+  public boolean isAlive() {
+    return dayOfDeath == -1;
+  }
+
+  //  Children
   @Override
   public List<LivingCreature> getChildren() {
     return new ArrayList<>(childrenSet);
@@ -151,21 +161,31 @@ public class Animal implements WorldElement, LivingCreature {
     return genotype.getGene(geneIndex);
   }
   @Override
-  public int getNextGene(){
-    return genotype.getNextGene();
+  public int activateNextGene(){
+    return genotype.activateNextGene();
   }
-  @Override
-  public int getRandomGene(){
-    return genotype.getRandomGene();
-  }
-
 
 //  Position and direction
+  @Override
   public Vector2d getPosition() {
     return position;
   }
+  @Override
+  public void setPosition(Vector2d position){
+    this.position = position;
+  }
+  @Override
   public Direction getOrientation() {
     return orientation;
+  }
+  @Override
+  public void setOrientation(Direction orientation) {
+    this.orientation = orientation;
+  }
+  
+  public void rotateAndActivate(){
+    int gene = activateNextGene();
+    orientation = orientation.rotate(gene);
   }
   public boolean isAt(Vector2d position){
     return this.position.equals(position);
@@ -182,24 +202,6 @@ public class Animal implements WorldElement, LivingCreature {
     return plantEatenCounter;
   }
 
-  private Vector2d getNewAnimalPosition(Vector2d nextMove, MoveValidator moveValidator){
-    Vector2d newPosition = position.add(nextMove);
-    if(moveValidator.canMoveTo(newPosition)){
-      return newPosition;
-    }
-    return position;
-  }
-
-  @Override
-  public void move(Direction direction, MoveValidator moveValidator){
-//    Vector2d nextMove = orientation.toUnitVector();
-//    switch(direction){
-//      case Direction.RIGHT -> orientation = orientation.next();
-//      case Direction.LEFT -> orientation = orientation.previous();
-//      case Direction.FORWARD -> position = getNewAnimalPosition(nextMove, moveValidator);
-//      case Direction.BACKWARD -> position = getNewAnimalPosition(nextMove.opposite(), moveValidator);
-//    }
-  }
 
   @Override
   public String toString() {
@@ -219,9 +221,44 @@ public class Animal implements WorldElement, LivingCreature {
     return "Animal: [position=%s, orientation=%s]".formatted(this.position, this.orientation);
   }
 
-  //  Visitor
   @Override
-  public void acceptVisitor(WorldElementVisitor visitor) {
-    visitor.visit(this);
+  public int compareTo(Animal other) {
+    // Compare by energy
+    if (this.energy != other.energy) {
+      return Integer.compare(other.energy, this.energy);
+    }
+
+    // Compare by lifespan
+    if (this.lifespan != other.lifespan) {
+      return Integer.compare(other.lifespan, this.lifespan);
+    }
+
+    // Compare by number of children
+    if (this.getAmountOfChildren() != other.getAmountOfChildren()) {
+      return Integer.compare(other.getAmountOfChildren(), this.getAmountOfChildren());
+    }
+
+    return rand.nextInt(2) * 2 - 1; // random -1 or 1
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    Animal other = (Animal) obj;
+    return Objects.equals(id, other.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

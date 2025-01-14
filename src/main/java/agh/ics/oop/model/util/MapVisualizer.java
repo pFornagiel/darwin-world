@@ -1,6 +1,6 @@
 package agh.ics.oop.model.util;
 
-import agh.ics.oop.model.worldmap.WorldMap;
+import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 
 /**
  * The map visualizer converts the {@link WorldMap} map into a string
