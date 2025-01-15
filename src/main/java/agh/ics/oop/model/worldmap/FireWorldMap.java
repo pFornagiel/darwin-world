@@ -42,6 +42,7 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
 
   public void setOnFire(Vector2d position){
     tileMap.get(position).setOnFire();
+    deletePlantAtPosition(position);
     firePositionSet.add(position);
   }
 
@@ -72,26 +73,56 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
     List<Vector2d> fireApplicablePositionList = plantPositionSet.stream()
                                                               .filter(e -> !firePositionSet.contains(e))
                                                               .toList();
-    int randomIndex = rand.nextInt(fireApplicablePositionList.size());
-    setOnFire(fireApplicablePositionList.get(randomIndex));
+    if(!fireApplicablePositionList.isEmpty()){
+      int randomIndex = rand.nextInt(fireApplicablePositionList.size());
+      setOnFire(fireApplicablePositionList.get(randomIndex));
+    }
   }
 
   public void spreadFire(){
+    HashSet<Vector2d> updatePositionList = new HashSet<>();
     for(Vector2d position : getFirePositionSet()){
         MOVE_LIST.stream()
             .map(move -> determinePositionAfterMove(position, move))
-            .filter(p -> p != position).
-            forEach(this::setOnFire);
+            .filter(p -> p != position && !isOnFire(p) && isPlantGrown(p))
+            .forEach(updatePositionList::add);
+    }
+    for (Vector2d position : updatePositionList) {
+      setOnFire(position);
     }
   }
 
   public void updateFireDuration(){
+    HashSet<Vector2d> toExtenguishSet = new HashSet<>();
     for(Vector2d position : getFirePositionSet()){
-      FireMapTile tile = tileMap.get(position);
-      tile.updateFireDuration();
-      if(tile.getFireDuration() > maxFireDuration){
-        tile.extenguish();
+      tileMap.get(position).updateFireDuration();
+      if(tileMap.get(position).getFireDuration() > maxFireDuration){
+        toExtenguishSet.add(position);
       }
     }
+    for(Vector2d position : toExtenguishSet){
+      extenguish(position);
+    }
+  }
+
+  @Override
+  public String toString() {
+//    Temporary solution
+    Boundary currentBoundary = getBoundaries();
+    String map = "";
+    for(int i=0;i<currentBoundary.upperBoundary().getY();i++){
+      for(int j=0; j<currentBoundary.upperBoundary().getX();j++){
+        FireMapTile position = tileMap.get(new Vector2d(j,i));
+        if(position.isOccupied()){
+          map += position.getElementList().getFirst().toString() + ' ';
+        } else if(position.isOnFire()) {
+          map += "▣ ";
+        } else {
+          map += tileMap.get(new Vector2d(j,i)).isPlantGrown() ? "■ " : "□ ";
+        }
+      }
+      map += "\n";
+    }
+    return map;
   }
 }

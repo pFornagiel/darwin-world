@@ -23,7 +23,6 @@ public class FireMapTile extends AbstractMapTile<Animal> {
     onFire = true;
   }
   public void extenguish(){
-    eatPlant();
     fireDuration = 0;
     onFire = false;
   }

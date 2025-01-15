@@ -152,11 +152,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     return tileMap.get(position).isPlantGrown();
   }
 
-  @Override
-  public void eatPlant(Vector2d position) {
-    tileMap.get(position).eatPlant();
-  }
-
   public int getAmountOfPlants(){
     return plantPositionSet.size();
   }

@@ -77,21 +77,17 @@ public class Simulation implements Runnable, SimulationVisitor {
   }
 
   private void baseSimulationSteps(SimulatableMap<Animal> worldMap){
-    Set<Animal> animalSet = new HashSet<>(worldMap.getElements());
-
-//    ADD AN ITERATOR!!!!
-    while (isRunning && !animalSet.isEmpty()) {
-      animalSet = new HashSet<>(worldMap.getElements());
-      System.out.println(worldMap);
+      Set<Animal> animalSet = new HashSet<>(worldMap.getElements());
       dayCount++;
-
+      System.out.println(worldMap);
       for (Animal animal : animalSet) {
         worldMap.killDyingCreature(animal);
         if (animal.isAlive()) {
-          worldMap.rotateCreature(animal);
           worldMap.moveCreature(animal);
+          worldMap.rotateCreature(animal);
         }
       }
+
 
 
       Set<Vector2d> occupiedPositionSet = new HashSet<>(worldMap.getElementPositionSet());
@@ -100,24 +96,29 @@ public class Simulation implements Runnable, SimulationVisitor {
         worldMap.breedCreatures(position);
       }
       worldMap.growPlants(configPlant.dailyPlantGrowth());
-    }
   }
 
   @Override
   public void visit(BaseWorldMap worldMap) {
-    baseSimulationSteps(worldMap);
-    sleep();
+    while(isRunning && !worldMap.getElements().isEmpty()) {
+      baseSimulationSteps(worldMap);
+      sleep();
+    }
+
   }
 
   @Override
   public void visit(FireWorldMap worldMap) {
-    baseSimulationSteps(worldMap);
-    if(dayCount % configMap.fireOutburstInterval() == 0){
-      worldMap.randomFireOutburst();
+    while(isRunning && !worldMap.getElements().isEmpty()) {
+      baseSimulationSteps(worldMap);
+      if(dayCount % configMap.fireOutburstInterval() == 0){
+        worldMap.randomFireOutburst();
+      }
+      worldMap.spreadFire();
+      worldMap.updateFireDuration();
+      sleep();
     }
-    worldMap.spreadFire();
-    worldMap.updateFireDuration();
-    sleep();
+
   }
 
   @Override

@@ -10,8 +10,10 @@ public class World {
         10,
         10,
         1000,
-        MapVariant.EQUATORS)
-        ;
+        MapVariant.FIRES,
+        2,
+        4
+        );
     ConfigAnimal animalConfig = new ConfigAnimal(
         5,
         100,
@@ -25,7 +27,7 @@ public class World {
     ConfigPlant plantConfig = new ConfigPlant(
         5,
         3,
-        0
+        4
     );
 
     SimulationEngine simulationEngine = new SimulationEngine(new Simulation(mapConfig,animalConfig,plantConfig));

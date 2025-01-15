@@ -70,7 +70,7 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
     TreeSet<Animal> animalSet = new TreeSet<>(objectsAt(position));
     if(isPlantGrown(position)){
       animalSet.getFirst().eat();
-      eatPlant(position);
+      deletePlantAtPosition(position);
     }
   }
 

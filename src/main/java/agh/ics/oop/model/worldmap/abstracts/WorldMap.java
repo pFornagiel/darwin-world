@@ -73,9 +73,6 @@ public interface WorldMap<E extends WorldElement> extends MoveHandler {
     boolean isOccupied(Vector2d position);
 
     boolean isPlantGrown(Vector2d position);
-
-    void eatPlant(Vector2d position);
-
     /**
      * Return WorldElements at a given position.
      *
