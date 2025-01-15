@@ -1,6 +1,14 @@
 package agh.ics.oop.model.worldmap.abstracts;
+import agh.ics.oop.model.datacollectors.DataVisitor;
+import agh.ics.oop.model.datacollectors.SimulationData;
+import agh.ics.oop.model.datacollectors.SimulationStatistics;
+import agh.ics.oop.model.simulation.SimulationVisitor;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.Genotype;
 import agh.ics.oop.model.worldelement.abstracts.LivingCreature;
+
+import java.util.List;
+import java.util.Set;
 
 public interface SimulatableMap<E extends LivingCreature> extends WorldMap<E> {
   // Method to handle the killing of a dying animal
@@ -19,4 +27,24 @@ public interface SimulatableMap<E extends LivingCreature> extends WorldMap<E> {
   
   // Method to grow a specified amount of plants
   void growPlants(int amountOfPlants);
+
+  int getAmountOfElements();
+
+  int getAmountOfPlants();
+
+  int getAmountOfFreeFields();
+
+  double getAverageEnergy();
+
+  double getAverageChildren();
+
+  double getAverageLifespan();
+
+  List<Genotype> getMostPopularGenotypes();
+
+  Set<Vector2d> getOccupiedMapTiles();
+
+  void accept(SimulationVisitor visitor);
+
+  SimulationData acceptData(DataVisitor visitor);
 }

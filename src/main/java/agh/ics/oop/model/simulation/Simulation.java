@@ -1,6 +1,7 @@
 package agh.ics.oop.model.simulation;
 
 import agh.ics.oop.model.configuration.*;
+import agh.ics.oop.model.datacollectors.*;
 import agh.ics.oop.model.util.OrderMap;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.random.RandomRepeatingPositionGenerator;
@@ -10,12 +11,12 @@ import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
-import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 
 import java.util.*;
 
 public class Simulation implements Runnable, SimulationVisitor {
-  private final WorldMap<Animal> worldMap;
+  private static final SimulationDataCollector dataCollector = new SimulationDataCollector();
+  private final SimulatableMap<Animal> worldMap;
   private final AnimalFactory animalFactory;
 
   private final OrderMap<Genotype> orderedAmountOfGenotypes = new OrderMap<>();
@@ -44,16 +45,23 @@ public class Simulation implements Runnable, SimulationVisitor {
         configAnimal.initialEnergy(),
         configAnimal.behaviorVariant()
     );
-    this.worldMap = intialiseWorldMap();
+    this.worldMap = initialiseWorldMap();
   }
 
-  private WorldMap<Animal> intialiseWorldMap(){
-    WorldMap<Animal> worldMap = switch (configMap.mapVariant()){
-      case MapVariant.FIRES -> new FireWorldMap(configMap.width(), configMap.height(), animalFactory, configMap.fireDuration());
-      case MapVariant.EQUATORS -> new BaseWorldMap(configMap.width(), configMap.height(), animalFactory);
+  private SimulatableMap<Animal> initialiseWorldMap(){
+    SimulatableMap<Animal> worldMap = switch (configMap.mapVariant()){
+      case MapVariant.FIRES ->
+          new FireWorldMap(configMap.width(), configMap.height(), animalFactory, configMap.fireDuration());
+      case MapVariant.EQUATORS ->
+          new BaseWorldMap(configMap.width(), configMap.height(), animalFactory);
     };
 
-    RandomRepeatingPositionGenerator animalPositionGenerator = new RandomRepeatingPositionGenerator(configMap.width(), configMap.height(), configAnimal.initialAnimalCount());
+    RandomRepeatingPositionGenerator animalPositionGenerator = new RandomRepeatingPositionGenerator(
+        configMap.width(),
+        configMap.height(),
+        configAnimal.initialAnimalCount()
+    );
+
     for(Vector2d animalPosition: animalPositionGenerator) {
       Animal animal = animalFactory.createAnimal(animalPosition);
       worldMap.placeElement(animal);
@@ -117,8 +125,21 @@ public class Simulation implements Runnable, SimulationVisitor {
       worldMap.updateFireDuration();
       sleep();
     }
-
   }
+
+//  Statistics API
+  public AnimalStatistics getAnimalStatistics(Animal animal) {
+    return dataCollector.getAnimalStatistics(animal);
+  }
+
+  public SimulationStatistics getSimulationStatistics(){
+    return dataCollector.getSimulationStatistics(worldMap,dayCount);
+  }
+
+  public SimulationData getSimulationData(){
+    return worldMap.acceptData(dataCollector);
+  }
+
 
   @Override
   public void run(){

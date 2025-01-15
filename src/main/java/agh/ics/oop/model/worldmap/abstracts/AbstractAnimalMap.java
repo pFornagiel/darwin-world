@@ -106,34 +106,34 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
     randomPlantGrowth(amountOfPlants);
   }
 
-//  Getting information
-  private int getAmountOfAnimals(){
-    return getElements().size();
-  }
 
-  private double getAverageEnergy(){
+  public double getAverageEnergy(){
     return getElements().stream()
         .mapToInt(Animal::getEnergy)
         .average()
         .orElse(0.0);
   }
-  private double getAverageChildren(){
+  public double getAverageChildren(){
     return getElements().stream()
         .mapToInt(animal -> animal.getChildren().size())
         .average()
         .orElse(0.0);
   }
-  private double getAverageLifespan(){
+  public double getAverageLifespan(){
     return (double) deadAnimalLifespanSum / deadAnimalCount;
   }
 
-  private List<Genotype> getMostPopularGenotypes(){
+  public List<Genotype> getMostPopularGenotypes(){
     return orderedAmountOfGenotypes.toSortedList().stream()
         .map(Map.Entry::getKey)
         .toList();
   }
 
-  private Set<Vector2d> getOccupiedMapTiles(){
+  public Set<Vector2d> getOccupiedMapTiles(){
     return Stream.concat(getElementPositionSet().stream(), getPlantPositionSet().stream()).collect(Collectors.toSet());
+  }
+
+  public int getAmountOfFreeFields(){
+    return tileMap.size() - elementPositionSet.size();
   }
 }

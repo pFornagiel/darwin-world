@@ -7,8 +7,8 @@ import agh.ics.oop.model.simulation.SimulationEngine;
 public class World {
   public static void main(String[] args) {
     ConfigMap mapConfig = new ConfigMap(
-        10,
-        10,
+        20,
+        20,
         1000,
         MapVariant.FIRES,
         2,

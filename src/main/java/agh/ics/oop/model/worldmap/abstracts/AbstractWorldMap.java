@@ -22,6 +22,7 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   protected final HashMap<Vector2d, M> tileMap = new HashMap<>();
   protected final HashSet<Vector2d> plantPositionSet = new HashSet<>();
   protected final HashSet<Vector2d> elementPositionSet = new HashSet<>();
+  protected final HashSet<Vector2d> verdantFieldPositionSet = new HashSet<>();
   protected final HashSet<E> elementSet = new HashSet<>();
 
 
@@ -47,6 +48,7 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     WeightedEquatorRandomPositionGenerator verdantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight);
     for(Vector2d verdantTilePosition: verdantPositionGenerator){
       tileMap.get(verdantTilePosition).setVerdant();
+      verdantFieldPositionSet.add(verdantTilePosition);
     }
   }
 
@@ -77,11 +79,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   public void placeElement(E element) {
     placeElement(element, element.getPosition());
   }
-
-  public int getAmountOfFreeFields(HashMap<BaseAnimal, Vector2d> animalMap){
-    return tileMap.size() - elementPositionSet.size();
-  }
-
 
   @Override
   public boolean isOccupied(Vector2d position) {
@@ -156,6 +153,10 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     return plantPositionSet.size();
   }
 
+  public Set<Vector2d> getVerdantFieldPositionSet(){
+    return Collections.unmodifiableSet(verdantFieldPositionSet);
+  }
+
   //  Listing elements
   @Override
   public Set<E> objectsAt(Vector2d position) {
@@ -165,6 +166,11 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   @Override
   public Set<E> getElements() {
     return Collections.unmodifiableSet(elementSet);
+  }
+
+  @Override
+  public int getAmountOfElements(){
+    return elementSet.size();
   }
 
   @Override

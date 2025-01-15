@@ -1,5 +1,7 @@
 package agh.ics.oop.model.worldelement.abstracts;
 
+import agh.ics.oop.model.datacollectors.AnimalStatistics;
+import agh.ics.oop.model.datacollectors.DataVisitor;
 import agh.ics.oop.model.exception.worldelement.CreatureAlreadyDeadError;
 import agh.ics.oop.model.exception.worldelement.CreatureStillAliveError;
 import agh.ics.oop.model.util.Vector2d;
@@ -202,6 +204,12 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   @Override
   public int getEatenPlants(){
     return plantEatenCounter;
+  }
+
+//  DataVisitor accepting
+
+  public AnimalStatistics accept(DataVisitor visitor){
+    return visitor.getAnimalStatistics(this);
   }
 
 

@@ -89,6 +89,13 @@ public interface WorldMap<E extends WorldElement> extends MoveHandler {
     Set<E> getElements();
 
     /**
+     * Get amount of all elements on map.
+     *
+     * @return Arraylist of WorldElement objects placed on the map.
+     */
+    int getAmountOfElements();
+
+    /**
      * Get Set of all fields occupied by elements on the map.
      *
      * @return Arraylist of Vector2d positions.
@@ -101,6 +108,13 @@ public interface WorldMap<E extends WorldElement> extends MoveHandler {
      * @return Arraylist of Vector2d positions.
      */
     Set<Vector2d> getPlantPositionSet();
+
+    /**
+     * Get Set of all fields occupied by plants on the map.
+     *
+     * @return Arraylist of Vector2d positions.
+     */
+    Set<Vector2d> getVerdantFieldPositionSet();
 
     /**
      * Get UUID of the map.
@@ -122,11 +136,4 @@ public interface WorldMap<E extends WorldElement> extends MoveHandler {
      * @return boolean result.
      */
     boolean isWithinYBounds(Vector2d position);
-
-    /**
-     * Accept the simulation visitor.
-     *
-     *
-     */
-    void accept(SimulationVisitor visitor);
 }

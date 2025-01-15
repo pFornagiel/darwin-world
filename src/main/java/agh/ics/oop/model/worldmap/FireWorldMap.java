@@ -1,5 +1,7 @@
 package agh.ics.oop.model.worldmap;
 
+import agh.ics.oop.model.datacollectors.DataVisitor;
+import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.simulation.SimulationVisitor;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
@@ -53,11 +55,6 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
 
   public Set<Vector2d> getFirePositionSet(){
     return Collections.unmodifiableSet(firePositionSet);
-  }
-
-  @Override
-  public void accept(SimulationVisitor visitor){
-    visitor.visit(this);
   }
 
   @Override
@@ -124,5 +121,16 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
       map += "\n";
     }
     return map;
+  }
+
+
+  @Override
+  public void accept(SimulationVisitor visitor){
+    visitor.visit(this);
+  }
+
+  @Override
+  public SimulationData acceptData(DataVisitor visitor) {
+    return visitor.visitSimulationData(this);
   }
 }
