@@ -83,6 +83,10 @@ public class Genotype {
     return this.geneArray[geneIndex];
   }
 
+  public int getCurrentGene(){
+    return this.geneArray[currentGeneIndex];
+  }
+
   public int toInt(){
     int number = 0;
     int multiplier = 1;

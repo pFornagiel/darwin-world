@@ -3,7 +3,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.BaseAnimal;
-import agh.ics.oop.model.worldelement.Direction;
+import agh.ics.oop.model.util.Direction;
 import agh.ics.oop.model.worldmap.Boundary;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;

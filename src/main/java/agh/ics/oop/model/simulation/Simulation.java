@@ -81,14 +81,13 @@ public class Simulation implements Runnable, SimulationVisitor {
       dayCount++;
       System.out.println(worldMap);
       for (Animal animal : animalSet) {
+        animal.updateLifespan();
         worldMap.killDyingCreature(animal);
         if (animal.isAlive()) {
           worldMap.moveCreature(animal);
           worldMap.rotateCreature(animal);
         }
       }
-
-
 
       Set<Vector2d> occupiedPositionSet = new HashSet<>(worldMap.getElementPositionSet());
       for (Vector2d position : occupiedPositionSet) {

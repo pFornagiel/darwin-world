@@ -1,6 +1,4 @@
-package agh.ics.oop.model.worldelement;
-
-import agh.ics.oop.model.util.Vector2d;
+package agh.ics.oop.model.util;
 
 public enum Direction {
   NORTH,

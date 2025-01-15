@@ -3,10 +3,8 @@ package agh.ics.oop.model.worldelement.abstracts;
 import agh.ics.oop.model.exception.worldelement.CreatureAlreadyDeadError;
 import agh.ics.oop.model.exception.worldelement.CreatureStillAliveError;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.Direction;
+import agh.ics.oop.model.util.Direction;
 import agh.ics.oop.model.worldelement.Genotype;
-import agh.ics.oop.model.worldelement.LivingCreature;
-import agh.ics.oop.model.worldelement.WorldElement;
 
 import java.util.*;
 
@@ -105,7 +103,7 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   }
   @Override
   public void updateLifespan(){
-    lifespan += 1;
+    lifespan++;
   }
   @Override
   public void kill(){
@@ -164,6 +162,10 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   public int activateNextGene(){
     return genotype.activateNextGene();
   }
+  @Override
+  public int getCurrentGene(){
+    return genotype.getCurrentGene();
+  }
 
 //  Position and direction
   @Override
@@ -182,7 +184,7 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   public void setOrientation(Direction orientation) {
     this.orientation = orientation;
   }
-  
+
   public void rotateAndActivate(){
     int gene = activateNextGene();
     orientation = orientation.rotate(gene);

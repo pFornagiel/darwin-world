@@ -1,7 +1,8 @@
-package agh.ics.oop.model.worldelement;
+package agh.ics.oop.model.worldelement.abstracts;
 
-import agh.ics.oop.model.util.MoveHandler;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.util.Direction;
+import agh.ics.oop.model.worldelement.Genotype;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public interface LivingCreature extends WorldElement {
 
   Genotype getGenotype();
   int getGene(int geneIndex);
+  int getCurrentGene();
   int activateNextGene();
   void rotateAndActivate();
 

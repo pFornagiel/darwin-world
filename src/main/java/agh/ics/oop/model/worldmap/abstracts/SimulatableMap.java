@@ -1,6 +1,6 @@
 package agh.ics.oop.model.worldmap.abstracts;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.LivingCreature;
+import agh.ics.oop.model.worldelement.abstracts.LivingCreature;
 
 public interface SimulatableMap<E extends LivingCreature> extends WorldMap<E> {
   // Method to handle the killing of a dying animal

@@ -1,6 +1,5 @@
-package agh.ics.oop.model.worldelement;
+package agh.ics.oop.model.worldelement.abstracts;
 
-import agh.ics.oop.model.simulation.WorldElementVisitor;
 import agh.ics.oop.model.util.Vector2d;
 
 public interface WorldElement {

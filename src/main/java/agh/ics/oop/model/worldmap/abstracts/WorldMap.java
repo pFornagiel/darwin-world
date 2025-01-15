@@ -4,7 +4,7 @@ import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.simulation.SimulationVisitor;
 import agh.ics.oop.model.util.MoveHandler;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldelement.abstracts.WorldElement;
 import agh.ics.oop.model.worldmap.Boundary;
 
 import java.util.*;

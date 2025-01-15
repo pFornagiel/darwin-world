@@ -4,7 +4,7 @@ import agh.ics.oop.model.configuration.BehaviorVariant;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.BaseAnimal;
 import agh.ics.oop.model.worldelement.CrazyAnimal;
-import agh.ics.oop.model.worldelement.Direction;
+import agh.ics.oop.model.util.Direction;
 
 import java.util.Random;
 

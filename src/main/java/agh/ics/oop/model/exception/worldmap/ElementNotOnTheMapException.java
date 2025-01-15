@@ -1,5 +1,5 @@
 package agh.ics.oop.model.exception.worldmap;
-import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldelement.abstracts.WorldElement;
 
 public class ElementNotOnTheMapException extends RuntimeException {
   private static final String ERROR_MESSAGE = "Element %s is not on the map";

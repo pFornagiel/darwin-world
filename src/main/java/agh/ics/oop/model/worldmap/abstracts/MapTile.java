@@ -1,6 +1,6 @@
 package agh.ics.oop.model.worldmap.abstracts;
 
-import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldelement.abstracts.WorldElement;
 
 import java.util.List;
 import java.util.Set;

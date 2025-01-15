@@ -8,7 +8,7 @@ import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.random.RandomPlantGrowthPositionGenerator;
 import agh.ics.oop.model.util.random.WeightedEquatorRandomPositionGenerator;
 import agh.ics.oop.model.worldelement.BaseAnimal;
-import agh.ics.oop.model.worldelement.WorldElement;
+import agh.ics.oop.model.worldelement.abstracts.WorldElement;
 import agh.ics.oop.model.worldmap.*;
 
 import java.util.*;
