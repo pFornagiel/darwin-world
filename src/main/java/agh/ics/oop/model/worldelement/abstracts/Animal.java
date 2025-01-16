@@ -17,9 +17,10 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   private int energyGainedByEating = 0;
   private int energyNeededForReproduction = 0;
 
+  protected Genotype genotype;
+
   private Direction orientation;
   private Vector2d position;
-  protected Genotype genotype;
   private int energy = 0;
   private int plantEatenCounter;
   private int lifespan = 0;

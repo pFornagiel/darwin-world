@@ -22,7 +22,7 @@ public class World {
         2,
         2,
         3,
-        BehaviorVariant.FULL_PREDESTINATION
+        BehaviorVariant.CRAZINESS
     );
     ConfigPlant plantConfig = new ConfigPlant(
         5,
