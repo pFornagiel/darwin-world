@@ -1,6 +1,6 @@
 package agh.ics.oop.model.datacollectors;
 
-import agh.ics.oop.model.worldelement.Genotype;
+import agh.ics.oop.model.worldelement.util.Genotype;
 
 import java.util.List;
 

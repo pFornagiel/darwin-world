@@ -1,4 +1,4 @@
-package agh.ics.oop.model.worldmap;
+package agh.ics.oop.model.worldmap.util;
 
 import agh.ics.oop.model.util.Vector2d;
 

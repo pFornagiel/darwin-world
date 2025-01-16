@@ -6,7 +6,7 @@ import agh.ics.oop.model.exception.worldelement.CreatureAlreadyDeadError;
 import agh.ics.oop.model.exception.worldelement.CreatureStillAliveError;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.Direction;
-import agh.ics.oop.model.worldelement.Genotype;
+import agh.ics.oop.model.worldelement.util.Genotype;
 
 import java.util.*;
 

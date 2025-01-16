@@ -1,10 +1,9 @@
 package agh.ics.oop.model.worldmap.abstracts;
 import agh.ics.oop.model.datacollectors.DataVisitor;
 import agh.ics.oop.model.datacollectors.SimulationData;
-import agh.ics.oop.model.datacollectors.SimulationStatistics;
 import agh.ics.oop.model.simulation.SimulationVisitor;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.Genotype;
+import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldelement.abstracts.LivingCreature;
 
 import java.util.List;

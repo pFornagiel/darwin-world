@@ -7,6 +7,7 @@ import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
 import agh.ics.oop.model.worldmap.abstracts.AbstractAnimalMap;
+import agh.ics.oop.model.worldmap.util.Boundary;
 
 import java.util.*;
 

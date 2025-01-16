@@ -1,4 +1,4 @@
-package agh.ics.oop.model.worldelement;
+package agh.ics.oop.model.worldelement.util;
 
 import agh.ics.oop.model.exception.worldelement.NotEnoughEnergyToReproduceException;
 import agh.ics.oop.model.util.random.RandomNonRepeatingNumbersGenerator;

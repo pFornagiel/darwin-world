@@ -1,11 +1,10 @@
 package agh.ics.oop.model.worldmap.abstracts;
 
 import agh.ics.oop.model.exception.IncorrectPositionException;
-import agh.ics.oop.model.simulation.SimulationVisitor;
 import agh.ics.oop.model.util.MoveHandler;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.WorldElement;
-import agh.ics.oop.model.worldmap.Boundary;
+import agh.ics.oop.model.worldmap.util.Boundary;
 
 import java.util.*;
 
@@ -135,5 +134,4 @@ public interface WorldMap<E extends WorldElement> extends MoveHandler {
      *
      * @return boolean result.
      */
-    boolean isWithinYBounds(Vector2d position);
 }

@@ -3,13 +3,11 @@ package agh.ics.oop.model.worldmap.abstracts;
 import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.exception.worldmap.ElementNotOnTheMapException;
 import agh.ics.oop.model.exception.worldmap.IllegalMapSizeException;
-import agh.ics.oop.model.util.MapVisualizer;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.random.RandomPlantGrowthPositionGenerator;
 import agh.ics.oop.model.util.random.WeightedEquatorRandomPositionGenerator;
-import agh.ics.oop.model.worldelement.BaseAnimal;
 import agh.ics.oop.model.worldelement.abstracts.WorldElement;
-import agh.ics.oop.model.worldmap.*;
+import agh.ics.oop.model.worldmap.util.Boundary;
 
 import java.util.*;
 
@@ -26,7 +24,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   protected final HashSet<E> elementSet = new HashSet<>();
 
 
-  protected final MapVisualizer mapVisualizer;
 
   public AbstractWorldMap(int mapWidth, int mapHeight) {
 //    Validation
@@ -34,17 +31,16 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
       throw new IllegalMapSizeException(mapWidth, mapHeight);
     }
 
-    this.mapVisualizer = new MapVisualizer(this);
     this.id = UUID.randomUUID();
     this.mapBoundaries = new Boundary(LOWER_BOUNDARY, new Vector2d(mapWidth,mapHeight));
 
     initialiseTileMap(mapWidth,mapHeight);
-    intialiseVerdantFields(mapWidth,mapHeight);
+    initialiseVerdantFields(mapWidth,mapHeight);
   }
 
   abstract protected void initialiseTileMap(int mapWidth, int mapHeight);
 
-  private void intialiseVerdantFields(int mapWidth, int mapHeight){
+  private void initialiseVerdantFields(int mapWidth, int mapHeight){
     WeightedEquatorRandomPositionGenerator verdantPositionGenerator = new WeightedEquatorRandomPositionGenerator(mapWidth,mapHeight);
     for(Vector2d verdantTilePosition: verdantPositionGenerator){
       tileMap.get(verdantTilePosition).setVerdant();
@@ -85,13 +81,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     return !tileMap.get(position).isOccupied();
   }
 
-  @Override
-  public boolean isWithinYBounds(Vector2d position){
-    Boundary bounds = getBoundaries();
-    return bounds.upperBoundary().getY() > position.getY() &&
-           bounds.lowerBoundary().getY() <= position.getY();
-  }
-
 //  Move handler
   @Override
   public Vector2d determinePositionAfterMove(Vector2d position, Vector2d move) {
@@ -112,7 +101,8 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
 
   @Override
   public boolean canMoveTo(Vector2d newPosition) {
-    return newPosition.getY() < mapBoundaries.upperBoundary().getY() && newPosition.getY() >= mapBoundaries.lowerBoundary().getY();
+    return newPosition.getY() < mapBoundaries.upperBoundary().getY() &&
+           newPosition.getY() >= mapBoundaries.lowerBoundary().getY();
   }
 
   @Override
