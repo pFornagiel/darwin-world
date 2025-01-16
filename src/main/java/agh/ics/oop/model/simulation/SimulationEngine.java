@@ -32,6 +32,7 @@ public class SimulationEngine {
       simulationThreadList.add(simulationThread);
       simulationThread.start();
     }
+
   }
 
   public void awaitSimulationEnd() throws InterruptedException {

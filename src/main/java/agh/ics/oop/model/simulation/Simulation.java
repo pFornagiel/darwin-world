@@ -1,68 +1,142 @@
 package agh.ics.oop.model.simulation;
 
-import agh.ics.oop.model.exception.IncorrectPositionException;
-import agh.ics.oop.model.util.MoveDirection;
+import agh.ics.oop.model.configuration.*;
+import agh.ics.oop.model.datacollectors.*;
+import agh.ics.oop.model.util.OrderMap;
 import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldelement.Animal;
-import agh.ics.oop.model.worldmap.WorldMap;
+import agh.ics.oop.model.util.random.RandomRepeatingPositionGenerator;
+import agh.ics.oop.model.worldelement.abstracts.Animal;
+import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
+import agh.ics.oop.model.worldelement.util.Genotype;
+import agh.ics.oop.model.worldmap.BaseWorldMap;
+import agh.ics.oop.model.worldmap.FireWorldMap;
+import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 
-import java.util.ArrayList;
+import java.util.*;
 
-public class Simulation implements Runnable {
-//  ArrayList is more suitable in our case, because the `get` operation, which allows for reading
-//  data at specified index, is more optimal in comparison to LinkedList. We do not have to
-//  add any data to already existing lists after initialisation - if we did, the LinkedList datatype
-//  would prove more efficient.
-  ArrayList<Vector2d> defaultPositionList;
-  ArrayList<MoveDirection> moveDirectionList;
-  ArrayList<Animal> animalList = new ArrayList<>();
-  WorldMap map;
+public class Simulation implements Runnable, SimulationVisitor {
+//  private static final SimulationDataCollector dataCollector = new SimulationDataCollector();
+  private final SimulatableMap<Animal> worldMap;
+  private final AnimalFactory animalFactory;
 
-  private static final String PLACE_ERROR_MESSAGE = "Could not place animal: %s%n";
+  private final OrderMap<Genotype> orderedAmountOfGenotypes = new OrderMap<>();
+
+  private int dayCount = 0;
+
+  private final ConfigMap configMap;
+  private final ConfigPlant configPlant;
+  private final ConfigAnimal configAnimal;
+
+  private boolean isRunning = true;
+
   private static final String INTERRUPT_ERROR_MESSAGE = "Engine: Interrupted. Restoring interrupted status. Reason: %s%n";
 
-  public Simulation(ArrayList<Vector2d> defaultPositionList, ArrayList<MoveDirection> moveDirectionList, WorldMap map) {
-    this.defaultPositionList = defaultPositionList;
-    this.moveDirectionList = moveDirectionList;
-    this.map = map;
-    for(Vector2d position : defaultPositionList){
-      animalList.add(new Animal(position));
+  public Simulation(ConfigMap configMap, ConfigAnimal configAnimal, ConfigPlant configPlant) {
+    this.configMap = configMap;
+    this.configAnimal = configAnimal;
+    this.configPlant = configPlant;
+    this.animalFactory = new AnimalFactory(
+        configAnimal.genomeLength(),
+        configAnimal.maxMutations(),
+        configAnimal.minMutations(),
+        configAnimal.energyToReproduce(),
+        configAnimal.energyConsumedByParents(),
+        configPlant.energyPerPlant(),
+        configAnimal.initialEnergy(),
+        configAnimal.behaviorVariant()
+    );
+    this.worldMap = initialiseWorldMap();
+  }
+
+  private SimulatableMap<Animal> initialiseWorldMap(){
+    SimulatableMap<Animal> worldMap = switch (configMap.mapVariant()){
+      case MapVariant.FIRES ->
+          new FireWorldMap(configMap.width(), configMap.height(), animalFactory, configMap.fireDuration());
+      case MapVariant.EQUATORS ->
+          new BaseWorldMap(configMap.width(), configMap.height(), animalFactory);
+    };
+
+    RandomRepeatingPositionGenerator animalPositionGenerator = new RandomRepeatingPositionGenerator(
+        configMap.width(),
+        configMap.height(),
+        configAnimal.initialAnimalCount()
+    );
+
+    for(Vector2d animalPosition: animalPositionGenerator) {
+      Animal animal = animalFactory.createAnimal(animalPosition);
+      worldMap.placeElement(animal);
+      worldMap.incrementGenotypeCount(animal.getGenotype());
+    }
+
+    worldMap.randomPlantGrowth(configPlant.initialPlantCount());
+
+    return worldMap;
+  }
+
+  public void toggle(){
+    this.isRunning = !isRunning;
+  }
+
+  private void sleep(){
+    try {
+      Thread.sleep(this.configMap.mapRefreshInterval());
+    }catch(InterruptedException e){
+      System.out.println(e.getMessage());
     }
   }
 
-  public Animal getAnimalAt(int index){
-    return animalList.get(index);
+  private void baseSimulationSteps(SimulatableMap<Animal> worldMap){
+      Set<Animal> animalSet = new HashSet<>(worldMap.getElements());
+      dayCount++;
+      System.out.println(worldMap);
+      for (Animal animal : animalSet) {
+        animal.updateLifespan();
+        worldMap.killDyingCreature(animal);
+        if (animal.isAlive()) {
+          worldMap.moveCreature(animal);
+          worldMap.rotateCreature(animal);
+        }
+      }
+
+      Set<Vector2d> occupiedPositionSet = new HashSet<>(worldMap.getElementPositionSet());
+      for (Vector2d position : occupiedPositionSet) {
+        worldMap.consumePlant(position);
+        worldMap.breedCreatures(position);
+      }
+      worldMap.growPlants(configPlant.dailyPlantGrowth());
   }
 
-  public int getAnimalListLength(){
-    return animalList.size();
+  @Override
+  public void visit(BaseWorldMap worldMap) {
+    while(isRunning && !worldMap.getElements().isEmpty()) {
+      baseSimulationSteps(worldMap);
+      sleep();
+    }
   }
 
+  @Override
+  public void visit(FireWorldMap worldMap) {
+    while(isRunning && !worldMap.getElements().isEmpty()) {
+      baseSimulationSteps(worldMap);
+      if(dayCount % configMap.fireOutburstInterval() == 0){
+        worldMap.randomFireOutburst();
+      }
+      worldMap.spreadFire();
+      worldMap.updateFireDuration();
+      sleep();
+    }
+  }
+
+//  Data Collecting
+  public int getDayCount(){
+    return dayCount;
+  }
+  public void acceptDataCollector(SimulationDataCollector dataCollector){
+    dataCollector.setWorldMap(worldMap);
+  }
 
   @Override
   public void run(){
-    int index = 0;
-    int length = animalList.size();
-    for(Animal animal: animalList){
-      try{
-        map.placeElement(animal);
-      } catch (IncorrectPositionException error){
-        System.out.printf(PLACE_ERROR_MESSAGE, error.getMessage());
-      }
-    }
-    try{
-      for(MoveDirection direction: moveDirectionList){
-        Animal currentAnimal = animalList.get(index);
-        map.move(currentAnimal, direction);
-        index = (index+1)%length;
-        Thread.sleep(500);
-      }
-    } catch(InterruptedException error){
-      System.out.printf(INTERRUPT_ERROR_MESSAGE, error.getMessage());
-      Thread.currentThread().interrupt(); //Restoring interrupted status
-    }
+    worldMap.accept(this);
   }
-
-
-
 }

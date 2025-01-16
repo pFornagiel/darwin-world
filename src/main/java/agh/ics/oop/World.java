@@ -1,23 +1,40 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.configuration.*;
+import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
-import agh.ics.oop.model.util.MoveDirection;
-import agh.ics.oop.model.util.OptionsParser;
-import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.model.worldmap.BaseWorldMap;
-import agh.ics.oop.model.worldmap.ConsoleMapDisplay;
-import agh.ics.oop.model.worldmap.WorldMap;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class World {
   public static void main(String[] args) {
-    BaseWorldMap map = new BaseWorldMap(20,20, 10);
-    System.out.println(map);
-    for(int i = 0; i< 20; i++){
-      map.growPlantsAtRandomPositions(10);
-    }
+    ConfigMap mapConfig = new ConfigMap(
+        20,
+        20,
+        1000,
+        MapVariant.FIRES,
+        2,
+        4
+        );
+    ConfigAnimal animalConfig = new ConfigAnimal(
+        30,
+        100,
+        6,
+        5,
+        2,
+        2,
+        3,
+        BehaviorVariant.CRAZINESS
+    );
+    ConfigPlant plantConfig = new ConfigPlant(
+        5,
+        3,
+        4
+    );
+
+    Simulation simulation = new Simulation(mapConfig, animalConfig, plantConfig);
+    SimulationDataCollector dataCollector = new SimulationDataCollector(simulation);
+    SimulationEngine simulationEngine = new SimulationEngine(simulation);
+    simulationEngine.runAsync();
+    System.out.println(dataCollector.getSimulationData());
   }
 }
