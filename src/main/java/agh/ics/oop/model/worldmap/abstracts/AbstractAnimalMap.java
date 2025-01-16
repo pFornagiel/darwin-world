@@ -25,10 +25,10 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
     this.animalFactory = animalFactory;
   }
 
-  protected void incrementGenotype(Genotype genotype){
+  public void incrementGenotypeCount(Genotype genotype){
     orderedAmountOfGenotypes.increment(genotype);
   }
-  protected void decrementGenotype(Genotype genotype){
+  public void decrementGenotypeCount(Genotype genotype){
     orderedAmountOfGenotypes.decrement(genotype);
   }
 
@@ -37,6 +37,7 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
     animal.kill();
     deadAnimalCount++;
     deadAnimalLifespanSum += animal.getLifespan();
+    decrementGenotypeCount(animal.getGenotype());
   }
 
   @Override
@@ -76,27 +77,19 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
 
   @Override
   public void breedCreatures(Vector2d position){
-    TreeSet<Animal> animalSet = new TreeSet<>(objectsAt(position));
-    if(animalSet.size() > 1){
+    if(objectsAt(position).size() > 1){
+      TreeSet<Animal> animalSet = new TreeSet<>(objectsAt(position));
       Animal firstAnimal = animalSet.getFirst();
       animalSet.remove(firstAnimal);
       Animal secondAnimal = animalSet.getFirst();
-      animalSet.remove(secondAnimal);
 
-      while(firstAnimal.doesHaveEnoughEnergyToReproduce() && secondAnimal.doesHaveEnoughEnergyToReproduce()) {
+      if(firstAnimal.doesHaveEnoughEnergyToReproduce() && secondAnimal.doesHaveEnoughEnergyToReproduce()) {
         Animal newAnimal = animalFactory.createAnimal(firstAnimal, secondAnimal);
         placeElement(newAnimal);
+        incrementGenotypeCount(newAnimal.getGenotype());
 
         firstAnimal.drainEnergyDuringReproduction();
         secondAnimal.drainEnergyDuringReproduction();
-
-        animalSet.add(firstAnimal);
-        animalSet.add(secondAnimal);
-
-        firstAnimal = animalSet.getFirst();
-        animalSet.remove(firstAnimal);
-        secondAnimal = animalSet.getFirst();
-        animalSet.remove(secondAnimal);
       }
     }
   }

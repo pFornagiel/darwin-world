@@ -42,6 +42,10 @@ public interface SimulatableMap<E extends LivingCreature> extends WorldMap<E> {
 
   List<Genotype> getMostPopularGenotypes();
 
+  void incrementGenotypeCount(Genotype genotype);
+
+  void decrementGenotypeCount(Genotype genotype);
+
   Set<Vector2d> getOccupiedMapTiles();
 
   void accept(SimulationVisitor visitor);

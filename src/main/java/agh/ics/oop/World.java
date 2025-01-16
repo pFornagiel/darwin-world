@@ -15,7 +15,7 @@ public class World {
         4
         );
     ConfigAnimal animalConfig = new ConfigAnimal(
-        5,
+        30,
         100,
         6,
         5,
