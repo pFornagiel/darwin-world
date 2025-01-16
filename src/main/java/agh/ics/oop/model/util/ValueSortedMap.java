@@ -5,7 +5,7 @@ import java.util.*;
 public class ValueSortedMap<K, V extends Comparable<V>> {
   private final Map<K, V> map = new HashMap<>();
   private final Comparator<K> valueComparator = (k1, k2) -> {
-    int compare = map.get(k1).compareTo(map.get(k2));
+    int compare = -map.get(k1).compareTo(map.get(k2)); // Sort descending
     if (compare == 0) {
       return k1.hashCode() - k2.hashCode(); // Ensure uniqueness of keys
     }
