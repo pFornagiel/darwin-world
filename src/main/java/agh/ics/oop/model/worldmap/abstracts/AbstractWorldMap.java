@@ -150,7 +150,7 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   //  Listing elements
   @Override
   public Set<E> objectsAt(Vector2d position) {
-    return Collections.unmodifiableSet(tileMap.get(position).getAnimalSet());
+    return Collections.unmodifiableSet(tileMap.get(position).getElementSet());
   }
 
   @Override

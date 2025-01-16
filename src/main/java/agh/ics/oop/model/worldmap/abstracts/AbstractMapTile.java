@@ -25,7 +25,6 @@ public abstract class AbstractMapTile<E extends WorldElement> implements MapTile
     this.isVerdant = isVerdant;
   }
 
-  //  isVerdant methods
   public boolean isVerdant() {
     return isVerdant;
   }
@@ -60,11 +59,10 @@ public abstract class AbstractMapTile<E extends WorldElement> implements MapTile
   public boolean containsElement(E element){
     return this.elementSet.contains(element);
   }
-  public Set<E> getAnimalSet(){
+  public Set<E> getElementSet(){
     return Collections.unmodifiableSet(elementSet);
   }
   public List<E> getElementList(){
-//    Return immutable set
     return List.copyOf(elementSet);
   }
 

@@ -207,13 +207,6 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
     return plantEatenCounter;
   }
 
-//  DataVisitor accepting
-
-  public AnimalStatistics accept(DataVisitor visitor){
-    return visitor.getAnimalStatistics(this);
-  }
-
-
   @Override
   public String toString() {
     return switch(this.orientation){

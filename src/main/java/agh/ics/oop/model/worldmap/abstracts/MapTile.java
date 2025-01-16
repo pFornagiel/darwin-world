@@ -15,6 +15,6 @@ public interface MapTile<E extends WorldElement> {
   boolean addElement(E element);
   boolean removeElement(E element);
   boolean containsElement(E element);
-  Set<E> getAnimalSet();
+  Set<E> getElementSet();
   List<E> getElementList();
 }

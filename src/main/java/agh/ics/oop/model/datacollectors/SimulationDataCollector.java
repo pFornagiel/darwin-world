@@ -1,12 +1,28 @@
 package agh.ics.oop.model.datacollectors;
 
+import agh.ics.oop.model.simulation.Simulation;
+import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 
-public class SimulationDataCollector implements DataVisitor {
-  @Override
+import java.util.Collections;
+import java.util.List;
+
+public class SimulationDataCollector {
+  private SimulatableMap<Animal> worldMap;
+  private final Simulation simulation;
+  private final static DataVisitor worldMapVisitor = new WorldMapVisitor();
+
+  public SimulationDataCollector(Simulation simulation){
+    this.simulation = simulation;
+    simulation.acceptDataCollector(this);
+  }
+  public void setWorldMap(SimulatableMap<Animal> worldMap){
+    this.worldMap = worldMap;
+  }
+
   public AnimalStatistics getAnimalStatistics(Animal animal) {
     return new AnimalStatistics(
       animal.getPosition(),
@@ -22,8 +38,21 @@ public class SimulationDataCollector implements DataVisitor {
     );
   }
 
-  @Override
-  public SimulationStatistics getSimulationStatistics(SimulatableMap<Animal> worldMap, int amountOfDays) {
+  public AnimalData getAnimalData(Animal animal) {
+    return new AnimalData(
+      animal.getEnergy(),
+      animal.getPosition(),
+      animal.getOrientation(),
+      animal.getCurrentGene()
+    );
+  }
+
+//  Consider making it a sorted list if needed
+  public List<Animal> getAnimalsAtPosition(Vector2d position){
+    return List.copyOf(worldMap.objectsAt(position));
+  }
+
+  public SimulationStatistics getSimulationStatistics() {
     return new SimulationStatistics(
         worldMap.getAmountOfElements(),
         worldMap.getAmountOfPlants(),
@@ -32,26 +61,12 @@ public class SimulationDataCollector implements DataVisitor {
         worldMap.getAverageEnergy(),
         worldMap.getAverageLifespan(),
         worldMap.getAverageChildren(),
-        amountOfDays
+        simulation.getDayCount()
     );
   }
 
-  @Override
-  public SimulationData visitSimulationData(BaseWorldMap worldMap) {
-    return new SimulationData(
-        worldMap.getElementPositionSet(),
-        worldMap.getPlantPositionSet(),
-        worldMap.getVerdantFieldPositionSet()
-    );
+  public SimulationData getSimulationData(){
+    return worldMap.acceptData(worldMapVisitor);
   }
 
-  @Override
-  public SimulationData visitSimulationData(FireWorldMap worldMap) {
-    return new SimulationData(
-        worldMap.getElementPositionSet(),
-        worldMap.getPlantPositionSet(),
-        worldMap.getVerdantFieldPositionSet(),
-        worldMap.getFirePositionSet()
-    );
-  }
 }

@@ -15,7 +15,7 @@ import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 import java.util.*;
 
 public class Simulation implements Runnable, SimulationVisitor {
-  private static final SimulationDataCollector dataCollector = new SimulationDataCollector();
+//  private static final SimulationDataCollector dataCollector = new SimulationDataCollector();
   private final SimulatableMap<Animal> worldMap;
   private final AnimalFactory animalFactory;
 
@@ -112,7 +112,6 @@ public class Simulation implements Runnable, SimulationVisitor {
       baseSimulationSteps(worldMap);
       sleep();
     }
-
   }
 
   @Override
@@ -128,19 +127,13 @@ public class Simulation implements Runnable, SimulationVisitor {
     }
   }
 
-//  Statistics API
-  public AnimalStatistics getAnimalStatistics(Animal animal) {
-    return dataCollector.getAnimalStatistics(animal);
+//  Data Collecting
+  public int getDayCount(){
+    return dayCount;
   }
-
-  public SimulationStatistics getSimulationStatistics(){
-    return dataCollector.getSimulationStatistics(worldMap,dayCount);
+  public void acceptDataCollector(SimulationDataCollector dataCollector){
+    dataCollector.setWorldMap(worldMap);
   }
-
-  public SimulationData getSimulationData(){
-    return worldMap.acceptData(dataCollector);
-  }
-
 
   @Override
   public void run(){

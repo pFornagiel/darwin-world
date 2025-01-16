@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.configuration.*;
+import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
 
@@ -30,7 +31,10 @@ public class World {
         4
     );
 
-    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(mapConfig,animalConfig,plantConfig));
+    Simulation simulation = new Simulation(mapConfig, animalConfig, plantConfig);
+    SimulationDataCollector dataCollector = new SimulationDataCollector(simulation);
+    SimulationEngine simulationEngine = new SimulationEngine(simulation);
     simulationEngine.runAsync();
+    System.out.println(dataCollector.getSimulationData());
   }
 }

@@ -132,6 +132,6 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
 
   @Override
   public SimulationData acceptData(DataVisitor visitor) {
-    return visitor.visitSimulationData(this);
+    return visitor.visitWorldMapData(this);
   }
 }
