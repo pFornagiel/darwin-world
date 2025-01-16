@@ -1,6 +1,9 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.configuration.*;
+import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationApp;
+import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.BaseAnimal;
 import agh.ics.oop.model.util.Direction;
@@ -43,7 +46,9 @@ public class SimulationPresenter implements MapChangeListener {
   private Vector2d gridPaneOffset = new Vector2d(0, 0);
   private WorldMap worldMap;
   private ArrayList<Vector2d> positionList = new ArrayList<>();
-
+  private ConfigMap mapConfig;
+  private ConfigAnimal animalConfig;
+  private ConfigPlant plantConfig;
   public SimulationPresenter() {
     Collections.addAll(
             positionList,
@@ -55,9 +60,13 @@ public class SimulationPresenter implements MapChangeListener {
 
   @FXML
   private void initialize() {
-    System.out.println("SimulationPresenter initialized");
-  }
+// Initialize default configurations
+    mapConfig = new ConfigMap(10, 10, 1000, MapVariant.EQUATORS);
+    animalConfig = new ConfigAnimal(5, 100, 6, 5, 2, 2, 3, BehaviorVariant.FULL_PREDESTINATION);
+    plantConfig = new ConfigPlant(5, 3, 4);
 
+    System.out.println("SimulationPresenter initialized with default configurations.");
+  }
   private void setGridWidthAndHeight(WorldMap worldMapGeneric) {
     Boundary mapBounds = worldMapGeneric.getBoundaries();
 
@@ -181,22 +190,88 @@ public class SimulationPresenter implements MapChangeListener {
   }
   @FXML
   private void accept() {
-    SimulationApp.switchScene("simulation.fxml");
-    System.out.println("Accept button clicked.");
-    System.out.println("Map Width: " + mapWidth.getText());
-    System.out.println("Map Height: " + mapHeight.getText());
-    System.out.println("Plant Count: " + plantCount.getText());
-    System.out.println("Plant Energy: " + plantEnergy.getText());
-    System.out.println("Animal Count: " + animalCount.getText());
-    System.out.println("Animal Energy: " + animalEnergy.getText());
-    System.out.println("Breed Energy Needed: " + breedEnergyNeeded.getText());
-    System.out.println("Breed Energy Usage: " + breedEnergyUsage.getText());
-    System.out.println("Min Mutations: " + minMutations.getText());
-    System.out.println("Max Mutations: " + maxMutations.getText());
-    System.out.println("Genes Count: " + genesCount.getText());
-    System.out.println("Fire Map: " + (fireMap.isSelected() ? "ENABLED" : "DISABLED"));
-    System.out.println("Insanity: " + (insanity.isSelected() ? "ENABLED" : "DISABLED"));
-    SimulationApp.initMap();
+    try {
+// Validate and create mapConfig
+      int width = validatePositiveInt(mapWidth.getText(), "Map width");
+      int height = validatePositiveInt(mapHeight.getText(), "Map height");
+      mapConfig = new ConfigMap(
+              width,
+              height,
+              1000, // Default refresh interval
+              fireMap.isSelected() ? MapVariant.FIRES : MapVariant.EQUATORS
+      );
+
+// Validate and create plantConfig
+      int plantCountValue = validateNonNegativeInt(plantCount.getText(), "Plant count");
+      int plantEnergyValue = validatePositiveInt(plantEnergy.getText(), "Plant energy");
+      plantConfig = new ConfigPlant(
+              plantCountValue,
+              plantEnergyValue,
+              5 // Default daily plant growth
+      );
+
+// Validate and create animalConfig
+      int animalCountValue = validatePositiveInt(animalCount.getText(), "Animal count");
+      int animalEnergyValue = validatePositiveInt(animalEnergy.getText(), "Animal energy");
+      int breedEnergyNeededValue = validatePositiveInt(breedEnergyNeeded.getText(), "Breed energy needed");
+      int breedEnergyUsageValue = validatePositiveInt(breedEnergyUsage.getText(), "Breed energy usage");
+      int minMutationsValue = validateNonNegativeInt(minMutations.getText(), "Min mutations");
+      int maxMutationsValue = validatePositiveInt(maxMutations.getText(), "Max mutations");
+      int genesCountValue = validatePositiveInt(genesCount.getText(), "Genes count");
+
+      if (minMutationsValue > maxMutationsValue) {
+        throw new IllegalArgumentException("Minimum mutations cannot be greater than maximum mutations.");
+      }
+
+      animalConfig = new ConfigAnimal(
+              animalCountValue,
+              animalEnergyValue,
+              breedEnergyNeededValue,
+              breedEnergyUsageValue,
+              minMutationsValue,
+              maxMutationsValue,
+              genesCountValue,
+              insanity.isSelected() ? BehaviorVariant.CRAZINESS : BehaviorVariant.FULL_PREDESTINATION
+      );
+
+      System.out.println("Configurations updated successfully.");
+      SimulationApp.switchScene("simulation.fxml");
+      SimulationApp.initMap();
+    } catch (IllegalArgumentException e) {
+      showError("Configuration Error", e.getMessage());
+    }
+  }
+
+  private int validatePositiveInt(String value, String fieldName) {
+    try {
+      int parsedValue = Integer.parseInt(value);
+      if (parsedValue <= 0) {
+        throw new IllegalArgumentException(fieldName + " must be positive");
+      }
+      return parsedValue;
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(fieldName + " must be a valid number");
+    }
+  }
+
+  private int validateNonNegativeInt(String value, String fieldName) {
+    try {
+      int parsedValue = Integer.parseInt(value);
+      if (parsedValue < 0) {
+        throw new IllegalArgumentException(fieldName + " cannot be negative");
+      }
+      return parsedValue;
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(fieldName + " must be a valid number");
+    }
+  }
+
+  private void showError(String title, String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
   }
 
   @FXML
@@ -264,21 +339,16 @@ public class SimulationPresenter implements MapChangeListener {
     System.out.println("Insanity checkbox toggled.");
   }
 
-
   @FXML
   private void onSimulationStartClicked(ActionEvent actionEvent) {
-    String[] arguments = movesTextField.getText().split(" ");
-
-    ArrayList<Direction> directionList = null;
-//    try {
-//      directionList = OptionsParser.parse(arguments);
-//    } catch (IllegalMoveArgumentException e) {
-//      moveDescriptionLabel.setText("Invalid moves provided!");
-//      return;
-//    }
-
-    moveDescriptionLabel.setText("");
-//    SimulationEngine simulationEngine = new SimulationEngine(new Simulation(positionList, directionList, worldMap));
-//    simulationEngine.runAsync();
+    try {
+      Simulation simulation = new Simulation(mapConfig, animalConfig, plantConfig);
+      SimulationEngine simulationEngine = new SimulationEngine(simulation);
+      simulationEngine.runAsync();
+      System.out.println("Simulation started.");
+    } catch (Exception e) {
+      showError("Simulation Error", "Failed to start simulation: " + e.getMessage());
+    }
   }
 }
+

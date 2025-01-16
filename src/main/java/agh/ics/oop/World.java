@@ -32,5 +32,6 @@ public class World {
 
     SimulationEngine simulationEngine = new SimulationEngine(new Simulation(mapConfig,animalConfig,plantConfig));
     simulationEngine.runAsync();
+
   }
 }
