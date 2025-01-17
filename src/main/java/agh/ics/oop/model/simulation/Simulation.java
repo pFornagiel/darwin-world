@@ -10,9 +10,13 @@ import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
+import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
+import agh.ics.oop.presenter.SimulationPresenter;
 
 import java.util.*;
+
+import static agh.ics.oop.model.simulation.SimulationApp.getPresenter;
 
 public class Simulation implements Runnable, SimulationVisitor {
 //  private static final SimulationDataCollector dataCollector = new SimulationDataCollector();
@@ -45,7 +49,9 @@ public class Simulation implements Runnable, SimulationVisitor {
         configAnimal.initialEnergy(),
         configAnimal.behaviorVariant()
     );
+    SimulationPresenter presenter = getPresenter();
     this.worldMap = initialiseWorldMap();
+    presenter.setWorldMap((AbstractWorldMap) this.worldMap);
   }
 
   private SimulatableMap<Animal> initialiseWorldMap(){
@@ -69,7 +75,6 @@ public class Simulation implements Runnable, SimulationVisitor {
     }
 
     worldMap.randomPlantGrowth(configPlant.initialPlantCount());
-
     return worldMap;
   }
 

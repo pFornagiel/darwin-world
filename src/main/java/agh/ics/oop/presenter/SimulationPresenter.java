@@ -1,6 +1,7 @@
 // SimulationPresenter.java
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationApp;
@@ -8,6 +9,7 @@ import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.BaseAnimal;
 import agh.ics.oop.model.worldmap.MapChangeListener;
+import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import agh.ics.oop.model.worldmap.util.Boundary;
 import javafx.application.Platform;
@@ -82,38 +84,59 @@ public class SimulationPresenter implements MapChangeListener {
     }
   }
 
-  public void setWorldMap(WorldMap worldMap) {
+  public void setWorldMap(AbstractWorldMap worldMap) {
     this.worldMap = worldMap;
-    setGridWidthAndHeight(worldMap);
-    updateGridConstraints();
-    drawAxes();
+    worldMap.addObserver(this);
   }
 
   public void drawMap() {
     clearGrid();
     setGridWidthAndHeight(worldMap);
-    drawAxes();
     updateGridConstraints();
+    drawAxes();
 
-    for (int i = 1; i < gridPaneSize.getY(); i++) {
-      for (int j = 1; j < gridPaneSize.getX(); j++) {
-        Set<BaseAnimal> elementAtCoordinates = worldMap.objectsAt(
-                new Vector2d(j + gridPaneOffset.getX(), i + gridPaneOffset.getY())
-        );
-        int xPosition = j;
-        int yPosition = gridPaneSize.getY() - i - 1;
-        String objectRepresentation = elementAtCoordinates.size() != 0 ? "*" : " ";
-        setGridCell(xPosition, yPosition, objectRepresentation);
+    if (dataCollector != null) {
+      // Get the simulation data
+      SimulationData simulationData = dataCollector.getSimulationData();
+
+      // Draw animals
+      for (Vector2d position : simulationData.animalPositionSet()) {
+        setGridCell(position.getX() - gridPaneOffset.getX(),
+                gridPaneSize.getY() - 1 - (position.getY() - gridPaneOffset.getY()),
+                "A");
       }
+
+      // Draw plants
+      for (Vector2d position : simulationData.plantPositionSet()) {
+        setGridCell(position.getX() - gridPaneOffset.getX(),
+                gridPaneSize.getY() - 1 - (position.getY() - gridPaneOffset.getY()),
+                "P");
+      }
+
+      // Draw verdant fields
+      for (Vector2d position : simulationData.verdantFieldPositionSet()) {
+        setGridCell(position.getX() - gridPaneOffset.getX(),
+                gridPaneSize.getY() - 1 - (position.getY() - gridPaneOffset.getY()),
+                "V");
+      }
+
+      // Draw fire positions
+      for (Vector2d position : simulationData.firePositionSet()) {
+        setGridCell(position.getX() - gridPaneOffset.getX(),
+                gridPaneSize.getY() - 1 - (position.getY() - gridPaneOffset.getY()),
+                "F");
+      }
+    } else {
+      System.out.println("Simulation data collector is not initialized.");
     }
   }
 
   @Override
   public void mapChanged(WorldMap worldMap, String message) {
     Platform.runLater(() -> {
-      drawMap();
       moveDescriptionLabel.setText(message);
       if (dataCollector != null) {
+        drawMap();
         System.out.println(dataCollector.getSimulationData());
       } else {
         System.out.println("Simulation data collector is not initialized.");
@@ -125,6 +148,7 @@ public class SimulationPresenter implements MapChangeListener {
   private void onSimulationStartClicked(ActionEvent actionEvent) {
     try {
       Simulation simulation = SimulationApp.createSimulation();
+
       dataCollector = new SimulationDataCollector(simulation);
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       simulationEngine.runAsync();
