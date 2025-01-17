@@ -38,6 +38,7 @@ public class SimulationApp extends Application {
     if (mapConfig == null || animalConfig == null || plantConfig == null) {
       throw new IllegalStateException("Configurations must be set before creating a simulation");
     }
+
     return new Simulation(mapConfig, animalConfig, plantConfig);
   }
 
@@ -75,6 +76,9 @@ public class SimulationApp extends Application {
     } catch (IOException e) {
       System.err.println("Failed to load FXML: " + fxmlFile);
     }
+  }
+  public static SimulationPresenter getPresenter() {
+    return presenter;
   }
 
   public static void main(String[] args) {
