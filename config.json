@@ -1,9 +1,9 @@
 {
-  "mapWidth": "100",
-  "mapHeight": "100",
-  "plantCount": "200",
+  "mapWidth": "20",
+  "mapHeight": "20",
+  "plantCount": "20",
   "plantEnergy": "5",
-  "animalCount": "200",
+  "animalCount": "20",
   "animalEnergy": "20",
   "breedEnergyNeeded": "5",
   "breedEnergyUsage": "5",
