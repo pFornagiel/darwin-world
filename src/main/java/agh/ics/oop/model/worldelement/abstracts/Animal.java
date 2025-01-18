@@ -187,15 +187,16 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   public void setOrientation(Direction orientation) {
     this.orientation = orientation;
   }
+  @Override
+  public boolean isAt(Vector2d position){
+    return this.position.equals(position);
+  }
 
   public void rotateAndActivate(){
     int gene = activateNextGene();
     orientation = orientation.rotate(gene);
   }
-  public boolean isAt(Vector2d position){
-    return this.position.equals(position);
-  }
-
+  
 //  Eating
   @Override
   public void eat() {
@@ -219,10 +220,6 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
       case WEST -> ORIENTATION_STRING_ARRAY[6];
       case NORTH_WEST -> ORIENTATION_STRING_ARRAY[7];
     };
-  }
-
-  public String toStringPositionInformation(){
-    return "Animal: [position=%s, orientation=%s]".formatted(this.position, this.orientation);
   }
 
   @Override
@@ -257,8 +254,7 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    Animal other = (Animal) obj;
-    return Objects.equals(id, other.getId());
+    return Objects.equals(id, ((Animal) obj).getId());
   }
 
   @Override

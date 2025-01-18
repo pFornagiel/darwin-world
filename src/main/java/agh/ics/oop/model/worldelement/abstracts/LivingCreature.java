@@ -11,6 +11,7 @@ public interface LivingCreature extends WorldElement {
   void setOrientation(Direction orientation);
   Vector2d getPosition();
   void setPosition(Vector2d position);
+  boolean isAt(Vector2d position);
 
   void eat();
   int getEatenPlants();
