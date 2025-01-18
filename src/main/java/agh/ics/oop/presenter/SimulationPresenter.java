@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class SimulationPresenter implements MapChangeListener {
   @FXML
@@ -57,18 +58,14 @@ public class SimulationPresenter implements MapChangeListener {
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
-
-    // Draw base terrain
     for (int x = 1; x < size.getX(); x++) {
       for (int y = 1; y < size.getY(); y++) {
         gridRenderer.setGridCell(x, y, Color.LIGHTGRAY);
       }
     }
-
-    // Draw simulation elements
     drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
     drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
-    drawElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
+    drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
     drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
 
@@ -79,6 +76,23 @@ public class SimulationPresenter implements MapChangeListener {
               size.getY() - 1 - (position.getY() - offset.getY()),
               color
       );
+    }
+  }
+
+  private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
+    for (Vector2d position : positions) {
+      int x = position.getX() - offset.getX() + 1;
+      int y = size.getY() - 1 - (position.getY() - offset.getY());
+
+      Rectangle cell = new Rectangle();
+      cell.setWidth(gridManager.calculateCellSize());
+      cell.setHeight(gridManager.calculateCellSize());
+      cell.setFill(color);
+
+      cell.setOnMouseClicked(event -> {
+        System.out.println("Animal clicked at position: " + position);
+      });
+      gridPane.add(cell, x, y);
     }
   }
 
