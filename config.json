@@ -1,15 +1,15 @@
 {
-  "mapWidth": "5",
-  "mapHeight": "5",
-  "plantCount": "5",
+  "mapWidth": "100",
+  "mapHeight": "100",
+  "plantCount": "200",
   "plantEnergy": "5",
-  "animalCount": "5",
-  "animalEnergy": "5",
+  "animalCount": "200",
+  "animalEnergy": "20",
   "breedEnergyNeeded": "5",
   "breedEnergyUsage": "5",
-  "minMutations": "5",
-  "maxMutations": "5",
-  "genesCount": "5",
+  "minMutations": "1",
+  "maxMutations": "10",
+  "genesCount": "10",
   "fireMap": true,
   "insanity": true
 }
