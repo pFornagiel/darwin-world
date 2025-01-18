@@ -18,9 +18,6 @@ public class AnimalFactory {
   private final int initialAmountOfEnergy;
   private final BehaviorVariant behaviorVariant;
 
-  private static final Random rand = new Random();
-
-
   public AnimalFactory(
       int numberOfGenes,
       int maxAmountOfMutations,
@@ -73,7 +70,7 @@ public class AnimalFactory {
         energyNeededToReproduce
     );
     newAnimal.gainEnergy(energyUsedForReproduction * 2);
-    newAnimal.setOrientation(Direction.values()[rand.nextInt(Direction.values().length)]);
+    newAnimal.setOrientation(Direction.getRandomDirection());
     firstAnimal.addChild(newAnimal);
     secondAnimal.addChild(newAnimal);
     return newAnimal;
