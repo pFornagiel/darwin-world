@@ -2,10 +2,13 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
+import agh.ics.oop.model.datacollectors.SimulationStatistics;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.abstracts.Animal;
+import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;
@@ -18,16 +21,19 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
   @FXML
   private GridPane gridPane;
 
-  private WorldMap worldMap;
+  private AbstractWorldMap worldMap;
   private SimulationDataCollector dataCollector;
   private GridManager gridManager;
   private GridRenderer gridRenderer;
@@ -38,6 +44,21 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private Button pauseButton;
   private Simulation simulation;
+  private Animal chosenAnimal;
+  @FXML
+  private Label freeFields;
+  @FXML
+  private Label genotype1;
+  @FXML
+  private Label genotype2;
+  @FXML
+  private Label genotype3;
+  @FXML
+  private Label averageEnergy;
+  @FXML
+  private Label averageLifespan;
+  @FXML
+  private Label averageChildren;
 
   @FXML
   public void initialize() {
@@ -65,11 +86,13 @@ public class SimulationPresenter implements MapChangeListener {
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
+
     for (int x = 1; x < size.getX(); x++) {
       for (int y = 1; y < size.getY(); y++) {
         gridRenderer.setGridCell(x, y, Color.LIGHTGRAY);
       }
     }
+
     drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
     drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
     drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
@@ -97,10 +120,21 @@ public class SimulationPresenter implements MapChangeListener {
       cell.setFill(color);
 
       cell.setOnMouseClicked(event -> {
-        System.out.println("Animal clicked at position: " + position);
+        chosenAnimal = getChosenAnimal(position);
+        System.out.println(dataCollector.getAnimalStatistics(chosenAnimal));
       });
       gridPane.add(cell, x, y);
     }
+  }
+
+  private Animal getChosenAnimal(Vector2d position) {
+    List<Animal> animalList = dataCollector.getAnimalsAtPosition(position);
+    if (animalList.isEmpty()) {
+      return null;
+    }
+    List<Animal> mutableList = new ArrayList<>(animalList);
+    Collections.sort(mutableList);
+    return mutableList.get(0);
   }
 
   @Override
@@ -109,10 +143,32 @@ public class SimulationPresenter implements MapChangeListener {
       if (dataCollector != null) {
         chartManager.updateChart(dataCollector.getSimulationStatistics());
         drawMap();
+        SimulationStatistics stats = dataCollector.getSimulationStatistics();
+        if (stats != null) {
+          updateSimulationStatistics(stats);
+        } else {
+          System.out.println("Simulation statistics are unavailable.");
+        }
       } else {
         System.out.println("Simulation data collector is not initialized.");
       }
     });
+  }
+
+  private void updateSimulationStatistics(SimulationStatistics statistics) {
+    freeFields.setText(String.valueOf(statistics.amountOfFreeFields()));
+    List<Genotype> mostPopularGenotypes = statistics.mostPopularGenotypes();
+    Label[] genotypeLabels = {genotype1, genotype2, genotype3};
+    for (int i = 0; i < genotypeLabels.length; i++) {
+      if (i < mostPopularGenotypes.size()) {
+        genotypeLabels[i].setText(mostPopularGenotypes.get(i).toString());
+      } else {
+        genotypeLabels[i].setText("-");
+      }
+    }
+    averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
+    averageLifespan.setText(String.valueOf(statistics.averageLifespan()));
+    averageChildren.setText(String.format("%.2f", statistics.averageChildren()));
   }
 
   @FXML
@@ -120,6 +176,7 @@ public class SimulationPresenter implements MapChangeListener {
     try {
       simulation = SimulationApp.createSimulation();
       dataCollector = new SimulationDataCollector(simulation);
+
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       simulationEngine.runAsync();
       System.out.println("Simulation started.");
@@ -127,6 +184,7 @@ public class SimulationPresenter implements MapChangeListener {
       showError("Simulation Error", "Failed to start simulation: " + e.getMessage());
     }
   }
+
   @FXML
   private void onPauseButtonClicked() {
     if (simulation != null) {
@@ -136,6 +194,7 @@ public class SimulationPresenter implements MapChangeListener {
       System.out.println(isPaused ? "Simulation paused." : "Simulation resumed.");
     }
   }
+
   private void showError(String title, String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle(title);
