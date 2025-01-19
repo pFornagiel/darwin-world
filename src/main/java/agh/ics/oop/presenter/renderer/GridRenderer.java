@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 public class GridRenderer {
     private final GridPane gridPane;
     private final GridManager gridManager;
+    private final static int MIN_FONT_SIZE = 1;
 
     public GridRenderer(GridPane gridPane, GridManager gridManager) {
         this.gridPane = gridPane;
@@ -58,7 +59,7 @@ public class GridRenderer {
     private void setAxisLabel(int xPosition, int yPosition, String text) {
         Label label = new Label(text);
         double cellSize = gridManager.calculateCellSize();
-        double fontSize = Math.max(8, Math.min(cellSize / 2, 12));
+        double fontSize = Math.max(cellSize / 2, MIN_FONT_SIZE);
         label.setStyle(String.format("-fx-font-weight: bold; -fx-font-size: %.1fpx;", fontSize));
 
         label.setMaxWidth(cellSize);
