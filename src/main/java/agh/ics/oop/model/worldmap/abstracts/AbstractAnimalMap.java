@@ -111,7 +111,8 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
         .orElse(0.0);
   }
   public double getAverageLifespan(){
-    return (double) deadAnimalLifespanSum / deadAnimalCount;
+    int actualDeadAnimalCount = deadAnimalCount == 0 ? 1 : deadAnimalCount;
+    return (double) deadAnimalLifespanSum / actualDeadAnimalCount;
   }
 
   public List<Genotype> getMostPopularGenotypes(){
