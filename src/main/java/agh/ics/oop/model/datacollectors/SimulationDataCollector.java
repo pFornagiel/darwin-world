@@ -34,7 +34,7 @@ public class SimulationDataCollector {
       animal.getEatenPlants(),
       animal.getAmountOfDescendants(),
       animal.getLifespan(),
-      animal.getDayOfDeath()
+      animal.isAlive() ? -1 : animal.getDayOfDeath()
     );
   }
 
