@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.paint.Color;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,23 +29,24 @@ public class StatisticsChartManager {
             plantSeries = new XYChart.Series<>();
             chart.setAnimated(false);
             chart.setCreateSymbols(false);
-            chart.setTitle("Simulation Statistics");
-            animalSeries.setName("Animals");
-            plantSeries.setName("Plants");
             NumberAxis xAxis = (NumberAxis) chart.getXAxis();
             NumberAxis yAxis = (NumberAxis) chart.getYAxis();
             xAxis.setLabel("Day");
             xAxis.setTickUnit(1);
-            xAxis.setAutoRanging(false);  // Disable auto-ranging
+            xAxis.setAutoRanging(false);
             xAxis.setForceZeroInRange(false);
             xAxis.setLowerBound(1);
-            xAxis.setUpperBound(2);  // Will be adjusted in updateChart
+            xAxis.setUpperBound(2);
             yAxis.setLabel("Count");
             yAxis.setTickUnit(5);
             yAxis.setAutoRanging(true);
             yAxis.setForceZeroInRange(true);
             chart.getData().add(animalSeries);
             chart.getData().add(plantSeries);
+
+            // Set the line colors for the series
+            animalSeries.getNode().setStyle("-fx-stroke: #ff7f0e;");
+            plantSeries.getNode().setStyle("-fx-stroke: #1f77b4;");
         });
     }
 
