@@ -78,7 +78,7 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
 
   @Override
   public boolean isOccupied(Vector2d position) {
-    return !tileMap.get(position).isOccupied();
+    return tileMap.get(position).isOccupied();
   }
 
 //  Move handler
