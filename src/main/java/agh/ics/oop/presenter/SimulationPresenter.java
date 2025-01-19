@@ -64,6 +64,15 @@ public class SimulationPresenter implements MapChangeListener {
   double HALF = 0.5;
   double QUARTER = 0.25;
   private SimulationStatisticsCSVSaver statisticsCSVSaver;
+  @FXML private Label dayCount;
+  @FXML private Label plantCount;
+  @FXML private Label energy;
+  @FXML private Label children;
+  @FXML private Label descendants;
+  @FXML private Label genome;
+  @FXML private Label activeGene;
+  @FXML private Label dayOfDeath;
+  @FXML private Label animalTitle;
 
   @FXML
   public void initialize() {
@@ -102,7 +111,49 @@ public class SimulationPresenter implements MapChangeListener {
     drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
     drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
+  private void updateAnimalStatistics(Animal animal) {
+    if (animal == null) {
+      SimulationStatistics stats = dataCollector.getSimulationStatistics();
+      List<Genotype> dominantGenotypes = stats.mostPopularGenotypes();
+      if (!dominantGenotypes.isEmpty()) {
+        for (Vector2d position : dataCollector.getSimulationData().animalPositionSet()) {
+          List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
+          for (Animal a : animals) {
+            if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
+              animal = a;
+              break;
+            }
+          }
+          if (animal != null) break;
+        }
+      }
+    }
 
+    if (animal != null) {
+      var stats = dataCollector.getAnimalStatistics(animal);
+      animalTitle.setText(String.format("Animal at (%d, %d)",
+              stats.coordinates().getX(),
+              stats.coordinates().getY()));
+      dayCount.setText(String.valueOf(stats.lifespan()));
+      plantCount.setText(String.valueOf(stats.eatenPlantsCount()));
+      energy.setText(String.valueOf(stats.energy()));
+      children.setText(String.valueOf(stats.childrenCount()));
+      descendants.setText(String.valueOf(stats.descendantCount()));
+      genome.setText(stats.genotype().toString());
+      activeGene.setText(String.valueOf(stats.currentGene()));
+      dayOfDeath.setText(stats.dayOfDeath() == -1 ? "Alive" : String.valueOf(stats.dayOfDeath()));
+    } else {
+      animalTitle.setText("No Animal Selected");
+      dayCount.setText("-");
+      plantCount.setText("-");
+      energy.setText("-");
+      children.setText("-");
+      descendants.setText("-");
+      genome.setText("-");
+      activeGene.setText("-");
+      dayOfDeath.setText("-");
+    }
+  }
   private void drawElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
       gridRenderer.setGridCell(
@@ -138,7 +189,7 @@ public class SimulationPresenter implements MapChangeListener {
       cell.setFill(color);
       cell.setOnMouseClicked(event -> {
         chosenAnimal = getChosenAnimal(position);
-        System.out.println(dataCollector.getAnimalStatistics(chosenAnimal));
+        updateAnimalStatistics(chosenAnimal);
       });
       gridPane.add(cell, x, y);
     }
@@ -163,6 +214,7 @@ public class SimulationPresenter implements MapChangeListener {
         SimulationStatistics stats = dataCollector.getSimulationStatistics();
         if (stats != null) {
           updateSimulationStatistics(stats);
+          updateAnimalStatistics(chosenAnimal); // Add this line
         } else {
           System.out.println("Simulation statistics are unavailable.");
         }
@@ -203,6 +255,8 @@ public class SimulationPresenter implements MapChangeListener {
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
       simulationEngine.runAsync();
+      chosenAnimal = null;
+      updateAnimalStatistics(null);
       System.out.println("Simulation started.");
     } catch (Exception e) {
       showError("Simulation Error", "Failed to start simulation: " + e.getMessage());
