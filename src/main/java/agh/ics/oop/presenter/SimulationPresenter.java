@@ -11,8 +11,10 @@ import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.GridRenderer;
+import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -28,11 +30,14 @@ public class SimulationPresenter implements MapChangeListener {
   private SimulationDataCollector dataCollector;
   private GridManager gridManager;
   private GridRenderer gridRenderer;
-
+  @FXML
+  private LineChart<Number, Number> statisticsChart;
+  private StatisticsChartManager chartManager;
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane);
     gridRenderer = new GridRenderer(gridPane, gridManager);
+    chartManager = new StatisticsChartManager(statisticsChart);
   }
 
   public void setWorldMap(AbstractWorldMap worldMap) {
@@ -96,6 +101,7 @@ public class SimulationPresenter implements MapChangeListener {
   public void mapChanged(WorldMap worldMap, String message) {
     Platform.runLater(() -> {
       if (dataCollector != null) {
+        chartManager.updateChart(dataCollector.getSimulationStatistics());
         drawMap();
       } else {
         System.out.println("Simulation data collector is not initialized.");

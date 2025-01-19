@@ -21,8 +21,8 @@ public class GridManager {
 
     public void updateGridDimensions(WorldMap worldMap) {
         Boundary mapBounds = worldMap.getBoundaries();
-        int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX() + 1;
-        int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY() + 1;
+        int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX();
+        int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY();
         gridPaneSize = new Vector2d(mapWidth + 1, mapHeight + 1);
         gridPaneOffset = new Vector2d(
                 mapBounds.lowerBoundary().getX(),
