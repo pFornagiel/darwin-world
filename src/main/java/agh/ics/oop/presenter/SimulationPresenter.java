@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -33,6 +34,11 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private LineChart<Number, Number> statisticsChart;
   private StatisticsChartManager chartManager;
+  private boolean isPaused = false;
+  @FXML
+  private Button pauseButton;
+  private Simulation simulation;
+
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane);
@@ -112,7 +118,7 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private void onSimulationStartClicked() {
     try {
-      Simulation simulation = SimulationApp.createSimulation();
+      simulation = SimulationApp.createSimulation();
       dataCollector = new SimulationDataCollector(simulation);
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       simulationEngine.runAsync();
@@ -121,7 +127,15 @@ public class SimulationPresenter implements MapChangeListener {
       showError("Simulation Error", "Failed to start simulation: " + e.getMessage());
     }
   }
-
+  @FXML
+  private void onPauseButtonClicked() {
+    if (simulation != null) {
+      isPaused = !isPaused;
+      simulation.togglePause();
+      pauseButton.setText(isPaused ? "Resume" : "Pause");
+      System.out.println(isPaused ? "Simulation paused." : "Simulation resumed.");
+    }
+  }
   private void showError(String title, String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle(title);
