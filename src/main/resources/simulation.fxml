@@ -33,7 +33,7 @@
         </AnchorPane>
     </center>
     <right>
-        <VBox spacing="10.0" style="-fx-background-color: #f4f4f4; -fx-padding: 10;" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <VBox spacing="10.0" style="-fx-background-color: #f4f4f4;" prefWidth="200.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets right="5.0" />
             </BorderPane.margin>
