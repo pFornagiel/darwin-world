@@ -92,7 +92,6 @@ public class SimulationPresenter implements MapChangeListener {
         gridRenderer.setGridCell(x, y, Color.LIGHTGRAY);
       }
     }
-
     drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
     drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
     drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
@@ -108,17 +107,22 @@ public class SimulationPresenter implements MapChangeListener {
       );
     }
   }
-
+ private Color getAnimalColor(Animal animal) {
+   double r = 0.0;
+   double g = 0.0;
+   double b = Math.min((double) animal.getEnergy() / simulation.getAnimalEnergy(),1.0);
+   double opacity = 1.0;
+   return new Color(r,g,b,opacity);
+  }
   private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
       int x = position.getX() - offset.getX() + 1;
       int y = size.getY() - 1 - (position.getY() - offset.getY());
-
+      color = getAnimalColor(getChosenAnimal(position));
       Rectangle cell = new Rectangle();
       cell.setWidth(gridManager.calculateCellSize());
       cell.setHeight(gridManager.calculateCellSize());
       cell.setFill(color);
-
       cell.setOnMouseClicked(event -> {
         chosenAnimal = getChosenAnimal(position);
         System.out.println(dataCollector.getAnimalStatistics(chosenAnimal));
@@ -134,7 +138,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
     List<Animal> mutableList = new ArrayList<>(animalList);
     Collections.sort(mutableList);
-    return mutableList.get(0);
+    return mutableList.getFirst();
   }
 
   @Override
@@ -167,8 +171,12 @@ public class SimulationPresenter implements MapChangeListener {
       }
     }
     averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
-    averageLifespan.setText(String.valueOf(statistics.averageLifespan()));
+    averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));
     averageChildren.setText(String.format("%.2f", statistics.averageChildren()));
+  }
+
+  private double roundToTwoDecimal(double number){
+    return Math.round(number / 100 ) * 100;
   }
 
   @FXML
@@ -176,7 +184,6 @@ public class SimulationPresenter implements MapChangeListener {
     try {
       simulation = SimulationApp.createSimulation();
       dataCollector = new SimulationDataCollector(simulation);
-
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       simulationEngine.runAsync();
       System.out.println("Simulation started.");

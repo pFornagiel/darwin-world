@@ -14,7 +14,6 @@ public class SimulationConfig {
     public String genesCount;
     public boolean fireMap;
     public boolean insanity;
-
     public SimulationConfig(String mapWidth, String mapHeight, String plantCount, String plantEnergy,
                             String animalCount, String animalEnergy, String breedEnergyNeeded,
                             String breedEnergyUsage, String minMutations, String maxMutations,
