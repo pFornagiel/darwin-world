@@ -22,10 +22,6 @@ import javafx.scene.shape.Rectangle;
 
 public class SimulationPresenter implements MapChangeListener {
   @FXML
-  private TextField movesTextField;
-  @FXML
-  private Label moveDescriptionLabel;
-  @FXML
   private GridPane gridPane;
 
   private WorldMap worldMap;
@@ -99,7 +95,6 @@ public class SimulationPresenter implements MapChangeListener {
   @Override
   public void mapChanged(WorldMap worldMap, String message) {
     Platform.runLater(() -> {
-      moveDescriptionLabel.setText(message);
       if (dataCollector != null) {
         drawMap();
       } else {
