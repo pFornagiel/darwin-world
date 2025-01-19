@@ -6,10 +6,7 @@ import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,9 +65,10 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
 
   @Override
   public void consumePlant(Vector2d position){
-    TreeSet<Animal> animalSet = new TreeSet<>(objectsAt(position));
+    ArrayList<Animal> animalList = new ArrayList<>(objectsAt(position));
+    Collections.sort(animalList);
     if(isPlantGrown(position)){
-      animalSet.getFirst().eat();
+      animalList.getFirst().eat();
       deletePlantAtPosition(position);
     }
   }
@@ -78,10 +76,10 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
   @Override
   public void breedCreatures(Vector2d position){
     if(objectsAt(position).size() > 1){
-      TreeSet<Animal> animalSet = new TreeSet<>(objectsAt(position));
-      Animal firstAnimal = animalSet.getFirst();
-      animalSet.remove(firstAnimal);
-      Animal secondAnimal = animalSet.getFirst();
+      ArrayList<Animal> animalList = new ArrayList<>(objectsAt(position));
+      Collections.sort(animalList);
+      Animal firstAnimal = animalList.getFirst();
+      Animal secondAnimal = animalList.get(1);
 
       if(firstAnimal.doesHaveEnoughEnergyToReproduce() && secondAnimal.doesHaveEnoughEnergyToReproduce()) {
         Animal newAnimal = animalFactory.createAnimal(firstAnimal, secondAnimal);

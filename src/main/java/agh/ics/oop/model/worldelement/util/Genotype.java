@@ -47,7 +47,9 @@ public class Genotype {
   }
 
   private void combineGenes(Animal dominant, Animal other, int numberOfGenes) {
-    int pivot = (int) Math.ceil(((double) dominant.getEnergy() / (other.getEnergy() + dominant.getEnergy())) * numberOfGenes);
+    int pivot = (int) Math.ceil(
+        ((double) dominant.getEnergy() / (other.getEnergy() + dominant.getEnergy())) * numberOfGenes
+    );
     int dominantStartIndex = 0;
     int dominantEndIndexExclusive = pivot;
     int otherStartIndex = pivot;
