@@ -57,12 +57,11 @@ public class Simulation implements Runnable, SimulationVisitor {
     SimulationPresenter presenter = getPresenter();
     this.worldMap = initialiseWorldMap();
     presenter.setWorldMap((AbstractWorldMap) this.worldMap);
-<<<<<<< HEAD
+
   }
   public int getAnimalEnergy(){
     return configAnimal.initialEnergy();
-=======
->>>>>>> d77910a0ec9aaa0a97ad22f07bf138192a58a19b
+
   }
   private SimulatableMap<Animal> initialiseWorldMap(){
     SimulatableMap<Animal> worldMap = switch (configMap.mapVariant()){
