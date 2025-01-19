@@ -24,12 +24,10 @@ public class SimulationStatisticsCSVSaver {
 
     private String formatGenotype(Genotype genotype) {
         if (genotype == null) return "\"none\"";
-        // Wrap the genotype in quotes to handle the commas
         return "\"" + genotype.toString().replaceAll("\\s+", "") + "\"";
     }
 
     private String formatDecimal(double value) {
-        // Replace decimal point with comma for Excel compatibility
         return String.format("%.2f", value).replace('.', ',');
     }
 
