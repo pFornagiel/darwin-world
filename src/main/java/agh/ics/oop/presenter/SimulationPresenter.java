@@ -3,6 +3,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
+import agh.ics.oop.model.datacollectors.SimulationStatisticsCSVSaver;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.simulation.SimulationEngine;
@@ -59,6 +60,10 @@ public class SimulationPresenter implements MapChangeListener {
   private Label averageLifespan;
   @FXML
   private Label averageChildren;
+  double ONE = 1.0;
+  double HALF = 0.5;
+  double QUARTER = 0.25;
+  private SimulationStatisticsCSVSaver statisticsCSVSaver;
 
   @FXML
   public void initialize() {
@@ -110,15 +115,18 @@ public class SimulationPresenter implements MapChangeListener {
   private Color getAnimalColor(Animal animal) {
     SimulationStatistics stats = dataCollector.getSimulationStatistics();
     List<Genotype> mostPopularGenotypes = stats.mostPopularGenotypes();
-    if (!mostPopularGenotypes.isEmpty() && animal.getGenotype().equals(mostPopularGenotypes.getFirst())) {
-      return Color.PURPLE;
+    double energyRatio = Math.min((double) animal.getEnergy() / simulation.getAnimalEnergy(), ONE);
+    double r = 0.0, g = 0.0, b = 0.0;
+    if (!mostPopularGenotypes.isEmpty() && animal.getGenotype().equals(mostPopularGenotypes.get(0))) {
+      r = energyRatio * HALF + HALF;
+      b = energyRatio * HALF + HALF;
+      g = energyRatio * QUARTER;
+    } else {
+      b = energyRatio;
     }
-    double r = 0.0;
-    double g = 0.0;
-    double b = Math.min((double) animal.getEnergy() / simulation.getAnimalEnergy(), 1.0);
-    double opacity = 1.0;
-    return new Color(r, g, b, opacity);
+    return new Color(r, g, b, ONE);
   }
+
   private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
       int x = position.getX() - offset.getX() + 1;
@@ -178,6 +186,9 @@ public class SimulationPresenter implements MapChangeListener {
     averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
     averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));
     averageChildren.setText(String.format("%.2f", statistics.averageChildren()));
+    if (statisticsCSVSaver != null) {
+      statisticsCSVSaver.saveStatistics(statistics);
+    }
   }
 
   private double roundToTwoDecimal(double number){
@@ -190,6 +201,7 @@ public class SimulationPresenter implements MapChangeListener {
       simulation = SimulationApp.createSimulation();
       dataCollector = new SimulationDataCollector(simulation);
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
+      statisticsCSVSaver = new SimulationStatisticsCSVSaver();
       simulationEngine.runAsync();
       System.out.println("Simulation started.");
     } catch (Exception e) {
