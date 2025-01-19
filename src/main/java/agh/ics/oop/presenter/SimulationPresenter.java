@@ -107,12 +107,17 @@ public class SimulationPresenter implements MapChangeListener {
       );
     }
   }
- private Color getAnimalColor(Animal animal) {
-   double r = 0.0;
-   double g = 0.0;
-   double b = Math.min((double) animal.getEnergy() / simulation.getAnimalEnergy(),1.0);
-   double opacity = 1.0;
-   return new Color(r,g,b,opacity);
+  private Color getAnimalColor(Animal animal) {
+    SimulationStatistics stats = dataCollector.getSimulationStatistics();
+    List<Genotype> mostPopularGenotypes = stats.mostPopularGenotypes();
+    if (!mostPopularGenotypes.isEmpty() && animal.getGenotype().equals(mostPopularGenotypes.getFirst())) {
+      return Color.PURPLE;
+    }
+    double r = 0.0;
+    double g = 0.0;
+    double b = Math.min((double) animal.getEnergy() / simulation.getAnimalEnergy(), 1.0);
+    double opacity = 1.0;
+    return new Color(r, g, b, opacity);
   }
   private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
