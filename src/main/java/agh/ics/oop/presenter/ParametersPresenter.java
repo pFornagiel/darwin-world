@@ -92,7 +92,7 @@ public class ParametersPresenter {
         mapConfig = new ConfigMap(
                 width,
                 height,
-                1000,
+                100,
                 fireMap.isSelected() ? MapVariant.FIRES : MapVariant.EQUATORS
         );
 

@@ -10,6 +10,7 @@ import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
+import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 import agh.ics.oop.presenter.SimulationPresenter;
@@ -37,6 +38,8 @@ public class Simulation implements Runnable, SimulationVisitor {
 
   private final ReentrantLock pauseLock = new ReentrantLock();
   private final Condition unpausedCondition = pauseLock.newCondition();
+
+  private final List<MapChangeListener> observers = new ArrayList<>();
 
   private static final String INTERRUPT_ERROR_MESSAGE = "Engine: Interrupted. Restoring interrupted status. Reason: %s%n";
 
@@ -87,6 +90,20 @@ public class Simulation implements Runnable, SimulationVisitor {
     return worldMap;
   }
 
+//  Observers
+  public void addObserver(MapChangeListener observer) {
+    observers.add(observer);
+  }
+
+  public void removeObserver(MapChangeListener observer) {
+    observers.remove(observer);
+  }
+
+  private void notifyObservers() {
+    for (MapChangeListener observer : observers) {
+      observer.mapChanged(worldMap);
+    }
+  }
 
   public synchronized void togglePause() {
     paused = !paused;
@@ -168,7 +185,10 @@ public class Simulation implements Runnable, SimulationVisitor {
   public void visit(BaseWorldMap worldMap) {
     while (isRunning && !worldMap.getElements().isEmpty()) {
       checkPaused(); // Check and wait if paused
-      baseSimulationSteps(worldMap);
+      synchronized (worldMap){
+        baseSimulationSteps(worldMap);
+        notifyObservers();
+      }
       sleep();
     }
   }
@@ -177,12 +197,15 @@ public class Simulation implements Runnable, SimulationVisitor {
   public void visit(FireWorldMap worldMap) {
     while (isRunning && !worldMap.getElements().isEmpty()) {
       checkPaused(); // Check and wait if paused
-      baseSimulationSteps(worldMap);
-      if (dayCount % configMap.fireOutburstInterval() == 0) {
-        worldMap.randomFireOutburst();
+      synchronized (worldMap){
+        baseSimulationSteps(worldMap);
+        if (dayCount % configMap.fireOutburstInterval() == 0) {
+          worldMap.randomFireOutburst();
+        }
+        worldMap.spreadFire();
+        worldMap.updateFireDuration();
+        notifyObservers();
       }
-      worldMap.spreadFire();
-      worldMap.updateFireDuration();
       sleep();
     }
   }

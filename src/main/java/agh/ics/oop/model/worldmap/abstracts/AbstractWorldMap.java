@@ -23,7 +23,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   protected final HashSet<Vector2d> elementPositionSet = new HashSet<>();
   protected final HashSet<Vector2d> verdantFieldPositionSet = new HashSet<>();
   protected final HashSet<E> elementSet = new HashSet<>();
-  private final List<MapChangeListener> observers = new ArrayList<>();
 
 
 
@@ -49,22 +48,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
       verdantFieldPositionSet.add(verdantTilePosition);
     }
   }
-  public void addObserver(MapChangeListener observer) {
-    observers.add(observer);
-  }
-
-  // Wyrejestrowywanie obserwatorów
-  public void removeObserver(MapChangeListener observer) {
-    observers.remove(observer);
-  }
-
-  // Powiadamianie obserwatorów
-  private void notifyObservers(String message) {
-    for (MapChangeListener observer : observers) {
-      observer.mapChanged(this, message);
-    }
-  }
-
 //  Placing and removing elements
   public void removeElement(E element){
     Vector2d elementPosition = element.getPosition();
@@ -77,7 +60,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
       elementPositionSet.remove(elementPosition);
     }
     elementSet.remove(element);
-    notifyObservers("Element removed at position: " + elementPosition);
 
   }
 
@@ -89,7 +71,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     tileMap.get(position).addElement(element);
     elementPositionSet.add(position);
     elementSet.add(element);
-    notifyObservers("Element placed at position: " + position);
 
   }
   @Override
@@ -135,8 +116,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
 
     removeElement(element);
     placeElement(element, position);
-    notifyObservers("Element moved from " + oldPosition + " to " + position);
-
   }
 
   //  Plant managing
@@ -144,16 +123,12 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     M plantTile = tileMap.get(position);
     plantTile.growPlant();
     plantPositionSet.add(position);
-    notifyObservers("Plant grown at position: " + position);
-
   }
 
   public void deletePlantAtPosition(Vector2d position){
     M plantTile = tileMap.get(position);
     plantTile.eatPlant();
     plantPositionSet.remove(position);
-    notifyObservers("Plant removed at position: " + position);
-
   }
 
   public void randomPlantGrowth(int numberOfPlants){
@@ -161,7 +136,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     for(Vector2d plantTilePosition: initialPlantPositionGenerator){
       growPlantAtPosition(plantTilePosition);
     }
-    notifyObservers("Random plant growth executed with " + numberOfPlants + " plants.");
   }
 
   @Override

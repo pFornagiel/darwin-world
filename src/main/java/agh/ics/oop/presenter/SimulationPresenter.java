@@ -83,7 +83,6 @@ public class SimulationPresenter implements MapChangeListener {
 
   public void setWorldMap(AbstractWorldMap worldMap) {
     this.worldMap = worldMap;
-    worldMap.addObserver(this);
   }
 
   public void drawMap() {
@@ -206,20 +205,22 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   @Override
-  public void mapChanged(WorldMap worldMap, String message) {
+  public void mapChanged(WorldMap worldMap) {
     Platform.runLater(() -> {
-      if (dataCollector != null) {
-        chartManager.updateChart(dataCollector.getSimulationStatistics());
-        drawMap();
-        SimulationStatistics stats = dataCollector.getSimulationStatistics();
-        if (stats != null) {
-          updateSimulationStatistics(stats);
-          updateAnimalStatistics(chosenAnimal); // Add this line
+      synchronized (worldMap){
+        if (dataCollector != null) {
+          chartManager.updateChart(dataCollector.getSimulationStatistics());
+          drawMap();
+          SimulationStatistics stats = dataCollector.getSimulationStatistics();
+          if (stats != null) {
+            updateSimulationStatistics(stats);
+            updateAnimalStatistics(chosenAnimal); // Add this line
+          } else {
+            System.out.println("Simulation statistics are unavailable.");
+          }
         } else {
-          System.out.println("Simulation statistics are unavailable.");
+          System.out.println("Simulation data collector is not initialized.");
         }
-      } else {
-        System.out.println("Simulation data collector is not initialized.");
       }
     });
   }
@@ -251,6 +252,7 @@ public class SimulationPresenter implements MapChangeListener {
   private void onSimulationStartClicked() {
     try {
       simulation = SimulationApp.createSimulation();
+      simulation.addObserver(this);
       dataCollector = new SimulationDataCollector(simulation);
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
