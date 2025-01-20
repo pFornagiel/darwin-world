@@ -59,7 +59,6 @@ public class Simulation implements Runnable, SimulationVisitor {
     );
     SimulationPresenter presenter = getPresenter();
     this.worldMap = initialiseWorldMap();
-    presenter.setWorldMap((AbstractWorldMap) this.worldMap);
 
   }
   public int getAnimalEnergy(){

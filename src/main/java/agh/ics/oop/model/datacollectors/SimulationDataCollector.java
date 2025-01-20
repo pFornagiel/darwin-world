@@ -23,6 +23,10 @@ public class SimulationDataCollector {
     this.worldMap = worldMap;
   }
 
+  public SimulatableMap<Animal> getWorldMap(){
+    return worldMap;
+  }
+  
   public AnimalStatistics getAnimalStatistics(Animal animal) {
     synchronized (worldMap) {
       return new AnimalStatistics(

@@ -47,8 +47,6 @@ public class SimulationPresenter implements MapChangeListener {
 
   @FXML
   private GridPane gridPane;
-
-  private AbstractWorldMap worldMap;
   private SimulationDataCollector dataCollector;
   private GridManager gridManager;
   private GridRenderer gridRenderer;
@@ -102,11 +100,6 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
   }
-
-  public void setWorldMap(AbstractWorldMap worldMap) {
-    this.worldMap = worldMap;
-  }
-
   public void drawMap() {
     gridManager.clearGrid();
     gridManager.updateGridConstraints();
@@ -261,11 +254,10 @@ public class SimulationPresenter implements MapChangeListener {
       dataCollector = new SimulationDataCollector(simulation);
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
-      gridManager.updateGridDimensions(worldMap);
       simulationEngine.runAsync();
       chosenAnimal = null;
       updateAnimalStatistics(null);
-      gridManager.updateGridDimensions(worldMap);
+      gridManager.setGridDimensions(dataCollector.getWorldMap());
     } catch (Exception e) {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }

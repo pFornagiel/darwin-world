@@ -1,6 +1,8 @@
 package agh.ics.oop.presenter.grid;
 
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.model.worldelement.abstracts.Animal;
+import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import agh.ics.oop.model.worldmap.util.Boundary;
 import javafx.scene.layout.ColumnConstraints;
@@ -19,15 +21,12 @@ public class GridManager {
         this.gridPaneOffset = new Vector2d(0, 0);
     }
 
-    public void updateGridDimensions(WorldMap worldMap) {
+    public void setGridDimensions(SimulatableMap<Animal> worldMap) {
         Boundary mapBounds = worldMap.getBoundaries();
         int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX();
         int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY();
         gridPaneSize = new Vector2d(mapWidth + 1, mapHeight + 1);
-        gridPaneOffset = new Vector2d(
-                mapBounds.lowerBoundary().getX(),
-                mapBounds.lowerBoundary().getY()
-        );
+        gridPaneOffset = new Vector2d(0,0);
     }
 
     public double calculateCellSize() {
