@@ -11,13 +11,10 @@ import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
 import agh.ics.oop.model.worldmap.MapChangeListener;
-import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
-import agh.ics.oop.presenter.SimulationPresenter;
 
 import java.util.*;
 
-import static agh.ics.oop.model.simulation.SimulationApp.getPresenter;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -154,14 +151,13 @@ public class Simulation implements Runnable, SimulationVisitor {
     try {
       Thread.sleep(this.configMap.mapRefreshInterval());
     } catch (InterruptedException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 
   private void baseSimulationSteps(SimulatableMap<Animal> worldMap) {
     Set<Animal> animalSet = new HashSet<>(worldMap.getElements());
     dayCount++;
-    System.out.println(worldMap);
     for (Animal animal : animalSet) {
       animal.updateLifespan();
       worldMap.killDyingCreature(animal);

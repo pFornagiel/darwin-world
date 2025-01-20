@@ -35,6 +35,5 @@ public class World {
     SimulationDataCollector dataCollector = new SimulationDataCollector(simulation);
     SimulationEngine simulationEngine = new SimulationEngine(simulation);
     simulationEngine.runAsync();
-    System.out.println(dataCollector.getSimulationData());
   }
 }

@@ -33,6 +33,7 @@ public class ParametersPresenter {
     private static final String SIMULATION = "Simulation";
     private static final String FIRE_OUTBURST_INTERVAL = "Fire Outburst Interval";
     private static final String FIRE_DURATION = "Fire Duration";
+    private static final String MAP_REFRESH = "Map refresh";
 
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
@@ -113,6 +114,7 @@ public class ParametersPresenter {
         maxMutations.setText(String.valueOf(animalConfig.maxMutations()));
         genesCount.setText(String.valueOf(animalConfig.genomeLength()));
         insanity.setSelected(animalConfig.behaviorVariant() == BehaviorVariant.CRAZINESS);
+        mapRefreshInterval.setText(String.valueOf(mapConfig.mapRefreshInterval()));
     }
 
     @FXML
@@ -137,7 +139,7 @@ public class ParametersPresenter {
     private void validateAndCreateConfigs() {
         int width = validatePositiveInt(mapWidth.getText(), MAP_WIDTH);
         int height = validatePositiveInt(mapHeight.getText(), MAP_HEIGHT);
-        int refreshInterval = 100;
+        int refreshInterval = validatePositiveInt(mapRefreshInterval.getText(), MAP_REFRESH);
         int fireInterval = fireMap.isSelected()
                 ? validatePositiveInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
                 : -1;

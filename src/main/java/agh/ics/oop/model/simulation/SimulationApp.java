@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class SimulationApp extends Application {
 
   private static Stage primaryStage;
-  private static SimulationPresenter presenter;
   private static final String PARAMETERS = "parameters.fxml";
   private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
   private static final SimulationEngine engine = new SimulationEngine(new ArrayList<>());
@@ -29,10 +28,6 @@ public class SimulationApp extends Application {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-  public static SimulationPresenter getPresenter() {
-    return presenter;
   }
 
   public static void main(String[] args) {

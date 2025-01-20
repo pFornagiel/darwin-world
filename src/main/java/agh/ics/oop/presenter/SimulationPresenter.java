@@ -109,7 +109,7 @@ public class SimulationPresenter implements MapChangeListener {
   public void setSimulation(Simulation simulation) {
     this.simulation = simulation;
   }
-  public void drawMap() {
+  private void drawMap() {
     gridManager.clearGrid();
     gridManager.updateGridConstraints();
     gridRenderer.drawAxes();
@@ -119,21 +119,27 @@ public class SimulationPresenter implements MapChangeListener {
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
-    drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
-    drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
-    drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
-    drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
+    List<Vector2d> verdantFields = new ArrayList<>(simulationData.verdantFieldPositionSet());
+    List<Vector2d> plantPositions = new ArrayList<>(simulationData.plantPositionSet());
+    List<Vector2d> animalPositions = new ArrayList<>(simulationData.animalPositionSet());
+    List<Vector2d> firePositions = new ArrayList<>(simulationData.firePositionSet());
+    drawElements(verdantFields, Color.GRAY, offset, size);
+    drawElements(plantPositions, Color.GREEN, offset, size);
+    drawAnimalElements(animalPositions, offset, size);
+    drawElements(firePositions, Color.RED, offset, size);
   }
   private Animal selectAnimal(Animal animal) {
     if (animal == null) {
       SimulationStatistics stats = dataCollector.getSimulationStatistics();
-      List<Genotype> dominantGenotypes = stats.mostPopularGenotypes();
+      List<Genotype> dominantGenotypes = new ArrayList<>(stats.mostPopularGenotypes());
       if (!dominantGenotypes.isEmpty()) {
-        for (Vector2d position : dataCollector.getSimulationData().animalPositionSet()) {
-          if (dataCollector.getAnimalsAtPosition(position).isEmpty()) return chosenAnimal;
-          List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
+        // Create a thread-safe copy of animal positions
+        List<Vector2d> positions = new ArrayList<>(dataCollector.getSimulationData().animalPositionSet());
+        for (Vector2d position : positions) {
+          List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
+          if (animals.isEmpty()) continue;
           for (Animal a : animals) {
-            if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
+            if (a.getGenotype().equals(dominantGenotypes.get(0))) {
               return a;
             }
           }
@@ -142,7 +148,6 @@ public class SimulationPresenter implements MapChangeListener {
     }
     return animal;
   }
-
   @FXML
   private void onNewSimulationButtonClicked() {
     try {
@@ -181,11 +186,14 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void updateAnimalStatistics(Animal animal) {
-    animal = selectAnimal(animal);
-    updateAnimalStatisticsDisplay(animal);
+    if (dataCollector != null && simulation != null) {
+      Animal selectedAnimal = selectAnimal(animal);
+      updateAnimalStatisticsDisplay(selectedAnimal);
+    }
   }
 
   private void drawElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
+
     for (Vector2d position : positions) {
       gridRenderer.setGridCell(
               position.getX() - offset.getX() + 1,
@@ -197,21 +205,26 @@ public class SimulationPresenter implements MapChangeListener {
   public void initializeSimulation(Simulation simulation) {
     this.simulation = simulation;
   }
-  private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
+  private void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset, Vector2d size) {
     List<Vector2d> positionsCopy = new ArrayList<>();
     positions.forEach(positionsCopy::add);
 
     for (Vector2d position : positionsCopy) {
       int x = position.getX() - offset.getX() + 1;
       int y = size.getY() - 1 - (position.getY() - offset.getY());
-      Animal currentAnimal = getChosenAnimal(position);
+
+      // Create a thread-safe copy of animals at this position
+      List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
+      Animal currentAnimal = getChosenAnimal(position, animals);
 
       if (currentAnimal == null) {
         continue;
       }
-      color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal),
+
+      Color color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal),
               dataCollector.getSimulationStatistics(),
               simulation.getAnimalEnergy());
+
       StackPane stackPane = new StackPane();
       Rectangle cell = new Rectangle();
       cell.setWidth(gridManager.calculateCellSize());
@@ -221,35 +234,41 @@ public class SimulationPresenter implements MapChangeListener {
       text.setFill(Color.LIGHTGRAY);
       text.setStyle(String.format("-fx-font-size: %fpx", gridManager.calculateCellSize()));
       stackPane.getChildren().addAll(cell, text);
+
+      // Store position in final variable for lambda
+      final Vector2d finalPosition = position;
       stackPane.setOnMouseClicked(event -> {
-        chosenAnimal = getChosenAnimal(position);
+        chosenAnimal = getChosenAnimal(finalPosition, new ArrayList<>(dataCollector.getAnimalsAtPosition(finalPosition)));
         updateAnimalStatistics(chosenAnimal);
       });
+
       gridPane.add(stackPane, x, y);
     }
   }
 
-  private Animal getChosenAnimal(Vector2d position) {
-    List<Animal> animalList = dataCollector.getAnimalsAtPosition(position);
+  private Animal getChosenAnimal(Vector2d position, List<Animal> animalList) {
     if (animalList.isEmpty()) {
       return null;
     }
-    List<Animal> mutableList = new ArrayList<>(animalList);
-    Collections.sort(mutableList);
-    return mutableList.getFirst();
+    Collections.sort(animalList);
+    return animalList.getFirst();
   }
 
   @Override
   public void mapChanged(WorldMap worldMap) {
     Platform.runLater(() -> {
-      if (dataCollector != null && simulationStarted) {
-        chartManager.updateChart(dataCollector.getSimulationStatistics());
-        drawMap();
-        SimulationStatistics stats = dataCollector.getSimulationStatistics();
-        if (stats != null) {
-          updateSimulationStatistics(stats);
-          updateAnimalStatistics(chosenAnimal);
+      try {
+        if (dataCollector != null && simulationStarted && simulation != null) {
+          SimulationStatistics stats = dataCollector.getSimulationStatistics();
+          chartManager.updateChart(stats);
+          drawMap();
+          if (stats != null) {
+            updateSimulationStatistics(stats);
+            updateAnimalStatistics(chosenAnimal);
+          }
         }
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     });
   }
@@ -277,18 +296,18 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private void onSimulationStartClicked() {
     try {
-        if(simulationStarted)
-          return;
-        simulation.addObserver(this);
-        dataCollector = new SimulationDataCollector(simulation);
-        SimulationEngine simulationEngine = new SimulationEngine(simulation);
-        statisticsCSVSaver = new SimulationStatisticsCSVSaver();
-        simulationEngine.runAsync();
-        chosenAnimal = null;
-        updateAnimalStatistics(null);
-        gridManager.setGridDimensions(dataCollector.getWorldMap());
-        startButton.setDisable(true);
-        simulationStarted = true;
+      if(simulationStarted)
+        return;
+      simulation.addObserver(this);
+      dataCollector = new SimulationDataCollector(simulation);
+      SimulationEngine simulationEngine = new SimulationEngine(simulation);
+      statisticsCSVSaver = new SimulationStatisticsCSVSaver();
+      simulationEngine.runAsync();
+      chosenAnimal = null;
+      updateAnimalStatistics(null);
+      gridManager.setGridDimensions(dataCollector.getWorldMap());
+      startButton.setDisable(true);
+      simulationStarted = true;
 
     } catch (Exception e) {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
