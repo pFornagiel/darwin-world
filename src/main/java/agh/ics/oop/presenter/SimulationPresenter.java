@@ -185,21 +185,33 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
-    for (Vector2d position : positions) {
+    List<Vector2d> positionsCopy = new ArrayList<>();
+    positions.forEach(positionsCopy::add);
+
+    for (Vector2d position : positionsCopy) {
       int x = position.getX() - offset.getX() + 1;
       int y = size.getY() - 1 - (position.getY() - offset.getY());
-      color = getAnimalColor(getChosenAnimal(position),dataCollector.getSimulationStatistics(), simulation.getAnimalEnergy());
+      Animal currentAnimal = getChosenAnimal(position);
+
+      if (currentAnimal == null) {
+        continue;
+      }
+
+      color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal), dataCollector.getSimulationStatistics(), simulation.getAnimalEnergy());
       Rectangle cell = new Rectangle();
       cell.setWidth(gridManager.calculateCellSize());
       cell.setHeight(gridManager.calculateCellSize());
+
       cell.setFill(color);
       cell.setOnMouseClicked(event -> {
         chosenAnimal = getChosenAnimal(position);
         updateAnimalStatistics(chosenAnimal);
       });
+
       gridPane.add(cell, x, y);
     }
   }
+
 
   private Animal getChosenAnimal(Vector2d position) {
     List<Animal> animalList = dataCollector.getAnimalsAtPosition(position);
@@ -216,6 +228,7 @@ public class SimulationPresenter implements MapChangeListener {
     Platform.runLater(() -> {
       if (dataCollector != null) {
         chartManager.updateChart(dataCollector.getSimulationStatistics());
+        gridManager.setGridDimensions(dataCollector.getWorldMap());
         drawMap();
         SimulationStatistics stats = dataCollector.getSimulationStatistics();
         if (stats != null) {

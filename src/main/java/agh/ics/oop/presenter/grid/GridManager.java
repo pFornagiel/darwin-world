@@ -26,7 +26,10 @@ public class GridManager {
         int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX();
         int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY();
         gridPaneSize = new Vector2d(mapWidth + 1, mapHeight + 1);
-        gridPaneOffset = new Vector2d(0,0);
+        gridPaneOffset = new Vector2d(
+                mapBounds.lowerBoundary().getX(),
+                mapBounds.lowerBoundary().getY()
+        );
     }
 
     public double calculateCellSize() {
