@@ -45,6 +45,8 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String PAUSE = "Pause";
   private static final String DASH = "-";
 
+  private boolean simulationStarted = false;
+
   @FXML
   private GridPane gridPane;
   private SimulationDataCollector dataCollector;
@@ -56,6 +58,8 @@ public class SimulationPresenter implements MapChangeListener {
   private boolean isPaused = false;
   @FXML
   private Button pauseButton;
+  @FXML
+  private Button startButton;
   private Simulation simulation;
   private Animal chosenAnimal;
   @FXML
@@ -218,9 +222,8 @@ public class SimulationPresenter implements MapChangeListener {
   @Override
   public void mapChanged(WorldMap worldMap) {
     Platform.runLater(() -> {
-      if (dataCollector != null) {
+      if (dataCollector != null && simulationStarted) {
         chartManager.updateChart(dataCollector.getSimulationStatistics());
-        gridManager.setGridDimensions(dataCollector.getWorldMap());
         drawMap();
         SimulationStatistics stats = dataCollector.getSimulationStatistics();
         if (stats != null) {
@@ -254,15 +257,19 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private void onSimulationStartClicked() {
     try {
-      simulation = SimulationApp.createSimulation();
-      simulation.addObserver(this);
-      dataCollector = new SimulationDataCollector(simulation);
-      SimulationEngine simulationEngine = new SimulationEngine(simulation);
-      statisticsCSVSaver = new SimulationStatisticsCSVSaver();
-      simulationEngine.runAsync();
-      chosenAnimal = null;
-      updateAnimalStatistics(null);
-      gridManager.setGridDimensions(dataCollector.getWorldMap());
+      if(!simulationStarted){
+        simulation = SimulationApp.createSimulation();
+        simulation.addObserver(this);
+        dataCollector = new SimulationDataCollector(simulation);
+        SimulationEngine simulationEngine = new SimulationEngine(simulation);
+        statisticsCSVSaver = new SimulationStatisticsCSVSaver();
+        simulationEngine.runAsync();
+        chosenAnimal = null;
+        updateAnimalStatistics(null);
+        gridManager.setGridDimensions(dataCollector.getWorldMap());
+        startButton.setDisable(true);
+        simulationStarted = true;
+      }
     } catch (Exception e) {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
