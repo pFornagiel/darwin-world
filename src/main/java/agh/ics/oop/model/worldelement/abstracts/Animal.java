@@ -31,7 +31,7 @@ public abstract class Animal implements WorldElement, LivingCreature, Comparable
   private final HashSet<LivingCreature> childrenSet = new HashSet<>();
 
 //  for testing purposes
-  private static final String[] ORIENTATION_STRING_ARRAY = {"^","↗",">","↘","v","↙","<","↖"};
+private static final String[] ORIENTATION_STRING_ARRAY = {"↑", "↗", "→", "↘", "↓", "↙", "←", "↖"};
 
   public Animal(Vector2d position){
     this.id = UUID.randomUUID();
