@@ -1,4 +1,5 @@
 package agh.ics.oop.presenter;
+
 import agh.ics.oop.presenter.util.AnimalColor;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
@@ -34,6 +35,16 @@ import static agh.ics.oop.presenter.util.AnimalColor.getAnimalColor;
 import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
 
 public class SimulationPresenter implements MapChangeListener {
+
+  private static final String NO_ANIMAL_SELECTED = "No Animal Selected";
+  private static final String ALIVE = "Alive";
+  private static final String ANIMAL_AT = "Animal at (%d, %d)";
+  private static final String SIMULATION_ERROR_TITLE = "Simulation Error";
+  private static final String SIMULATION_ERROR_MESSAGE = "Failed to start simulation: ";
+  private static final String RESUME = "Resume";
+  private static final String PAUSE = "Pause";
+  private static final String DASH = "-";
+
   @FXML
   private GridPane gridPane;
 
@@ -75,11 +86,21 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML private Label dayOfDeath;
   @FXML private Label animalTitle;
 
+  private static final Label[] ANIMAL_STATS_LABELS = new Label[8];
+
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane);
     gridRenderer = new GridRenderer(gridPane, gridManager);
     chartManager = new StatisticsChartManager(statisticsChart);
+    ANIMAL_STATS_LABELS[0] = dayCount;
+    ANIMAL_STATS_LABELS[1] = plantCount;
+    ANIMAL_STATS_LABELS[2] = energy;
+    ANIMAL_STATS_LABELS[3] = children;
+    ANIMAL_STATS_LABELS[4] = descendants;
+    ANIMAL_STATS_LABELS[5] = genome;
+    ANIMAL_STATS_LABELS[6] = activeGene;
+    ANIMAL_STATS_LABELS[7] = dayOfDeath;
   }
 
   public void setWorldMap(AbstractWorldMap worldMap) {
@@ -88,12 +109,10 @@ public class SimulationPresenter implements MapChangeListener {
 
   public void drawMap() {
     gridManager.clearGrid();
-    gridManager.updateGridDimensions(worldMap);
     gridManager.updateGridConstraints();
     gridRenderer.drawAxes();
 
     if (dataCollector == null) {
-      System.out.println("Simulation data collector is not initialized.");
       return;
     }
 
@@ -111,6 +130,7 @@ public class SimulationPresenter implements MapChangeListener {
     drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
     drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
+
   private Animal selectAnimal(Animal animal) {
     if (animal == null) {
       SimulationStatistics stats = dataCollector.getSimulationStatistics();
@@ -128,32 +148,34 @@ public class SimulationPresenter implements MapChangeListener {
     }
     return animal;
   }
+
   private void updateAnimalStatisticsDisplay(Animal animal) {
     if (animal != null) {
       var stats = dataCollector.getAnimalStatistics(animal);
-      animalTitle.setText(String.format("Animal at (%d, %d)",
+      animalTitle.setText(String.format(ANIMAL_AT,
               stats.coordinates().getX(),
               stats.coordinates().getY()));
-      dayCount.setText(String.valueOf(stats.lifespan()));
-      plantCount.setText(String.valueOf(stats.eatenPlantsCount()));
-      energy.setText(String.valueOf(stats.energy()));
-      children.setText(String.valueOf(stats.childrenCount()));
-      descendants.setText(String.valueOf(stats.descendantCount()));
-      genome.setText(stats.genotype().toString());
-      activeGene.setText(String.valueOf(stats.currentGene()));
-      dayOfDeath.setText(stats.dayOfDeath() == -1 ? "Alive" : String.valueOf(stats.dayOfDeath()));
+      String[] values = {
+              String.valueOf(stats.lifespan()),
+              String.valueOf(stats.eatenPlantsCount()),
+              String.valueOf(stats.energy()),
+              String.valueOf(stats.childrenCount()),
+              String.valueOf(stats.descendantCount()),
+              stats.genotype().toString(),
+              String.valueOf(stats.currentGene()),
+              stats.dayOfDeath() == -1 ? ALIVE : String.valueOf(stats.dayOfDeath())
+      };
+      for (int i = 0; i < ANIMAL_STATS_LABELS.length; i++) {
+        ANIMAL_STATS_LABELS[i].setText(values[i]);
+      }
     } else {
-      animalTitle.setText("No Animal Selected");
-      dayCount.setText("-");
-      plantCount.setText("-");
-      energy.setText("-");
-      children.setText("-");
-      descendants.setText("-");
-      genome.setText("-");
-      activeGene.setText("-");
-      dayOfDeath.setText("-");
+      animalTitle.setText(NO_ANIMAL_SELECTED);
+      for (Label label : ANIMAL_STATS_LABELS) {
+        label.setText(DASH);
+      }
     }
   }
+
   private void updateAnimalStatistics(Animal animal) {
     animal = selectAnimal(animal);
     updateAnimalStatisticsDisplay(animal);
@@ -199,21 +221,15 @@ public class SimulationPresenter implements MapChangeListener {
   @Override
   public void mapChanged(WorldMap worldMap) {
     Platform.runLater(() -> {
-
       if (dataCollector != null) {
         chartManager.updateChart(dataCollector.getSimulationStatistics());
         drawMap();
         SimulationStatistics stats = dataCollector.getSimulationStatistics();
         if (stats != null) {
           updateSimulationStatistics(stats);
-          updateAnimalStatistics(chosenAnimal); // Add this line
-        } else {
-          System.out.println("Simulation statistics are unavailable.");
+          updateAnimalStatistics(chosenAnimal);
         }
-      } else {
-        System.out.println("Simulation data collector is not initialized.");
       }
-
     });
   }
 
@@ -225,7 +241,7 @@ public class SimulationPresenter implements MapChangeListener {
       if (i < mostPopularGenotypes.size()) {
         genotypeLabels[i].setText(mostPopularGenotypes.get(i).toString());
       } else {
-        genotypeLabels[i].setText("-");
+        genotypeLabels[i].setText(DASH);
       }
     }
     averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
@@ -245,12 +261,13 @@ public class SimulationPresenter implements MapChangeListener {
       dataCollector = new SimulationDataCollector(simulation);
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
+      gridManager.updateGridDimensions(worldMap);
       simulationEngine.runAsync();
       chosenAnimal = null;
       updateAnimalStatistics(null);
-      System.out.println("Simulation started.");
+      gridManager.updateGridDimensions(worldMap);
     } catch (Exception e) {
-      showError("Simulation Error", "Failed to start simulation: " + e.getMessage());
+      showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
   }
 
@@ -259,8 +276,7 @@ public class SimulationPresenter implements MapChangeListener {
     if (simulation != null) {
       isPaused = !isPaused;
       simulation.togglePause();
-      pauseButton.setText(isPaused ? "Resume" : "Pause");
-      System.out.println(isPaused ? "Simulation paused." : "Simulation resumed.");
+      pauseButton.setText(isPaused ? RESUME : PAUSE);
     }
   }
 

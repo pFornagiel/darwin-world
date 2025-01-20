@@ -18,8 +18,6 @@ public class SimulationConfigManager {
             System.err.println("Failed to save configuration: " + e.getMessage());
         }
     }
-
-    // Load the configuration from a JSON file
     public static SimulationConfig loadConfig() {
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
             return gson.fromJson(reader, SimulationConfig.class);
