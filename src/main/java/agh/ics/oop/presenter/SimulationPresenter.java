@@ -1,22 +1,20 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.presenter.util.AnimalColor;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
 import agh.ics.oop.model.datacollectors.SimulationStatisticsCSVSaver;
 import agh.ics.oop.model.simulation.Simulation;
-import agh.ics.oop.model.simulation.SimulationApp;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
-import agh.ics.oop.model.worldmap.abstracts.AbstractWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
+import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +49,8 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String RESUME = "Resume";
   private static final String PAUSE = "Pause";
   private static final String DASH = "-";
+  private static final String PARAMETERS = "parameters.fxml";
+  private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
 
   private boolean simulationStarted = false;
   private Simulation simulation;
@@ -151,17 +151,11 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private void onNewSimulationButtonClicked() {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("parameters.fxml"));
-      Parent root = loader.load();
-      Stage parametersStage = new Stage();
-      parametersStage.setTitle("Simulation Parameters");
-      parametersStage.setScene(new Scene(root));
-      parametersStage.show();
+      StageUtil.openNewStage(PARAMETERS, SIMULATION_PARAMETERS, null);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
-
 
 
   private void updateAnimalStatisticsDisplay(Animal animal) {

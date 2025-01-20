@@ -4,13 +4,10 @@ import agh.ics.oop.model.configuration.*;
 import agh.ics.oop.model.simulation.Simulation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import agh.ics.oop.presenter.util.StageUtil;
 import javafx.scene.control.*;
 import agh.ics.oop.model.simulation.SimulationApp;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class ParametersPresenter {
@@ -33,6 +30,7 @@ public class ParametersPresenter {
     private static final String MIN_MUTATIONS = "Min mutations";
     private static final String MAX_MUTATIONS = "Max mutations";
     private static final String GENES_COUNT = "Genes count";
+    private static final String SIMULATION = "Simulation";
 
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
@@ -114,30 +112,20 @@ public class ParametersPresenter {
     private void accept(ActionEvent event) {
         try {
             validateAndCreateConfigs();
-
-            // Create a new Simulation object with the configurations
             Simulation simulation = new Simulation(mapConfig, animalConfig, plantConfig);
-
-            // Add the simulation to the engine
             SimulationApp.addSimulation(simulation);
-
-            // Open the simulation window
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("simulation.fxml"));
-            Parent root = loader.load();
-
-            SimulationPresenter presenter = loader.getController();
-            presenter.initializeSimulation(simulation);
-
-            Stage simulationStage = new Stage();
-            simulationStage.setTitle("Simulation");
-            simulationStage.setScene(new Scene(root));
-            simulationStage.show();
-
+            StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, loader -> {
+                SimulationPresenter presenter = loader.getController();
+                presenter.initializeSimulation(simulation);
+            });
             closeWindow(event);
-        } catch (IllegalArgumentException | IOException e) {
+        } catch (IllegalArgumentException e) {
             showError(CONFIGURATION_ERROR, e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
+
 
 
     private void validateAndCreateConfigs() {
