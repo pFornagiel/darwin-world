@@ -1,18 +1,25 @@
 {
-  "mapWidth": "20",
-  "mapHeight": "20",
-  "plantCount": "40",
-  "plantEnergy": "30",
-  "animalCount": "40",
-  "animalEnergy": "40",
-  "breedEnergyNeeded": "1",
-  "breedEnergyUsage": "1",
-  "minMutations": "1",
-  "maxMutations": "10",
-  "genesCount": "10",
-  "fireMap": true,
-  "insanity": true,
-  "mapRefreshInterval": "1",
-  "fireOutburstInterval": "10",
-  "fireDuration": "10"
+  "mapConfig": {
+    "width": 20,
+    "height": 20,
+    "mapRefreshInterval": 100,
+    "mapVariant": "FIRES",
+    "fireOutburstInterval": 3,
+    "fireDuration": 3
+  },
+  "plantConfig": {
+    "initialPlantCount": 40,
+    "energyPerPlant": 20,
+    "dailyPlantGrowth": 5
+  },
+  "animalConfig": {
+    "initialAnimalCount": 40,
+    "initialEnergy": 20,
+    "energyToReproduce": 5,
+    "energyConsumedByParents": 5,
+    "minMutations": 1,
+    "maxMutations": 10,
+    "genomeLength": 10,
+    "behaviorVariant": "CRAZINESS"
+  }
 }

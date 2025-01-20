@@ -78,53 +78,42 @@ public class ParametersPresenter {
 
     @FXML
     private void save() {
-        SimulationConfig config = new SimulationConfig(
-                mapWidth.getText(),
-                mapHeight.getText(),
-                plantCount.getText(),
-                plantEnergy.getText(),
-                animalCount.getText(),
-                animalEnergy.getText(),
-                breedEnergyNeeded.getText(),
-                breedEnergyUsage.getText(),
-                minMutations.getText(),
-                maxMutations.getText(),
-                genesCount.getText(),
-                fireMap.isSelected(),
-                insanity.isSelected(),
-                mapRefreshInterval.getText(),
-                fireOutburstInterval.getText(),
-                fireDuration.getText()
-        );
-        SimulationConfigManager.saveConfig(config);
+        try {
+            validateAndCreateConfigs();
+            SimulationConfig config = new SimulationConfig(mapConfig, plantConfig, animalConfig);
+            SimulationConfigManager.saveConfig(config);
+        } catch (IllegalArgumentException e) {
+            showError(CONFIGURATION_ERROR, e.getMessage());
+        }
     }
 
     @FXML
     private void load() {
         SimulationConfig config = SimulationConfigManager.loadConfig();
         if (config != null) {
-            updateFieldsFromConfig(config);
+            mapConfig = config.mapConfig();
+            plantConfig = config.plantConfig();
+            animalConfig = config.animalConfig();
+            updateFieldsFromConfigs();
         }
     }
-    private void updateFieldsFromConfig(SimulationConfig config) {
-        mapWidth.setText(config.mapWidth);
-        mapHeight.setText(config.mapHeight);
-        plantCount.setText(config.plantCount);
-        plantEnergy.setText(config.plantEnergy);
-        animalCount.setText(config.animalCount);
-        animalEnergy.setText(config.animalEnergy);
-        breedEnergyNeeded.setText(config.breedEnergyNeeded);
-        breedEnergyUsage.setText(config.breedEnergyUsage);
-        minMutations.setText(config.minMutations);
-        maxMutations.setText(config.maxMutations);
-        genesCount.setText(config.genesCount);
-        fireMap.setSelected(config.fireMap);
-        insanity.setSelected(config.insanity);
-        mapRefreshInterval.setText(config.mapRefreshInterval);
-        fireOutburstInterval.setText(config.fireOutburstInterval);
-        fireDuration.setText(config.fireDuration);
+    private void updateFieldsFromConfigs() {
+        mapWidth.setText(String.valueOf(mapConfig.width()));
+        mapHeight.setText(String.valueOf(mapConfig.height()));
+        fireMap.setSelected(mapConfig.mapVariant() == MapVariant.FIRES);
+        fireOutburstInterval.setText(String.valueOf(mapConfig.fireOutburstInterval()));
+        fireDuration.setText(String.valueOf(mapConfig.fireDuration()));
+        plantCount.setText(String.valueOf(plantConfig.initialPlantCount()));
+        plantEnergy.setText(String.valueOf(plantConfig.energyPerPlant()));
+        animalCount.setText(String.valueOf(animalConfig.initialAnimalCount()));
+        animalEnergy.setText(String.valueOf(animalConfig.initialEnergy()));
+        breedEnergyNeeded.setText(String.valueOf(animalConfig.energyToReproduce()));
+        breedEnergyUsage.setText(String.valueOf(animalConfig.energyConsumedByParents()));
+        minMutations.setText(String.valueOf(animalConfig.minMutations()));
+        maxMutations.setText(String.valueOf(animalConfig.maxMutations()));
+        genesCount.setText(String.valueOf(animalConfig.genomeLength()));
+        insanity.setSelected(animalConfig.behaviorVariant() == BehaviorVariant.CRAZINESS);
     }
-
 
     @FXML
     private void accept(ActionEvent event) {
