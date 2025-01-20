@@ -90,7 +90,7 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML private Label dayOfDeath;
   @FXML private Label animalTitle;
 
-  private static final Label[] ANIMAL_STATS_LABELS = new Label[8];
+  private final Label[] ANIMAL_STATS_LABELS = new Label[8];
 
   @FXML
   public void initialize() {
@@ -146,6 +146,7 @@ public class SimulationPresenter implements MapChangeListener {
     if (dominantGenotypes.isEmpty()) {
       return null;
     }
+
     List<Vector2d> positions = new ArrayList<>(dataCollector.getSimulationData().animalPositionSet());
     for (Vector2d position : positions) {
       List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
@@ -172,7 +173,6 @@ public class SimulationPresenter implements MapChangeListener {
   private void updateAnimalStatisticsDisplay(Animal animal) {
     if (animal != null) {
       var stats = dataCollector.getAnimalStatistics(animal);
-      // Add null check for coordinates
       if (stats != null && stats.coordinates() != null) {
         animalTitle.setText(String.format(ANIMAL_AT,
                 stats.coordinates().getX(),
