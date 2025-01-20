@@ -18,6 +18,7 @@ public class GridRenderer {
         this.gridManager = gridManager;
     }
 
+
     public void setGridCell(int xPosition, int yPosition, Color color) {
         double cellSize = gridManager.calculateCellSize();
         Pane cell = new Pane();

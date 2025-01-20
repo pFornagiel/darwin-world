@@ -104,26 +104,17 @@ public class SimulationPresenter implements MapChangeListener {
     gridManager.clearGrid();
     gridManager.updateGridConstraints();
     gridRenderer.drawAxes();
-
     if (dataCollector == null) {
       return;
     }
-
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
-
-    for (int x = 1; x < size.getX(); x++) {
-      for (int y = 1; y < size.getY(); y++) {
-        gridRenderer.setGridCell(x, y, Color.LIGHTGRAY);
-      }
-    }
     drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
     drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
     drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
     drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
-
   private Animal selectAnimal(Animal animal) {
     if (animal == null) {
       SimulationStatistics stats = dataCollector.getSimulationStatistics();
