@@ -19,6 +19,9 @@ import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -28,7 +31,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -106,6 +111,9 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
   }
+  public void setSimulation(Simulation simulation) {
+    this.simulation = simulation;
+  }
   public void drawMap() {
     gridManager.clearGrid();
     gridManager.updateGridConstraints();
@@ -139,6 +147,23 @@ public class SimulationPresenter implements MapChangeListener {
     }
     return animal;
   }
+
+  @FXML
+  private void onNewSimulationButtonClicked() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("parameters.fxml"));
+      Parent root = loader.load();
+      Stage parametersStage = new Stage();
+      parametersStage.setTitle("Simulation Parameters");
+      parametersStage.setScene(new Scene(root));
+      parametersStage.show();
+    } catch (IOException e) {
+      System.err.println("Failed to load parameters FXML: " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+
 
   private void updateAnimalStatisticsDisplay(Animal animal) {
     if (animal != null) {

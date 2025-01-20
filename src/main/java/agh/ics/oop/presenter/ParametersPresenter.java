@@ -1,10 +1,12 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.configuration.*;
+import agh.ics.oop.model.simulation.Simulation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import agh.ics.oop.model.simulation.SimulationApp;
+import javafx.stage.Stage;
 
 public class ParametersPresenter {
     private static final String SIMULATION_FXML = "simulation.fxml";
@@ -104,11 +106,12 @@ public class ParametersPresenter {
     }
 
     @FXML
-    private void accept() {
+    private void accept(ActionEvent event) {
         try {
             validateAndCreateConfigs();
-            SimulationApp.setConfigurations(mapConfig, animalConfig, plantConfig);
-            SimulationApp.switchScene(SIMULATION_FXML);
+            SimulationApp.setConfigurations(mapConfig,animalConfig,plantConfig);
+            SimulationApp.openSimulationWindow();
+            closeWindow(event);
         } catch (IllegalArgumentException e) {
             showError(CONFIGURATION_ERROR, e.getMessage());
         }
@@ -134,7 +137,10 @@ public class ParametersPresenter {
 
         validateAndCreateAnimalConfig();
     }
-
+    private void closeWindow(ActionEvent event) {
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
     private void validateAndCreateAnimalConfig() {
         int animalCountValue = validatePositiveInt(animalCount.getText(), ANIMAL_COUNT);
         int animalEnergyValue = validatePositiveInt(animalEnergy.getText(), ANIMAL_ENERGY);

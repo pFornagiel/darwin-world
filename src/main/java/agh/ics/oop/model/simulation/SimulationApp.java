@@ -38,7 +38,6 @@ public class SimulationApp extends Application {
     if (mapConfig == null || animalConfig == null || plantConfig == null) {
       throw new IllegalStateException("Configurations must be set before creating a simulation");
     }
-
     return new Simulation(mapConfig, animalConfig, plantConfig);
   }
 
@@ -47,11 +46,7 @@ public class SimulationApp extends Application {
     animalConfig = animal;
     plantConfig = plant;
   }
-  public static void initMap() {
-//    GrassField grassField = new GrassField(5);
-//    presenter.setWorldMap(grassField);
-//    grassField.addToListeners(presenter);
-  }
+
   private static void createStage(Parent viewRoot) {
     Scene scene = new Scene(viewRoot);
     primaryStage.setScene(scene);
@@ -62,21 +57,21 @@ public class SimulationApp extends Application {
     }
   }
 
-  /**
-   * Switches the current scene to a new one based on the given FXML file.
-   *
-   * @param fxmlFile The name of the FXML file to load.
-   */
-  public static void switchScene(String fxmlFile) {
+
+  public static void openSimulationWindow() {
     try {
-      FXMLLoader loader = new FXMLLoader(SimulationApp.class.getClassLoader().getResource(fxmlFile));
+      FXMLLoader loader = new FXMLLoader(SimulationApp.class.getClassLoader().getResource("simulation.fxml"));
       Parent root = loader.load();
-      presenter = loader.getController();
-      createStage(root);
+      SimulationPresenter presenter = loader.getController();
+      Stage simulationStage = new Stage();
+      simulationStage.setTitle("Simulation");
+      simulationStage.setScene(new Scene(root));
+      simulationStage.show();
     } catch (IOException e) {
-      System.err.println("Failed to load FXML: " + fxmlFile);
+      System.err.println("Failed to load simulation FXML: " + e.getMessage());
     }
   }
+
   public static SimulationPresenter getPresenter() {
     return presenter;
   }
