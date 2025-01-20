@@ -57,7 +57,6 @@ public class Simulation implements Runnable, SimulationVisitor {
             configAnimal.initialEnergy(),
             configAnimal.behaviorVariant()
     );
-    SimulationPresenter presenter = getPresenter();
     this.worldMap = initialiseWorldMap();
 
   }

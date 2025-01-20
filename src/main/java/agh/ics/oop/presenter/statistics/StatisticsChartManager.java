@@ -5,8 +5,6 @@ import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.paint.Color;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,8 +41,6 @@ public class StatisticsChartManager {
             yAxis.setForceZeroInRange(true);
             chart.getData().add(animalSeries);
             chart.getData().add(plantSeries);
-
-            // Set the line colors for the series
             animalSeries.getNode().setStyle("-fx-stroke: #ff7f0e;");
             plantSeries.getNode().setStyle("-fx-stroke: #1f77b4;");
         });
@@ -57,11 +53,8 @@ public class StatisticsChartManager {
             statisticsMap.put(statistics.amountOfDays(), statistics);
             animalSeries.getData().clear();
             plantSeries.getData().clear();
-
-            // Update x-axis bounds
             NumberAxis xAxis = (NumberAxis) chart.getXAxis();
             xAxis.setUpperBound(statistics.amountOfDays() + 1);
-
             for (SimulationStatistics stats : statisticsMap.values()) {
                 XYChart.Data<Number, Number> animalData = new XYChart.Data<>(
                         stats.amountOfDays(),
@@ -78,10 +71,4 @@ public class StatisticsChartManager {
         });
     }
 
-    public void reset() {
-        Platform.runLater(() -> {
-            statisticsMap.clear();
-            initializeChart();
-        });
-    }
 }

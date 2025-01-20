@@ -6,8 +6,6 @@ import agh.ics.oop.model.configuration.ConfigPlant;
 import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 
@@ -26,17 +24,6 @@ public class SimulationApp extends Application {
     engine.getSimulationList().add(simulation);
   }
 
-  public static void startSimulations() {
-    engine.runAsyncInThreadPool();
-  }
-
-  public static void stopSimulations() {
-    try {
-      engine.awaitSimulationEnd();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
   public void start(Stage stage) {
     try {
       primaryStage = stage;

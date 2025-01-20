@@ -17,9 +17,6 @@ import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -29,8 +26,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -282,7 +277,8 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private void onSimulationStartClicked() {
     try {
-      if(!simulationStarted){
+        if(simulationStarted)
+          return;
         simulation.addObserver(this);
         dataCollector = new SimulationDataCollector(simulation);
         SimulationEngine simulationEngine = new SimulationEngine(simulation);
@@ -293,7 +289,7 @@ public class SimulationPresenter implements MapChangeListener {
         gridManager.setGridDimensions(dataCollector.getWorldMap());
         startButton.setDisable(true);
         simulationStarted = true;
-      }
+
     } catch (Exception e) {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
