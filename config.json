@@ -1,7 +1,7 @@
 {
   "mapConfig": {
-    "width": 20,
-    "height": 20,
+    "width": 10,
+    "height": 10,
     "mapRefreshInterval": 100,
     "mapVariant": "FIRES",
     "fireOutburstInterval": 3,
@@ -9,12 +9,12 @@
   },
   "plantConfig": {
     "initialPlantCount": 40,
-    "energyPerPlant": 20,
+    "energyPerPlant": 2,
     "dailyPlantGrowth": 5
   },
   "animalConfig": {
     "initialAnimalCount": 40,
-    "initialEnergy": 20,
+    "initialEnergy": 2,
     "energyToReproduce": 5,
     "energyConsumedByParents": 5,
     "minMutations": 1,
