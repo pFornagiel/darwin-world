@@ -129,25 +129,36 @@ public class SimulationPresenter implements MapChangeListener {
     drawElements(firePositions, Color.RED, offset, size);
   }
   private Animal selectAnimal(Animal animal) {
-    if (animal == null) {
-      SimulationStatistics stats = dataCollector.getSimulationStatistics();
-      List<Genotype> dominantGenotypes = new ArrayList<>(stats.mostPopularGenotypes());
-      if (!dominantGenotypes.isEmpty()) {
-        // Create a thread-safe copy of animal positions
-        List<Vector2d> positions = new ArrayList<>(dataCollector.getSimulationData().animalPositionSet());
-        for (Vector2d position : positions) {
-          List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
-          if (animals.isEmpty()) continue;
-          for (Animal a : animals) {
-            if (a.getGenotype().equals(dominantGenotypes.get(0))) {
-              return a;
-            }
-          }
+    if (animal != null) {
+      return animal;
+    }
+
+    if (dataCollector == null) {
+      return null;
+    }
+
+    SimulationStatistics stats = dataCollector.getSimulationStatistics();
+    if (stats == null) {
+      return null;
+    }
+
+    List<Genotype> dominantGenotypes = new ArrayList<>(stats.mostPopularGenotypes());
+    if (dominantGenotypes.isEmpty()) {
+      return null;
+    }
+    List<Vector2d> positions = new ArrayList<>(dataCollector.getSimulationData().animalPositionSet());
+    for (Vector2d position : positions) {
+      List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
+      if (animals.isEmpty()) continue;
+      for (Animal a : animals) {
+        if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
+          return a;
         }
       }
     }
-    return animal;
+    return null;
   }
+
   @FXML
   private void onNewSimulationButtonClicked() {
     try {
@@ -161,9 +172,15 @@ public class SimulationPresenter implements MapChangeListener {
   private void updateAnimalStatisticsDisplay(Animal animal) {
     if (animal != null) {
       var stats = dataCollector.getAnimalStatistics(animal);
-      animalTitle.setText(String.format(ANIMAL_AT,
-              stats.coordinates().getX(),
-              stats.coordinates().getY()));
+      // Add null check for coordinates
+      if (stats != null && stats.coordinates() != null) {
+        animalTitle.setText(String.format(ANIMAL_AT,
+                stats.coordinates().getX(),
+                stats.coordinates().getY()));
+      } else {
+        animalTitle.setText(NO_ANIMAL_SELECTED);
+      }
+
       String[] values = {
               String.valueOf(stats.lifespan()),
               String.valueOf(stats.eatenPlantsCount()),
@@ -213,7 +230,6 @@ public class SimulationPresenter implements MapChangeListener {
       int x = position.getX() - offset.getX() + 1;
       int y = size.getY() - 1 - (position.getY() - offset.getY());
 
-      // Create a thread-safe copy of animals at this position
       List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
       Animal currentAnimal = getChosenAnimal(position, animals);
 
@@ -235,7 +251,6 @@ public class SimulationPresenter implements MapChangeListener {
       text.setStyle(String.format("-fx-font-size: %fpx", gridManager.calculateCellSize()));
       stackPane.getChildren().addAll(cell, text);
 
-      // Store position in final variable for lambda
       final Vector2d finalPosition = position;
       stackPane.setOnMouseClicked(event -> {
         chosenAnimal = getChosenAnimal(finalPosition, new ArrayList<>(dataCollector.getAnimalsAtPosition(finalPosition)));
