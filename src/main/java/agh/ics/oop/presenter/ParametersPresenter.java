@@ -1,4 +1,3 @@
-// ParametersPresenter.java
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.configuration.*;
@@ -8,6 +7,26 @@ import javafx.scene.control.*;
 import agh.ics.oop.model.simulation.SimulationApp;
 
 public class ParametersPresenter {
+    private static final String SIMULATION_FXML = "simulation.fxml";
+    private static final String CONFIGURATION_ERROR = "Configuration Error";
+
+    private static final String MUST_BE_POSITIVE = " must be positive";
+    private static final String MUST_BE_VALID_NUMBER = " must be a valid number";
+    private static final String CANNOT_BE_NEGATIVE = " cannot be negative";
+    private static final String MUTATIONS_ERROR = "Minimum mutations cannot be greater than maximum mutations.";
+
+    private static final String MAP_WIDTH = "Map width";
+    private static final String MAP_HEIGHT = "Map height";
+    private static final String PLANT_COUNT = "Plant count";
+    private static final String PLANT_ENERGY = "Plant energy";
+    private static final String ANIMAL_COUNT = "Animal count";
+    private static final String ANIMAL_ENERGY = "Animal energy";
+    private static final String BREED_ENERGY_NEEDED = "Breed energy needed";
+    private static final String BREED_ENERGY_USAGE = "Breed energy usage";
+    private static final String MIN_MUTATIONS = "Min mutations";
+    private static final String MAX_MUTATIONS = "Max mutations";
+    private static final String GENES_COUNT = "Genes count";
+
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
     @FXML private TextField plantCount;
@@ -26,12 +45,18 @@ public class ParametersPresenter {
     private ConfigAnimal animalConfig;
     private ConfigPlant plantConfig;
 
+    @FXML private void mapWidth() {}
+    @FXML private void mapHeight() {}
+    @FXML private void plantCount() {}
+    @FXML private void plantEnergy() {}
+    @FXML private void fireMap() {}
+    @FXML private void insanity() {}
+
     @FXML
     private void initialize() {
         mapConfig = new ConfigMap(10, 10, 1000, MapVariant.EQUATORS);
         animalConfig = new ConfigAnimal(5, 100, 6, 5, 2, 2, 3, BehaviorVariant.FULL_PREDESTINATION);
         plantConfig = new ConfigPlant(5, 3, 4);
-        System.out.println("ParametersPresenter initialized with default configurations.");
     }
 
     @FXML
@@ -58,21 +83,24 @@ public class ParametersPresenter {
     private void load() {
         SimulationConfig config = SimulationConfigManager.loadConfig();
         if (config != null) {
-            mapWidth.setText(config.mapWidth);
-            mapHeight.setText(config.mapHeight);
-            plantCount.setText(config.plantCount);
-            plantEnergy.setText(config.plantEnergy);
-            animalCount.setText(config.animalCount);
-            animalEnergy.setText(config.animalEnergy);
-            breedEnergyNeeded.setText(config.breedEnergyNeeded);
-            breedEnergyUsage.setText(config.breedEnergyUsage);
-            minMutations.setText(config.minMutations);
-            maxMutations.setText(config.maxMutations);
-            genesCount.setText(config.genesCount);
-            fireMap.setSelected(config.fireMap);
-            insanity.setSelected(config.insanity);
-            System.out.println("Configuration loaded successfully.");
+            updateFieldsFromConfig(config);
         }
+    }
+
+    private void updateFieldsFromConfig(SimulationConfig config) {
+        mapWidth.setText(config.mapWidth);
+        mapHeight.setText(config.mapHeight);
+        plantCount.setText(config.plantCount);
+        plantEnergy.setText(config.plantEnergy);
+        animalCount.setText(config.animalCount);
+        animalEnergy.setText(config.animalEnergy);
+        breedEnergyNeeded.setText(config.breedEnergyNeeded);
+        breedEnergyUsage.setText(config.breedEnergyUsage);
+        minMutations.setText(config.minMutations);
+        maxMutations.setText(config.maxMutations);
+        genesCount.setText(config.genesCount);
+        fireMap.setSelected(config.fireMap);
+        insanity.setSelected(config.insanity);
     }
 
     @FXML
@@ -80,15 +108,15 @@ public class ParametersPresenter {
         try {
             validateAndCreateConfigs();
             SimulationApp.setConfigurations(mapConfig, animalConfig, plantConfig);
-            SimulationApp.switchScene("simulation.fxml");
+            SimulationApp.switchScene(SIMULATION_FXML);
         } catch (IllegalArgumentException e) {
-            showError("Configuration Error", e.getMessage());
+            showError(CONFIGURATION_ERROR, e.getMessage());
         }
     }
 
     private void validateAndCreateConfigs() {
-        int width = validatePositiveInt(mapWidth.getText(), "Map width");
-        int height = validatePositiveInt(mapHeight.getText(), "Map height");
+        int width = validatePositiveInt(mapWidth.getText(), MAP_WIDTH);
+        int height = validatePositiveInt(mapHeight.getText(), MAP_HEIGHT);
         mapConfig = new ConfigMap(
                 width,
                 height,
@@ -96,24 +124,28 @@ public class ParametersPresenter {
                 fireMap.isSelected() ? MapVariant.FIRES : MapVariant.EQUATORS
         );
 
-        int plantCountValue = validateNonNegativeInt(plantCount.getText(), "Plant count");
-        int plantEnergyValue = validatePositiveInt(plantEnergy.getText(), "Plant energy");
+        int plantCountValue = validateNonNegativeInt(plantCount.getText(), PLANT_COUNT);
+        int plantEnergyValue = validatePositiveInt(plantEnergy.getText(), PLANT_ENERGY);
         plantConfig = new ConfigPlant(
                 plantCountValue,
                 plantEnergyValue,
                 5
         );
 
-        int animalCountValue = validatePositiveInt(animalCount.getText(), "Animal count");
-        int animalEnergyValue = validatePositiveInt(animalEnergy.getText(), "Animal energy");
-        int breedEnergyNeededValue = validatePositiveInt(breedEnergyNeeded.getText(), "Breed energy needed");
-        int breedEnergyUsageValue = validatePositiveInt(breedEnergyUsage.getText(), "Breed energy usage");
-        int minMutationsValue = validateNonNegativeInt(minMutations.getText(), "Min mutations");
-        int maxMutationsValue = validatePositiveInt(maxMutations.getText(), "Max mutations");
-        int genesCountValue = validatePositiveInt(genesCount.getText(), "Genes count");
+        validateAndCreateAnimalConfig();
+    }
+
+    private void validateAndCreateAnimalConfig() {
+        int animalCountValue = validatePositiveInt(animalCount.getText(), ANIMAL_COUNT);
+        int animalEnergyValue = validatePositiveInt(animalEnergy.getText(), ANIMAL_ENERGY);
+        int breedEnergyNeededValue = validatePositiveInt(breedEnergyNeeded.getText(), BREED_ENERGY_NEEDED);
+        int breedEnergyUsageValue = validatePositiveInt(breedEnergyUsage.getText(), BREED_ENERGY_USAGE);
+        int minMutationsValue = validateNonNegativeInt(minMutations.getText(), MIN_MUTATIONS);
+        int maxMutationsValue = validatePositiveInt(maxMutations.getText(), MAX_MUTATIONS);
+        int genesCountValue = validatePositiveInt(genesCount.getText(), GENES_COUNT);
 
         if (minMutationsValue > maxMutationsValue) {
-            throw new IllegalArgumentException("Minimum mutations cannot be greater than maximum mutations.");
+            throw new IllegalArgumentException(MUTATIONS_ERROR);
         }
 
         animalConfig = new ConfigAnimal(
@@ -132,11 +164,11 @@ public class ParametersPresenter {
         try {
             int parsedValue = Integer.parseInt(value);
             if (parsedValue <= 0) {
-                throw new IllegalArgumentException(fieldName + " must be positive");
+                throw new IllegalArgumentException(fieldName + MUST_BE_POSITIVE);
             }
             return parsedValue;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(fieldName + " must be a valid number");
+            throw new IllegalArgumentException(fieldName + MUST_BE_VALID_NUMBER);
         }
     }
 
@@ -144,11 +176,11 @@ public class ParametersPresenter {
         try {
             int parsedValue = Integer.parseInt(value);
             if (parsedValue < 0) {
-                throw new IllegalArgumentException(fieldName + " cannot be negative");
+                throw new IllegalArgumentException(fieldName + CANNOT_BE_NEGATIVE);
             }
             return parsedValue;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(fieldName + " must be a valid number");
+            throw new IllegalArgumentException(fieldName + MUST_BE_VALID_NUMBER);
         }
     }
 
@@ -160,56 +192,4 @@ public class ParametersPresenter {
         alert.showAndWait();
     }
 
-    // Event handlers for UI elements
-    @FXML private void mapWidth(ActionEvent event) {
-        System.out.println("Map Width: " + mapWidth.getText());
-    }
-
-    @FXML private void mapHeight(ActionEvent event) {
-        System.out.println("Map Height: " + mapHeight.getText());
-    }
-
-    @FXML private void plantCount(ActionEvent event) {
-        System.out.println("Plant Count: " + plantCount.getText());
-    }
-
-    @FXML private void plantEnergy(ActionEvent event) {
-        System.out.println("Plant Energy: " + plantEnergy.getText());
-    }
-
-    @FXML private void animalCount(ActionEvent event) {
-        System.out.println("Animal Count: " + animalCount.getText());
-    }
-
-    @FXML private void animalEnergy(ActionEvent event) {
-        System.out.println("Animal Energy: " + animalEnergy.getText());
-    }
-
-    @FXML private void breedEnergyNeeded(ActionEvent event) {
-        System.out.println("Breed Energy Needed: " + breedEnergyNeeded.getText());
-    }
-
-    @FXML private void breedEnergyUsage(ActionEvent event) {
-        System.out.println("Breed Energy Usage: " + breedEnergyUsage.getText());
-    }
-
-    @FXML private void minMutations(ActionEvent event) {
-        System.out.println("Min Mutations: " + minMutations.getText());
-    }
-
-    @FXML private void maxMutations(ActionEvent event) {
-        System.out.println("Max Mutations: " + maxMutations.getText());
-    }
-
-    @FXML private void genesCount(ActionEvent event) {
-        System.out.println("Genes Count: " + genesCount.getText());
-    }
-
-    @FXML private void fireMap(ActionEvent event) {
-        System.out.println("Fire Map checkbox toggled.");
-    }
-
-    @FXML private void insanity(ActionEvent event) {
-        System.out.println("Insanity checkbox toggled.");
-    }
 }
