@@ -121,6 +121,7 @@ public class SimulationPresenter implements MapChangeListener {
       List<Genotype> dominantGenotypes = stats.mostPopularGenotypes();
       if (!dominantGenotypes.isEmpty()) {
         for (Vector2d position : dataCollector.getSimulationData().animalPositionSet()) {
+          if (dataCollector.getAnimalsAtPosition(position).isEmpty()) return chosenAnimal;
           List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
           for (Animal a : animals) {
             if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
@@ -263,8 +264,7 @@ public class SimulationPresenter implements MapChangeListener {
       updateAnimalStatistics(null);
       gridManager.setGridDimensions(dataCollector.getWorldMap());
     } catch (Exception e) {
-      // to do
-      //showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
+      showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
   }
 
