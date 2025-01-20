@@ -23,7 +23,20 @@ public class ParametersPresenter {
     private static final String ENTITY_COUNT_ERROR = "Count cannot exceed map area.";
     private static final String GENES_COUNT_ERROR = "Genes count must be between 2 and 10.";
     private static final String REFRESH_INTERVAL_ERROR = "Map refresh interval must be between 100 and 1000.";
-
+    private static final String ERROR_MAP_WIDTH = "Map width";
+    private static final String ERROR_MAP_HEIGHT = "Map height";
+    private static final String ERROR_REFRESH_INTERVAL = "Map refresh interval";
+    private static final String ERROR_FIRE_OUTBURST = "Fire Outburst Interval";
+    private static final String ERROR_FIRE_DURATION = "Fire Duration";
+    private static final String ERROR_PLANT_COUNT = "Plant count";
+    private static final String ERROR_PLANT_ENERGY = "Plant energy";
+    private static final String ERROR_ANIMAL_COUNT = "Animal count";
+    private static final String ERROR_ANIMAL_ENERGY = "Animal energy";
+    private static final String ERROR_BREED_ENERGY_NEEDED = "Breed energy needed";
+    private static final String ERROR_BREED_ENERGY_USAGE = "Breed energy usage";
+    private static final String ERROR_MIN_MUTATIONS = "Min mutations";
+    private static final String ERROR_MAX_MUTATIONS = "Max mutations";
+    private static final String ERROR_GENES_COUNT = "Genes count";
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
     @FXML private TextField plantCount;
@@ -65,20 +78,6 @@ public class ParametersPresenter {
     private static final int MAX_REFRESH_INTERVAL = 1000;
     private static final int MIN_GENES_COUNT = 2;
     private static final int MAX_GENES_COUNT = 10;
-    private static final String ERROR_MAP_WIDTH = "Map width";
-    private static final String ERROR_MAP_HEIGHT = "Map height";
-    private static final String ERROR_REFRESH_INTERVAL = "Map refresh interval";
-    private static final String ERROR_FIRE_OUTBURST = "Fire Outburst Interval";
-    private static final String ERROR_FIRE_DURATION = "Fire Duration";
-    private static final String ERROR_PLANT_COUNT = "Plant count";
-    private static final String ERROR_PLANT_ENERGY = "Plant energy";
-    private static final String ERROR_ANIMAL_COUNT = "Animal count";
-    private static final String ERROR_ANIMAL_ENERGY = "Animal energy";
-    private static final String ERROR_BREED_ENERGY_NEEDED = "Breed energy needed";
-    private static final String ERROR_BREED_ENERGY_USAGE = "Breed energy usage";
-    private static final String ERROR_MIN_MUTATIONS = "Min mutations";
-    private static final String ERROR_MAX_MUTATIONS = "Max mutations";
-    private static final String ERROR_GENES_COUNT = "Genes count";
     private static final int DEFAULT_SPREAD_RADIUS = 5;
 
     @FXML

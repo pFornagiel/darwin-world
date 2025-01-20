@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public class StageUtil {
+    private static final String SIMULATION_PATH = "simulation.fxml";
 
     public static void openNewStage(String fxmlPath, String stageTitle, Consumer<FXMLLoader> controllerInitializer) throws IOException {
         FXMLLoader loader = new FXMLLoader(StageUtil.class.getClassLoader().getResource(fxmlPath));
@@ -19,6 +20,7 @@ public class StageUtil {
         Stage stage = new Stage();
         stage.setTitle(stageTitle);
         stage.setScene(new Scene(root));
+        stage.setFullScreen(SIMULATION_PATH.equals(fxmlPath));
         stage.show();
     }
 }
