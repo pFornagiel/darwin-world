@@ -1,5 +1,5 @@
 package agh.ics.oop.presenter;
-
+import agh.ics.oop.presenter.util.AnimalColor;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
@@ -29,6 +29,9 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static agh.ics.oop.presenter.util.AnimalColor.getAnimalColor;
+import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
 
 public class SimulationPresenter implements MapChangeListener {
   @FXML
@@ -60,9 +63,7 @@ public class SimulationPresenter implements MapChangeListener {
   private Label averageLifespan;
   @FXML
   private Label averageChildren;
-  double ONE = 1.0;
-  double HALF = 0.5;
-  double QUARTER = 0.25;
+
   private SimulationStatisticsCSVSaver statisticsCSVSaver;
   @FXML private Label dayCount;
   @FXML private Label plantCount;
@@ -110,7 +111,7 @@ public class SimulationPresenter implements MapChangeListener {
     drawAnimalElements(simulationData.animalPositionSet(), Color.BLUE, offset, size);
     drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
-  private void updateAnimalStatistics(Animal animal) {
+  private Animal selectAnimal(Animal animal) {
     if (animal == null) {
       SimulationStatistics stats = dataCollector.getSimulationStatistics();
       List<Genotype> dominantGenotypes = stats.mostPopularGenotypes();
@@ -119,15 +120,15 @@ public class SimulationPresenter implements MapChangeListener {
           List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
           for (Animal a : animals) {
             if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
-              animal = a;
-              break;
+              return a;
             }
           }
-          if (animal != null) break;
         }
       }
     }
-
+    return animal;
+  }
+  private void updateAnimalStatisticsDisplay(Animal animal) {
     if (animal != null) {
       var stats = dataCollector.getAnimalStatistics(animal);
       animalTitle.setText(String.format("Animal at (%d, %d)",
@@ -153,6 +154,11 @@ public class SimulationPresenter implements MapChangeListener {
       dayOfDeath.setText("-");
     }
   }
+  private void updateAnimalStatistics(Animal animal) {
+    animal = selectAnimal(animal);
+    updateAnimalStatisticsDisplay(animal);
+  }
+
   private void drawElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
       gridRenderer.setGridCell(
@@ -162,26 +168,12 @@ public class SimulationPresenter implements MapChangeListener {
       );
     }
   }
-  private Color getAnimalColor(Animal animal) {
-    SimulationStatistics stats = dataCollector.getSimulationStatistics();
-    List<Genotype> mostPopularGenotypes = stats.mostPopularGenotypes();
-    double energyRatio = Math.min((double) animal.getEnergy() / simulation.getAnimalEnergy(), ONE);
-    double r = 0.0, g = 0.0, b = 0.0;
-    if (!mostPopularGenotypes.isEmpty() && animal.getGenotype().equals(mostPopularGenotypes.get(0))) {
-      r = energyRatio * HALF + HALF;
-      b = energyRatio * HALF + HALF;
-      g = energyRatio * QUARTER;
-    } else {
-      b = energyRatio;
-    }
-    return new Color(r, g, b, ONE);
-  }
 
   private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
       int x = position.getX() - offset.getX() + 1;
       int y = size.getY() - 1 - (position.getY() - offset.getY());
-      color = getAnimalColor(getChosenAnimal(position));
+      color = getAnimalColor(getChosenAnimal(position),dataCollector.getSimulationStatistics(), simulation.getAnimalEnergy());
       Rectangle cell = new Rectangle();
       cell.setWidth(gridManager.calculateCellSize());
       cell.setHeight(gridManager.calculateCellSize());
@@ -244,9 +236,6 @@ public class SimulationPresenter implements MapChangeListener {
     }
   }
 
-  private double roundToTwoDecimal(double number){
-    return Math.round(number / 100 ) * 100;
-  }
 
   @FXML
   private void onSimulationStartClicked() {
