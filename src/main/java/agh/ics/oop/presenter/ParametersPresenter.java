@@ -31,6 +31,8 @@ public class ParametersPresenter {
     private static final String MAX_MUTATIONS = "Max mutations";
     private static final String GENES_COUNT = "Genes count";
     private static final String SIMULATION = "Simulation";
+    private static final String FIRE_OUTBURST_INTERVAL = "Fire Outburst Interval";
+    private static final String FIRE_DURATION = "Fire Duration";
 
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
@@ -45,6 +47,9 @@ public class ParametersPresenter {
     @FXML private TextField genesCount;
     @FXML private CheckBox fireMap;
     @FXML private CheckBox insanity;
+    @FXML private TextField mapRefreshInterval;
+    @FXML private TextField fireOutburstInterval;
+    @FXML private TextField fireDuration;
 
     private ConfigMap mapConfig;
     private ConfigAnimal animalConfig;
@@ -54,9 +59,16 @@ public class ParametersPresenter {
     @FXML private void mapHeight() {}
     @FXML private void plantCount() {}
     @FXML private void plantEnergy() {}
-    @FXML private void fireMap() {}
-    @FXML private void insanity() {}
-
+    @FXML private void animalCount() {}
+    @FXML private void animalEnergy() {}
+    @FXML private void breedEnergyNeeded() {}
+    @FXML private void breedEnergyUsage() {}
+    @FXML private void minMutations() {}
+    @FXML private void maxMutations() {}
+    @FXML private void genesCount() {}
+    @FXML private void mapRefreshInterval() {}
+    @FXML private void fireOutburstInterval() {}
+    @FXML private void fireDuration() {}
     @FXML
     private void initialize() {
         mapConfig = new ConfigMap(10, 10, 1000, MapVariant.EQUATORS);
@@ -79,7 +91,10 @@ public class ParametersPresenter {
                 maxMutations.getText(),
                 genesCount.getText(),
                 fireMap.isSelected(),
-                insanity.isSelected()
+                insanity.isSelected(),
+                mapRefreshInterval.getText(),
+                fireOutburstInterval.getText(),
+                fireDuration.getText()
         );
         SimulationConfigManager.saveConfig(config);
     }
@@ -91,7 +106,6 @@ public class ParametersPresenter {
             updateFieldsFromConfig(config);
         }
     }
-
     private void updateFieldsFromConfig(SimulationConfig config) {
         mapWidth.setText(config.mapWidth);
         mapHeight.setText(config.mapHeight);
@@ -106,7 +120,11 @@ public class ParametersPresenter {
         genesCount.setText(config.genesCount);
         fireMap.setSelected(config.fireMap);
         insanity.setSelected(config.insanity);
+        mapRefreshInterval.setText(config.mapRefreshInterval);
+        fireOutburstInterval.setText(config.fireOutburstInterval);
+        fireDuration.setText(config.fireDuration);
     }
+
 
     @FXML
     private void accept(ActionEvent event) {
@@ -127,15 +145,24 @@ public class ParametersPresenter {
     }
 
 
-
     private void validateAndCreateConfigs() {
         int width = validatePositiveInt(mapWidth.getText(), MAP_WIDTH);
         int height = validatePositiveInt(mapHeight.getText(), MAP_HEIGHT);
+        int refreshInterval = 100;
+        int fireInterval = fireMap.isSelected()
+                ? validatePositiveInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
+                : -1;
+        int fireDurationValue = fireMap.isSelected()
+                ? validatePositiveInt(fireDuration.getText(), FIRE_DURATION )
+                : -1;
+
         mapConfig = new ConfigMap(
                 width,
                 height,
-                100,
-                fireMap.isSelected() ? MapVariant.FIRES : MapVariant.EQUATORS
+                refreshInterval,
+                fireMap.isSelected() ? MapVariant.FIRES : MapVariant.EQUATORS,
+                fireInterval,
+                fireDurationValue
         );
 
         int plantCountValue = validateNonNegativeInt(plantCount.getText(), PLANT_COUNT);
@@ -148,6 +175,7 @@ public class ParametersPresenter {
 
         validateAndCreateAnimalConfig();
     }
+
     private void closeWindow(ActionEvent event) {
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();

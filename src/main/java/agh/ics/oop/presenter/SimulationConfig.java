@@ -14,10 +14,15 @@ public class SimulationConfig {
     public String genesCount;
     public boolean fireMap;
     public boolean insanity;
+    public String mapRefreshInterval;
+    public String fireOutburstInterval;
+    public String fireDuration;
+
     public SimulationConfig(String mapWidth, String mapHeight, String plantCount, String plantEnergy,
                             String animalCount, String animalEnergy, String breedEnergyNeeded,
                             String breedEnergyUsage, String minMutations, String maxMutations,
-                            String genesCount, boolean fireMap, boolean insanity) {
+                            String genesCount, boolean fireMap, boolean insanity,
+                            String mapRefreshInterval, String fireOutburstInterval, String fireDuration) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.plantCount = plantCount;
@@ -31,5 +36,9 @@ public class SimulationConfig {
         this.genesCount = genesCount;
         this.fireMap = fireMap;
         this.insanity = insanity;
+        this.mapRefreshInterval = mapRefreshInterval;
+        this.fireOutburstInterval = fireOutburstInterval;
+        this.fireDuration = fireDuration;
     }
 }
+

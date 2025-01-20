@@ -11,5 +11,8 @@
   "maxMutations": "10",
   "genesCount": "10",
   "fireMap": true,
-  "insanity": true
+  "insanity": true,
+  "mapRefreshInterval": "1",
+  "fireOutburstInterval": "10",
+  "fireDuration": "10"
 }

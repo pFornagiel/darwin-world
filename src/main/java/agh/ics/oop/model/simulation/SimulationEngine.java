@@ -11,7 +11,6 @@ public class SimulationEngine {
   private final ArrayList<Thread> simulationThreadList = new ArrayList<>();
   private final ExecutorService simulationExecutor = Executors.newFixedThreadPool(4);
 
-
   public SimulationEngine(List<Simulation> simulationList) {
     this.simulationList = simulationList;
   }
@@ -25,6 +24,7 @@ public class SimulationEngine {
       simulation.run();
     }
   }
+
   public List<Simulation> getSimulationList() {
     return simulationList;
   }

@@ -15,9 +15,6 @@ public class SimulationApp extends Application {
   private static SimulationPresenter presenter;
   private static final String PARAMETERS = "parameters.fxml";
   private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
-  private static ConfigMap mapConfig;
-  private static ConfigAnimal animalConfig;
-  private static ConfigPlant plantConfig;
   private static final SimulationEngine engine = new SimulationEngine(new ArrayList<>());
 
   public static void addSimulation(Simulation simulation) {
