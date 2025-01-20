@@ -24,8 +24,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -192,22 +194,25 @@ public class SimulationPresenter implements MapChangeListener {
       if (currentAnimal == null) {
         continue;
       }
-
-      color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal), dataCollector.getSimulationStatistics(), simulation.getAnimalEnergy());
+      color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal),
+              dataCollector.getSimulationStatistics(),
+              simulation.getAnimalEnergy());
+      StackPane stackPane = new StackPane();
       Rectangle cell = new Rectangle();
       cell.setWidth(gridManager.calculateCellSize());
       cell.setHeight(gridManager.calculateCellSize());
-
       cell.setFill(color);
-      cell.setOnMouseClicked(event -> {
+      Text text = new Text(currentAnimal.toString());
+      text.setFill(Color.LIGHTGRAY);
+      text.setStyle(String.format("-fx-font-size: %fpx", gridManager.calculateCellSize()));
+      stackPane.getChildren().addAll(cell, text);
+      stackPane.setOnMouseClicked(event -> {
         chosenAnimal = getChosenAnimal(position);
         updateAnimalStatistics(chosenAnimal);
       });
-
-      gridPane.add(cell, x, y);
+      gridPane.add(stackPane, x, y);
     }
   }
-
 
   private Animal getChosenAnimal(Vector2d position) {
     List<Animal> animalList = dataCollector.getAnimalsAtPosition(position);
