@@ -272,7 +272,8 @@ public class SimulationPresenter implements MapChangeListener {
       updateAnimalStatistics(null);
       gridManager.setGridDimensions(dataCollector.getWorldMap());
     } catch (Exception e) {
-      showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
+      // to do
+      //showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
   }
 
