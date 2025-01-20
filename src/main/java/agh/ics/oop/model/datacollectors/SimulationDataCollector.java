@@ -24,49 +24,59 @@ public class SimulationDataCollector {
   }
 
   public AnimalStatistics getAnimalStatistics(Animal animal) {
-    return new AnimalStatistics(
-      animal.getPosition(),
-      animal.getEnergy(),
-      animal.getOrientation(),
-      animal.getGenotype(),
-      animal.getCurrentGene(),
-      animal.getEatenPlants(),
-      animal.getEatenPlants(),
-      animal.getAmountOfDescendants(),
-      animal.getLifespan(),
-      animal.isAlive() ? -1 : animal.getDayOfDeath()
-    );
+    synchronized (worldMap) {
+      return new AnimalStatistics(
+          animal.getPosition(),
+          animal.getEnergy(),
+          animal.getOrientation(),
+          animal.getGenotype(),
+          animal.getCurrentGene(),
+          animal.getEatenPlants(),
+          animal.getEatenPlants(),
+          animal.getAmountOfDescendants(),
+          animal.getLifespan(),
+          animal.isAlive() ? -1 : animal.getDayOfDeath()
+      );
+    }
   }
 
   public AnimalData getAnimalData(Animal animal) {
-    return new AnimalData(
-      animal.getEnergy(),
-      animal.getPosition(),
-      animal.getOrientation(),
-      animal.getCurrentGene()
-    );
+    synchronized (worldMap) {
+      return new AnimalData(
+          animal.getEnergy(),
+          animal.getPosition(),
+          animal.getOrientation(),
+          animal.getCurrentGene()
+      );
+    }
   }
 
 //  Consider making it a sorted list if needed
   public List<Animal> getAnimalsAtPosition(Vector2d position){
-    return List.copyOf(worldMap.objectsAt(position));
+    synchronized (worldMap){
+      return List.copyOf(worldMap.objectsAt(position));
+    }
   }
 
   public SimulationStatistics getSimulationStatistics() {
-    return new SimulationStatistics(
-        worldMap.getAmountOfElements(),
-        worldMap.getAmountOfPlants(),
-        worldMap.getAmountOfFreeFields(),
-        worldMap.getMostPopularGenotypes(),
-        worldMap.getAverageEnergy(),
-        worldMap.getAverageLifespan(),
-        worldMap.getAverageChildren(),
-        simulation.getDayCount()
-    );
+    synchronized (worldMap){
+      return new SimulationStatistics(
+          worldMap.getAmountOfElements(),
+          worldMap.getAmountOfPlants(),
+          worldMap.getAmountOfFreeFields(),
+          worldMap.getMostPopularGenotypes(),
+          worldMap.getAverageEnergy(),
+          worldMap.getAverageLifespan(),
+          worldMap.getAverageChildren(),
+          simulation.getDayCount()
+      );
+    }
   }
 
   public SimulationData getSimulationData(){
-    return worldMap.acceptData(worldMapVisitor);
+    synchronized (worldMap){
+      return worldMap.acceptData(worldMapVisitor);
+    }
   }
 
 }

@@ -199,21 +199,21 @@ public class SimulationPresenter implements MapChangeListener {
   @Override
   public void mapChanged(WorldMap worldMap) {
     Platform.runLater(() -> {
-      synchronized (worldMap){
-        if (dataCollector != null) {
-          chartManager.updateChart(dataCollector.getSimulationStatistics());
-          drawMap();
-          SimulationStatistics stats = dataCollector.getSimulationStatistics();
-          if (stats != null) {
-            updateSimulationStatistics(stats);
-            updateAnimalStatistics(chosenAnimal); // Add this line
-          } else {
-            System.out.println("Simulation statistics are unavailable.");
-          }
+
+      if (dataCollector != null) {
+        chartManager.updateChart(dataCollector.getSimulationStatistics());
+        drawMap();
+        SimulationStatistics stats = dataCollector.getSimulationStatistics();
+        if (stats != null) {
+          updateSimulationStatistics(stats);
+          updateAnimalStatistics(chosenAnimal); // Add this line
         } else {
-          System.out.println("Simulation data collector is not initialized.");
+          System.out.println("Simulation statistics are unavailable.");
         }
+      } else {
+        System.out.println("Simulation data collector is not initialized.");
       }
+
     });
   }
 
