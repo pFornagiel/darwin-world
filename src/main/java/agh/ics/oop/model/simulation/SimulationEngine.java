@@ -25,6 +25,9 @@ public class SimulationEngine {
       simulation.run();
     }
   }
+  public List<Simulation> getSimulationList() {
+    return simulationList;
+  }
 
   public void runAsync(){
     for(Simulation simulation : simulationList){

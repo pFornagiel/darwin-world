@@ -53,6 +53,7 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String DASH = "-";
 
   private boolean simulationStarted = false;
+  private Simulation simulation;
 
   @FXML
   private GridPane gridPane;
@@ -67,7 +68,6 @@ public class SimulationPresenter implements MapChangeListener {
   private Button pauseButton;
   @FXML
   private Button startButton;
-  private Simulation simulation;
   private Animal chosenAnimal;
   @FXML
   private Label freeFields;
@@ -158,7 +158,6 @@ public class SimulationPresenter implements MapChangeListener {
       parametersStage.setScene(new Scene(root));
       parametersStage.show();
     } catch (IOException e) {
-      System.err.println("Failed to load parameters FXML: " + e.getMessage());
       e.printStackTrace();
     }
   }
@@ -206,7 +205,9 @@ public class SimulationPresenter implements MapChangeListener {
       );
     }
   }
-
+  public void initializeSimulation(Simulation simulation) {
+    this.simulation = simulation;
+  }
   private void drawAnimalElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
     List<Vector2d> positionsCopy = new ArrayList<>();
     positions.forEach(positionsCopy::add);
@@ -288,7 +289,6 @@ public class SimulationPresenter implements MapChangeListener {
   private void onSimulationStartClicked() {
     try {
       if(!simulationStarted){
-        simulation = SimulationApp.createSimulation();
         simulation.addObserver(this);
         dataCollector = new SimulationDataCollector(simulation);
         SimulationEngine simulationEngine = new SimulationEngine(simulation);

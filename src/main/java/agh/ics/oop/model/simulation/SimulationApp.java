@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.scene.layout.Region;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SimulationApp extends Application {
 
@@ -21,6 +22,23 @@ public class SimulationApp extends Application {
   private static ConfigMap mapConfig;
   private static ConfigAnimal animalConfig;
   private static ConfigPlant plantConfig;
+  private static final SimulationEngine engine = new SimulationEngine(new ArrayList<>());
+
+  public static void addSimulation(Simulation simulation) {
+    engine.getSimulationList().add(simulation);
+  }
+
+  public static void startSimulations() {
+    engine.runAsyncInThreadPool();
+  }
+
+  public static void stopSimulations() {
+    try {
+      engine.awaitSimulationEnd();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
   @Override
   public void start(Stage stage) {
     try {
@@ -62,13 +80,12 @@ public class SimulationApp extends Application {
     try {
       FXMLLoader loader = new FXMLLoader(SimulationApp.class.getClassLoader().getResource("simulation.fxml"));
       Parent root = loader.load();
-      SimulationPresenter presenter = loader.getController();
       Stage simulationStage = new Stage();
       simulationStage.setTitle("Simulation");
       simulationStage.setScene(new Scene(root));
       simulationStage.show();
     } catch (IOException e) {
-      System.err.println("Failed to load simulation FXML: " + e.getMessage());
+      System.out.println(e.getMessage());
     }
   }
 

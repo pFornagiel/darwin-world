@@ -4,9 +4,14 @@ import agh.ics.oop.model.configuration.*;
 import agh.ics.oop.model.simulation.Simulation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import agh.ics.oop.model.simulation.SimulationApp;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class ParametersPresenter {
     private static final String SIMULATION_FXML = "simulation.fxml";
@@ -109,13 +114,31 @@ public class ParametersPresenter {
     private void accept(ActionEvent event) {
         try {
             validateAndCreateConfigs();
-            SimulationApp.setConfigurations(mapConfig,animalConfig,plantConfig);
-            SimulationApp.openSimulationWindow();
+
+            // Create a new Simulation object with the configurations
+            Simulation simulation = new Simulation(mapConfig, animalConfig, plantConfig);
+
+            // Add the simulation to the engine
+            SimulationApp.addSimulation(simulation);
+
+            // Open the simulation window
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("simulation.fxml"));
+            Parent root = loader.load();
+
+            SimulationPresenter presenter = loader.getController();
+            presenter.initializeSimulation(simulation);
+
+            Stage simulationStage = new Stage();
+            simulationStage.setTitle("Simulation");
+            simulationStage.setScene(new Scene(root));
+            simulationStage.show();
+
             closeWindow(event);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IOException e) {
             showError(CONFIGURATION_ERROR, e.getMessage());
         }
     }
+
 
     private void validateAndCreateConfigs() {
         int width = validatePositiveInt(mapWidth.getText(), MAP_WIDTH);
