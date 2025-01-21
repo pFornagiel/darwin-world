@@ -142,7 +142,6 @@ class AnimalTest {
     // Given
     Direction initialOrientation = animal.getOrientation();
 
-
     // When
     animal.rotateAndActivate();
 
