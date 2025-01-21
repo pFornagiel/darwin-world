@@ -1,5 +1,6 @@
 package agh.ics.oop.model.worldmap;
 
+import agh.ics.oop.model.ConfigTestSingleton;
 import agh.ics.oop.model.configuration.*;
 import agh.ics.oop.model.exception.IncorrectPositionException;
 import agh.ics.oop.model.util.Direction;
@@ -353,7 +354,4 @@ public class WorldMapTest {
         "The animal should rotate by 180 degrees."
     );
   }
-
-
-
 }
