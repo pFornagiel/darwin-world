@@ -1,4 +1,4 @@
-package agh.ics.oop.model.worldmap;
+package agh.ics.oop.model;
 
 import agh.ics.oop.model.configuration.*;
 
