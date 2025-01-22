@@ -47,7 +47,8 @@ public class SimulationDataCollector {
           animal.getEnergy(),
           animal.getPosition(),
           animal.getOrientation(),
-          animal.getCurrentGene()
+          animal.getCurrentGene(),
+          animal.getGenotype()
       );
   }
 
@@ -67,8 +68,7 @@ public class SimulationDataCollector {
           worldMap.getAverageEnergy(),
           worldMap.getAverageLifespan(),
           worldMap.getAverageChildren(),
-          simulation.getDayCount(),
-              simulation.getInitialEnergy()
+          simulation.getDayCount()
       );
   }
 
