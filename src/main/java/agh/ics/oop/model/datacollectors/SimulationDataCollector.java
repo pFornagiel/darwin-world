@@ -50,7 +50,8 @@ public class SimulationDataCollector {
           animal.getEnergy(),
           animal.getPosition(),
           animal.getOrientation(),
-          animal.getCurrentGene()
+          animal.getCurrentGene(),
+          animal.getGenotype()
       );
     }
   }

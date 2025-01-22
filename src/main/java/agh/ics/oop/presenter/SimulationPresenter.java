@@ -118,14 +118,10 @@ public class SimulationPresenter implements MapChangeListener {
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
-    List<Vector2d> verdantFields = new ArrayList<>(simulationData.verdantFieldPositionSet());
-    List<Vector2d> plantPositions = new ArrayList<>(simulationData.plantPositionSet());
-    List<Vector2d> animalPositions = new ArrayList<>(simulationData.animalPositionSet());
-    List<Vector2d> firePositions = new ArrayList<>(simulationData.firePositionSet());
-    drawElements(verdantFields, Color.GRAY, offset, size);
-    drawElements(plantPositions, Color.GREEN, offset, size);
-    drawAnimalElements(animalPositions, offset, size);
-    drawElements(firePositions, Color.RED, offset, size);
+    drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
+    drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
+    drawAnimalElements(simulationData.animalPositionSet(), offset, size);
+    drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
   private Animal selectAnimal(Animal animal) {
     if (animal != null) {
@@ -236,7 +232,7 @@ public class SimulationPresenter implements MapChangeListener {
         continue;
       }
 
-      Color color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal),
+      Color color = getAnimalColor(dataCollector.getAnimalData(currentAnimal),
               dataCollector.getSimulationStatistics(),
               dataCollector.getSimulationStatistics().initialEnergy());
 

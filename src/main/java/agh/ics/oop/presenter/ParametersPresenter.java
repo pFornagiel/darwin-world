@@ -81,7 +81,6 @@ public class ParametersPresenter {
     private static final int MAX_REFRESH_INTERVAL = 1000;
     private static final int MIN_GENES_COUNT = 2;
     private static final int MAX_GENES_COUNT = 10;
-    private static final int DEFAULT_SPREAD_RADIUS = 5;
 
     @FXML
     private void save() {
