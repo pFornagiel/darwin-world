@@ -13,7 +13,8 @@ public class World {
         1000,
         MapVariant.FIRES,
         2,
-        4
+        4,
+            false
         );
     ConfigAnimal animalConfig = new ConfigAnimal(
         30,

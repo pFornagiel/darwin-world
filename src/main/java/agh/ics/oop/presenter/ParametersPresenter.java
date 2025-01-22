@@ -112,6 +112,7 @@ public class ParametersPresenter {
         fireOutburstInterval.setText(String.valueOf(mapConfig.fireOutburstInterval()));
         fireDuration.setText(String.valueOf(mapConfig.fireDuration()));
         plantCount.setText(String.valueOf(plantConfig.initialPlantCount()));
+        plantPerDay.setText(String.valueOf(plantConfig.dailyPlantGrowth()));
         plantEnergy.setText(String.valueOf(plantConfig.energyPerPlant()));
         animalCount.setText(String.valueOf(animalConfig.initialAnimalCount()));
         animalEnergy.setText(String.valueOf(animalConfig.initialEnergy()));
@@ -122,6 +123,8 @@ public class ParametersPresenter {
         genesCount.setText(String.valueOf(animalConfig.genomeLength()));
         insanity.setSelected(animalConfig.behaviorVariant() == BehaviorVariant.CRAZINESS);
         mapRefreshInterval.setText(String.valueOf(mapConfig.mapRefreshInterval()));
+        saveToCsv.setSelected(mapConfig.saveToCsv());
+
     }
 
     @FXML
@@ -158,18 +161,20 @@ public class ParametersPresenter {
                 refreshInterval,
                 fireMap.isSelected() ? MapVariant.FIRES : MapVariant.EQUATORS,
                 fireInterval,
-                fireDurationValue
+                fireDurationValue,
+                saveToCsv.isSelected()
         );
 
         int plantCountValue = validateNonNegativeInt(plantCount.getText(), ERROR_PLANT_COUNT);
         int plantEnergyValue = validatePositiveInt(plantEnergy.getText(), ERROR_PLANT_ENERGY);
+        int plantPerDayValue = validatePositiveInt(plantPerDay.getText(), ERROR_PLANT_ENERGY);
 
         validateEntityCount(plantCountValue, width, height, ERROR_PLANT_COUNT);
 
         plantConfig = new ConfigPlant(
                 plantCountValue,
                 plantEnergyValue,
-                DEFAULT_SPREAD_RADIUS
+                plantPerDayValue
         );
 
         validateAndCreateAnimalConfig(width, height);

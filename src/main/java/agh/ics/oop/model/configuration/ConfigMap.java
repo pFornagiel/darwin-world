@@ -6,7 +6,8 @@ public record ConfigMap(
     int mapRefreshInterval,
     MapVariant mapVariant,// Enum for map variant
     int fireOutburstInterval, // -1 if not applicable
-    int fireDuration // -1 if not applicable
+    int fireDuration, // -1 if not applicable
+    boolean saveToCsv
 ) {
   public ConfigMap(
       int width,
@@ -14,7 +15,7 @@ public record ConfigMap(
       int mapRefreshInterval,
       MapVariant mapVariant
   ) {
-    this(width, height, mapRefreshInterval, mapVariant, -1, -1);
+    this(width, height, mapRefreshInterval, mapVariant, -1, -1, false);
   }
 }
 

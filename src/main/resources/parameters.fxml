@@ -102,7 +102,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="plantEnergy1" layoutX="87.0" onAction="#plantPerDay" AnchorPane.leftAnchor="85.0" />
+                        <TextField fx:id="plantPerDay" layoutX="87.0" onAction="#plantPerDay" AnchorPane.leftAnchor="85.0" />
                      </children>
                   </AnchorPane>
                </children>
