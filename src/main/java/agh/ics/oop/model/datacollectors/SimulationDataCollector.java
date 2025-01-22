@@ -28,7 +28,6 @@ public class SimulationDataCollector {
   }
   
   public AnimalStatistics getAnimalStatistics(Animal animal) {
-    synchronized (worldMap) {
       return new AnimalStatistics(
           animal.getPosition(),
           animal.getEnergy(),
@@ -41,18 +40,15 @@ public class SimulationDataCollector {
           animal.getLifespan(),
           animal.isAlive() ? -1 : animal.getDayOfDeath()
       );
-    }
   }
 
   public AnimalData getAnimalData(Animal animal) {
-    synchronized (worldMap) {
       return new AnimalData(
           animal.getEnergy(),
           animal.getPosition(),
           animal.getOrientation(),
           animal.getCurrentGene()
       );
-    }
   }
 
 //  Consider making it a sorted list if needed
@@ -63,7 +59,6 @@ public class SimulationDataCollector {
   }
 
   public SimulationStatistics getSimulationStatistics() {
-    synchronized (worldMap){
       return new SimulationStatistics(
           worldMap.getAmountOfElements(),
           worldMap.getAmountOfPlants(),
@@ -75,13 +70,10 @@ public class SimulationDataCollector {
           simulation.getDayCount(),
               simulation.getInitialEnergy()
       );
-    }
   }
 
   public SimulationData getSimulationData(){
-    synchronized (worldMap){
       return worldMap.acceptData(worldMapVisitor);
-    }
   }
 
 }

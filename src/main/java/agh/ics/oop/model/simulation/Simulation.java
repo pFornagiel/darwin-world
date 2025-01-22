@@ -16,6 +16,7 @@ import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 import java.util.*;
 
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -23,7 +24,6 @@ public class Simulation implements Runnable, SimulationVisitor {
   private final SimulatableMap<Animal> worldMap;
   private final AnimalFactory animalFactory;
 
-  private final OrderMap<Genotype> orderedAmountOfGenotypes = new OrderMap<>();
   private int dayCount = 0;
 
   private final ConfigMap configMap;
@@ -91,9 +91,9 @@ public class Simulation implements Runnable, SimulationVisitor {
     observers.remove(observer);
   }
 
-  private void notifyObservers() {
+  private void notifyObservers(CountDownLatch latch) {
     for (MapChangeListener observer : observers) {
-      observer.mapChanged(worldMap);
+      observer.mapChanged(latch);
     }
   }
 
@@ -176,11 +176,15 @@ public class Simulation implements Runnable, SimulationVisitor {
   public void visit(BaseWorldMap worldMap) {
     while (isRunning && !worldMap.getElements().isEmpty()) {
       checkPaused(); // Check and wait if paused
-      synchronized (worldMap){
-        baseSimulationSteps(worldMap);
-        notifyObservers();
+      CountDownLatch latch = new CountDownLatch(observers.size());
+      baseSimulationSteps(worldMap);
+      notifyObservers(latch);
+      try{
+        sleep();
+        latch.await();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
-      sleep();
     }
   }
 
@@ -188,16 +192,21 @@ public class Simulation implements Runnable, SimulationVisitor {
   public void visit(FireWorldMap worldMap) {
     while (isRunning && !worldMap.getElements().isEmpty()) {
       checkPaused(); // Check and wait if paused
-      synchronized (worldMap){
-        baseSimulationSteps(worldMap);
-        if (dayCount % configMap.fireOutburstInterval() == 0) {
-          worldMap.randomFireOutburst();
-        }
-        worldMap.spreadFire();
-        worldMap.updateFireDuration();
-        notifyObservers();
+      CountDownLatch latch = new CountDownLatch(observers.size());
+      baseSimulationSteps(worldMap);
+      if (dayCount % configMap.fireOutburstInterval() == 0) {
+        worldMap.randomFireOutburst();
       }
-      sleep();
+      worldMap.spreadFire();
+      worldMap.updateFireDuration();
+      notifyObservers(latch);
+
+      try{
+        sleep();
+        latch.await();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
   }
 
