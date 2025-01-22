@@ -27,7 +27,6 @@ public class DirectionTest {
 
   @Test
   public void testPrevious() {
-    System.out.println(Direction.NORTH.next());
     assertEquals(Direction.NORTH_WEST, Direction.NORTH.previous(), "Previous of NORTH should be NORTH_WEST");
     assertEquals(Direction.NORTH, Direction.NORTH_EAST.previous(), "Previous of NORTH_EAST should be NORTH");
   }
