@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import agh.ics.oop.model.exception.util.DatacollectorNotInitialized;
 
 import static agh.ics.oop.presenter.util.AnimalColor.getAnimalColor;
 import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
@@ -111,10 +112,8 @@ public class SimulationPresenter implements MapChangeListener {
   }
   private void drawMap() {
     gridManager.clearGrid();
-    gridManager.updateGridConstraints();
-    gridRenderer.drawAxes();
     if (dataCollector == null) {
-      return;
+      throw new DatacollectorNotInitialized();
     }
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
@@ -214,7 +213,7 @@ public class SimulationPresenter implements MapChangeListener {
     for (Vector2d position : positions) {
       gridRenderer.setGridCell(
               position.getX() - offset.getX() + 1,
-              size.getY() - 1 - (position.getY() - offset.getY()),
+               (position.getY() - offset.getY() + 1),
               color
       );
     }
@@ -228,7 +227,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     for (Vector2d position : positionsCopy) {
       int x = position.getX() - offset.getX() + 1;
-      int y = size.getY() - 1 - (position.getY() - offset.getY());
+      int y = (position.getY() - offset.getY()) + 1;
 
       List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
       Animal currentAnimal = getChosenAnimal(position, animals);
@@ -239,7 +238,7 @@ public class SimulationPresenter implements MapChangeListener {
 
       Color color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal),
               dataCollector.getSimulationStatistics(),
-              simulation.getAnimalEnergy());
+              dataCollector.getSimulationStatistics().initialEnergy());
 
       StackPane stackPane = new StackPane();
       Rectangle cell = new Rectangle();

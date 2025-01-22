@@ -30,6 +30,7 @@ public class GridManager {
                 mapBounds.lowerBoundary().getX(),
                 mapBounds.lowerBoundary().getY()
         );
+        setGridConstraints();
     }
 
     public double calculateCellSize() {
@@ -45,12 +46,10 @@ public class GridManager {
         return Math.max(MIN_CELL_SIZE, Math.min(cellSizeByWidth, cellSizeByHeight));
     }
 
-    public void updateGridConstraints() {
+    public void setGridConstraints() {
         gridPane.getColumnConstraints().clear();
         gridPane.getRowConstraints().clear();
-
         double cellSize = calculateCellSize();
-
         for (int i = 0; i < gridPaneSize.getY(); i++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setMinHeight(cellSize);
@@ -70,8 +69,6 @@ public class GridManager {
 
     public void clearGrid() {
         gridPane.getChildren().clear();
-        gridPane.getColumnConstraints().clear();
-        gridPane.getRowConstraints().clear();
     }
 
     public Vector2d getGridPaneSize() {

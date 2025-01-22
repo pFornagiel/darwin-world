@@ -72,7 +72,8 @@ public class SimulationDataCollector {
           worldMap.getAverageEnergy(),
           worldMap.getAverageLifespan(),
           worldMap.getAverageChildren(),
-          simulation.getDayCount()
+          simulation.getDayCount(),
+              simulation.getInitialEnergy()
       );
     }
   }

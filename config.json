@@ -1,24 +1,25 @@
 {
   "mapConfig": {
-    "width": 10,
-    "height": 10,
+    "width": 15,
+    "height": 15,
     "mapRefreshInterval": 100,
     "mapVariant": "FIRES",
-    "fireOutburstInterval": 3,
-    "fireDuration": 3
+    "fireOutburstInterval": 1,
+    "fireDuration": 1,
+    "saveToCsv": false
   },
   "plantConfig": {
     "initialPlantCount": 40,
-    "energyPerPlant": 2,
-    "dailyPlantGrowth": 5
+    "energyPerPlant": 40,
+    "dailyPlantGrowth": 40
   },
   "animalConfig": {
-    "initialAnimalCount": 40,
-    "initialEnergy": 2,
-    "energyToReproduce": 5,
-    "energyConsumedByParents": 5,
+    "initialAnimalCount": 15,
+    "initialEnergy": 40,
+    "energyToReproduce": 1,
+    "energyConsumedByParents": 1,
     "minMutations": 1,
-    "maxMutations": 10,
+    "maxMutations": 2,
     "genomeLength": 10,
     "behaviorVariant": "CRAZINESS"
   }

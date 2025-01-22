@@ -57,10 +57,7 @@ public class Simulation implements Runnable, SimulationVisitor {
     this.worldMap = initialiseWorldMap();
 
   }
-  public int getAnimalEnergy(){
-    return configAnimal.initialEnergy();
 
-  }
   private SimulatableMap<Animal> initialiseWorldMap(){
     SimulatableMap<Animal> worldMap = switch (configMap.mapVariant()){
       case MapVariant.FIRES ->
@@ -206,6 +203,9 @@ public class Simulation implements Runnable, SimulationVisitor {
 
   public int getDayCount() {
     return dayCount;
+  }
+  public int getInitialEnergy(){
+    return configAnimal.initialEnergy();
   }
 
   public void acceptDataCollector(SimulationDataCollector dataCollector) {
