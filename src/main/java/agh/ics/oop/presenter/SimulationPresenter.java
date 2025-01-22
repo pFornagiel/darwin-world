@@ -112,8 +112,6 @@ public class SimulationPresenter implements MapChangeListener {
   }
   private void drawMap() {
     gridManager.clearGrid();
-    gridManager.updateGridConstraints();
-    gridRenderer.drawAxes();
     if (dataCollector == null) {
       throw new DatacollectorNotInitialized();
     }
