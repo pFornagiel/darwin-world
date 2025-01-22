@@ -204,9 +204,6 @@ public class Simulation implements Runnable, SimulationVisitor {
   public int getDayCount() {
     return dayCount;
   }
-  public int getInitialEnergy(){
-    return configAnimal.initialEnergy();
-  }
 
   public void acceptDataCollector(SimulationDataCollector dataCollector) {
     dataCollector.setWorldMap(worldMap);

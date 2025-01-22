@@ -12,6 +12,5 @@ public record SimulationStatistics(
   double averageEnergy,
   double averageLifespan,
   double averageChildren,
-  int amountOfDays,
-  int initialEnergy
+  int amountOfDays
 ) {}

@@ -1,5 +1,8 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.configuration.ConfigAnimal;
+import agh.ics.oop.model.configuration.ConfigMap;
+import agh.ics.oop.model.configuration.ConfigPlant;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
@@ -90,6 +93,10 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML private Label activeGene;
   @FXML private Label dayOfDeath;
   @FXML private Label animalTitle;
+
+  private ConfigMap mapConfig;
+  private ConfigPlant plantConfig;
+  private ConfigAnimal animalConfig;
 
   private final Label[] ANIMAL_STATS_LABELS = new Label[8];
 
@@ -214,7 +221,13 @@ public class SimulationPresenter implements MapChangeListener {
       );
     }
   }
-  public void initializeSimulation(Simulation simulation) {
+  public void initializeSimulation(Simulation simulation,
+                                   ConfigMap mapConfig,
+                                   ConfigAnimal animalConfig,
+                                   ConfigPlant plantConfig) {
+    this.mapConfig = mapConfig;
+    this.animalConfig = animalConfig;
+    this.plantConfig = plantConfig;
     this.simulation = simulation;
   }
   private void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset, Vector2d size) {
@@ -234,7 +247,7 @@ public class SimulationPresenter implements MapChangeListener {
 
       Color color = getAnimalColor(dataCollector.getAnimalData(currentAnimal),
               dataCollector.getSimulationStatistics(),
-              dataCollector.getSimulationStatistics().initialEnergy());
+              animalConfig.initialEnergy());
 
       StackPane stackPane = new StackPane();
       Rectangle cell = new Rectangle();
@@ -297,7 +310,7 @@ public class SimulationPresenter implements MapChangeListener {
     averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
     averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));
     averageChildren.setText(String.format("%.2f", statistics.averageChildren()));
-    if (statisticsCSVSaver != null) {
+    if (statisticsCSVSaver != null && mapConfig.saveToCsv()) {
       statisticsCSVSaver.saveStatistics(statistics);
     }
   }
