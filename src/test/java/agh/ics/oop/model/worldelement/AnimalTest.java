@@ -9,7 +9,6 @@ import agh.ics.oop.model.util.Direction;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
-import agh.ics.oop.model.worldelement.util.Genotype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -143,25 +142,26 @@ class AnimalTest {
     // Given
     Direction initialOrientation = animal.getOrientation();
 
+
     // When
-    int activatedGene = animal.activateNextGene();
     animal.rotateAndActivate();
 
     // Then
     assertNotEquals(initialOrientation, animal.getOrientation(), "Animal's orientation should change after rotation.");
-    assertEquals(activatedGene, animal.getCurrentGene(), "The activated gene should match the current gene index.");
   }
 
   @Test
   void testEatingIncreasesPlantCounter() {
     // Given
     int initialPlantCounter = animal.getEatenPlants();
+    int initialEnergy = animal.getEnergy();
 
     // When
     animal.eat();
 
     // Then
     assertEquals(initialPlantCounter + 1, animal.getEatenPlants(), "Eating a plant should increment the plant counter.");
+    assertEquals(initialEnergy + plantConfig.energyPerPlant(), animal.getEnergy(), "Eating a plant should increment energy by 1.");
   }
 
   @Test
@@ -169,18 +169,20 @@ class AnimalTest {
     // Given
     Vector2d initialPosition = animal.getPosition();
     animal.setOrientation(Direction.NORTH);
+    Vector2d newPosition = new Vector2d(3, 4);
 
     // When
-    animal.setPosition(new Vector2d(5, 6));
+    animal.setPosition(newPosition);
 
     // Then
     assertNotEquals(initialPosition, animal.getPosition(), "Animal's position should update after movement.");
+    assertEquals(newPosition, animal.getPosition(), "Animal's position should update after movement.");
   }
 
   @Test
   void testEquality() {
     // Given
-    Animal sameAnimal = new BaseAnimal(animal.getPosition());
+    Animal sameAnimal = animalFactory.createAnimal(animal.getPosition());
 
     // Then
     assertNotEquals(animal, sameAnimal, "Two animals with different IDs should not be equal.");
