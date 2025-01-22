@@ -186,26 +186,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   public UUID getId() {
     return id;
   }
-
-  @Override
-  public String toString() {
-//    Temporary solution
-    return "";
-//    Boundary currentBoundary = getBoundaries();
-//    String map = "";
-//    for(int i=0;i<currentBoundary.upperBoundary().getY();i++){
-//      for(int j=0; j<currentBoundary.upperBoundary().getX();j++){
-//        M position = tileMap.get(new Vector2d(j,i));
-//        if(position.isOccupied()){
-//          map += position.getElementList().getFirst().toString() + ' ';
-//        } else {
-//          map += tileMap.get(new Vector2d(j,i)).isPlantGrown() ? "■ " : "□ ";
-//        }
-//      }
-//      map += "\n";
-//    }
-//    return map;
-  }
-
+  
 
 }

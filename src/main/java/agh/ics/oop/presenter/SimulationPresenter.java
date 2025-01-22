@@ -240,7 +240,7 @@ public class SimulationPresenter implements MapChangeListener {
 
       Color color = getAnimalColor(dataCollector.getAnimalStatistics(currentAnimal),
               dataCollector.getSimulationStatistics(),
-              simulation.getAnimalEnergy());
+              dataCollector.getSimulationStatistics().initialEnergy());
 
       StackPane stackPane = new StackPane();
       Rectangle cell = new Rectangle();
