@@ -41,6 +41,7 @@ public class ParametersPresenter {
     @FXML private TextField mapHeight;
     @FXML private TextField plantCount;
     @FXML private TextField plantEnergy;
+    @FXML private TextField plantPerDay;
     @FXML private TextField animalCount;
     @FXML private TextField animalEnergy;
     @FXML private TextField breedEnergyNeeded;
@@ -50,6 +51,7 @@ public class ParametersPresenter {
     @FXML private TextField genesCount;
     @FXML private CheckBox fireMap;
     @FXML private CheckBox insanity;
+    @FXML private CheckBox saveToCsv;
     @FXML private TextField mapRefreshInterval;
     @FXML private TextField fireOutburstInterval;
     @FXML private TextField fireDuration;
@@ -57,6 +59,7 @@ public class ParametersPresenter {
     @FXML private void mapHeight() {}
     @FXML private void plantCount() {}
     @FXML private void plantEnergy() {}
+    @FXML private void plantPerDay() {}
     @FXML private void animalCount() {}
     @FXML private void animalEnergy() {}
     @FXML private void breedEnergyNeeded() {}
