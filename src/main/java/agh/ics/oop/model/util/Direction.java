@@ -1,5 +1,6 @@
 package agh.ics.oop.model.util;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public enum Direction {
@@ -57,7 +58,8 @@ public enum Direction {
   public Direction previous() {
     int currentIndex = this.ordinal();
     Direction[] values = Direction.values();
-    return values[Math.abs(currentIndex - 1) % Direction.values().length];
+    System.out.println(currentIndex);
+    return values[Math.floorMod(currentIndex - 1, values.length)];
   }
 
   public Direction opposite() {
@@ -68,13 +70,12 @@ public enum Direction {
 
   public Direction rotate(int n){
     int currentIndex = this.ordinal();
-    return Direction.values()[Math.abs(currentIndex + n) % Direction.values().length];
+    Direction[] values = Direction.values();
+    return values[Math.floorMod(currentIndex + n, values.length)];
   }
 
   public Vector2d toUnitVector() {
     int currentIndex = this.ordinal();
     return DIRECTION_UNIT_VECTORS[currentIndex];
   }
-
-
 }
