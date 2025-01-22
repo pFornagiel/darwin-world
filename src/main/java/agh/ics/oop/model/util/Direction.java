@@ -76,4 +76,6 @@ public enum Direction {
     int currentIndex = this.ordinal();
     return DIRECTION_UNIT_VECTORS[currentIndex];
   }
+
+
 }
