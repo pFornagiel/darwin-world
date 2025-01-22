@@ -7,7 +7,6 @@ import javafx.geometry.VPos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-
 public class GridRenderer {
     private final GridPane gridPane;
     private final GridManager gridManager;
@@ -17,7 +16,6 @@ public class GridRenderer {
         this.gridPane = gridPane;
         this.gridManager = gridManager;
     }
-
 
     public void setGridCell(int xPosition, int yPosition, Color color) {
         double cellSize = gridManager.calculateCellSize();
@@ -49,8 +47,9 @@ public class GridRenderer {
         Vector2d gridPaneOffset = gridManager.getGridPaneOffset();
 
         setAxisLabel(0, 0, "y/x");
+        // Changed the Y-axis label calculation
         for (int i = 1; i < gridPaneSize.getY(); i++) {
-            setAxisLabel(0, i, String.valueOf(gridPaneSize.getY() - 1 - i + gridPaneOffset.getY()));
+            setAxisLabel(0, i, String.valueOf(i - 1 + gridPaneOffset.getY()));
         }
         for (int i = 1; i < gridPaneSize.getX(); i++) {
             setAxisLabel(i, 0, String.valueOf(i - 1 + gridPaneOffset.getX()));

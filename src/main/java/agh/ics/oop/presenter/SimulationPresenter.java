@@ -215,7 +215,7 @@ public class SimulationPresenter implements MapChangeListener {
     for (Vector2d position : positions) {
       gridRenderer.setGridCell(
               position.getX() - offset.getX() + 1,
-              size.getY() - 1 - (position.getY() - offset.getY()),
+               (position.getY() - offset.getY() + 1),
               color
       );
     }
@@ -229,7 +229,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     for (Vector2d position : positionsCopy) {
       int x = position.getX() - offset.getX() + 1;
-      int y = size.getY() - 1 - (position.getY() - offset.getY());
+      int y = (position.getY() - offset.getY()) + 1;
 
       List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
       Animal currentAnimal = getChosenAnimal(position, animals);
