@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import agh.ics.oop.model.exception.util.DatacollectorNotInitialized;
 
 import static agh.ics.oop.presenter.util.AnimalColor.getAnimalColor;
 import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
@@ -114,7 +115,7 @@ public class SimulationPresenter implements MapChangeListener {
     gridManager.updateGridConstraints();
     gridRenderer.drawAxes();
     if (dataCollector == null) {
-      return;
+      throw new DatacollectorNotInitialized();
     }
     SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
