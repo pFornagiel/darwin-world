@@ -24,20 +24,25 @@ public class StatisticsChartManager {
             plantSeries = new XYChart.Series<>();
             chart.setAnimated(false);
             chart.setCreateSymbols(false);
+
             NumberAxis xAxis = (NumberAxis) chart.getXAxis();
             NumberAxis yAxis = (NumberAxis) chart.getYAxis();
+
             xAxis.setLabel("Day");
-            xAxis.setTickUnit(1);
+            xAxis.setTickUnit(5);
             xAxis.setAutoRanging(false);
             xAxis.setForceZeroInRange(false);
             xAxis.setLowerBound(1);
             xAxis.setUpperBound(MAX_DATA_POINTS);
+
             yAxis.setLabel("Count");
             yAxis.setTickUnit(5);
             yAxis.setAutoRanging(true);
             yAxis.setForceZeroInRange(true);
+
             chart.getData().add(animalSeries);
             chart.getData().add(plantSeries);
+
             animalSeries.getNode().setStyle("-fx-stroke: #ff7f0e;");
             plantSeries.getNode().setStyle("-fx-stroke: #1f77b4;");
         });
