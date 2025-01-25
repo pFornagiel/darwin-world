@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="550.0" minWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+<BorderPane minHeight="550.0" minWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter" stylesheets="@simulation.styles.css">
     <center>
-        <AnchorPane prefHeight="350.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+        <AnchorPane id="rootAnchorPane" stylesheets="@parameters.styles.css" prefHeight="350.0" prefWidth="350.0" BorderPane.alignment="CENTER">
             <children>
                 <GridPane fx:id="gridPane" alignment="CENTER" gridLinesVisible="true" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
@@ -159,7 +159,7 @@
         </VBox>
     </top>
     <bottom>
-        <AnchorPane BorderPane.alignment="CENTER">
+        <AnchorPane BorderPane.alignment="CENTER" style="-fx-padding: 10px;">
             <children>
                 <Button fx:id="startButton" layoutX="329.0" layoutY="10.0" mnemonicParsing="false" onAction="#onSimulationStartClicked" style="-fx-min-width: 70;" text="Start" AnchorPane.rightAnchor="90.0" />
                 <Button fx:id="pauseButton" layoutX="507.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPauseButtonClicked" style="-fx-min-width: 70;" text="Pause" AnchorPane.rightAnchor="10.0" />

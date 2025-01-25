@@ -1,0 +1,134 @@
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-background-color: #f4f4f4;
+}
+
+.grid-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.label.underline {
+    -fx-underline: true;
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #3498db;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+    -fx-padding: 8px 16px;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.button:pressed {
+    -fx-background-color: #1c5980;
+}
+
+.line-chart {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.axis-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.chart-series-line {
+    -fx-stroke-width: 2px;
+}
+
+.default-color0.chart-series-line { -fx-stroke: #ff7f0e; }
+.default-color1.chart-series-line { -fx-stroke: #1f77b4; }
+
+.default-color0.chart-line-symbol { -fx-background-color: #ff7f0e, white; }
+.default-color1.chart-line-symbol { -fx-background-color: #1f77b4, white; }
+
+.custom-legend {
+    -fx-padding: 10px;
+    -fx-background-color: #f4f4f4;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.legend-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #2c3e50;
+}
+
+.legend-color-box {
+    -fx-min-width: 20px;
+    -fx-min-height: 10px;
+    -fx-background-color: #ff7f0e;
+}
+
+.legend-color-box.plants {
+    -fx-background-color: #1f77b4;
+}
+
+.vbox, .hbox {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+}
+
+.vbox {
+    -fx-background-color: #f4f4f4;
+}
+
+.hbox {
+    -fx-alignment: center;
+}
+
+.anchor-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.statistics-grid {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 10px;
+}
+
+.animal-details-grid {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 10px;
+}
+
+.bottom-buttons {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+    -fx-alignment: center-right;
+}

@@ -1,0 +1,61 @@
+
+.split-pane {
+    -fx-background-image: url("forest.jpg");
+    -fx-background-size: cover;
+}
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-weight: normal;
+    -fx-text-fill: #333333;
+}
+
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.text-field {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 4px;
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #3498db;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.button:pressed {
+    -fx-background-color: #1c5980;
+}
+
+.check-box {
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #333333;
+}
+
+.check-box .box {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 4px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #3498db;
+}
+
+.split-pane-divider {
+    -fx-background-color: transparent;
+}
+
