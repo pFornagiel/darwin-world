@@ -34,9 +34,10 @@
     <right>
         <VBox prefWidth="250.0" spacing="10.0" style="-fx-background-color: #f4f4f4;" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets right="5.0" />
+                <Insets right="5.0" bottom="20.0"/>
             </BorderPane.margin>
             <children>
+                <!-- Animal Statistics Section -->
                 <Label fx:id="animalTitle" text="No Animal Selected" underline="true">
                     <font>
                         <Font name="System Bold" size="14.0" />
@@ -84,6 +85,15 @@
                         <Label fx:id="dayOfDeath" text="-" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                     </children>
                 </GridPane>
+
+                <!-- Spacing between Animal Statistics and Map Statistics -->
+                <VBox spacing="20"> <!-- Add spacing here -->
+                    <padding>
+                        <Insets top="20" bottom="0" /> <!-- Add padding for more space -->
+                    </padding>
+                </VBox>
+
+                <!-- Map Statistics Section -->
                 <Label text="Simulation Statistics" underline="true">
                     <font>
                         <Font name="System Bold" size="14.0" />
@@ -95,19 +105,23 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="140.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" /> <!-- Free Fields -->
+                        <RowConstraints minHeight="20.0" prefHeight="60.0" vgrow="SOMETIMES" /> <!-- Most Popular Genotypes -->
+                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" /> <!-- Avg. Energy -->
+                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" /> <!-- Avg. Lifespan -->
+                        <RowConstraints minHeight="20.0" prefHeight="25.0" vgrow="SOMETIMES" /> <!-- Avg. Children -->
                     </rowConstraints>
                     <children>
+                        <!-- Free Fields -->
                         <Label text="Free fields:" GridPane.rowIndex="0" />
                         <Label fx:id="freeFields" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
+                        <!-- Most Popular Genotypes -->
                         <Label text="Most Popular Genotypes:" GridPane.rowIndex="1" />
-                        <VBox fx:id="popularGenotypes" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <VBox fx:id="popularGenotypes" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <padding>
+                                <Insets top="10" bottom="10" /> <!-- Add padding for better spacing -->
+                            </padding>
                             <children>
                                 <Label fx:id="genotype1" text="-" />
                                 <Label fx:id="genotype2" text="-" />
@@ -115,12 +129,15 @@
                             </children>
                         </VBox>
 
+                        <!-- Avg. Energy -->
                         <Label text="Avg. energy:" GridPane.rowIndex="2" />
                         <Label fx:id="averageEnergy" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
+                        <!-- Avg. Lifespan -->
                         <Label text="Avg. lifespan:" GridPane.rowIndex="3" />
                         <Label fx:id="averageLifespan" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
+                        <!-- Avg. Children -->
                         <Label text="Avg. children:" GridPane.rowIndex="4" />
                         <Label fx:id="averageChildren" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     </children>
