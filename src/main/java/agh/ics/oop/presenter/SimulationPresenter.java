@@ -30,7 +30,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -55,6 +54,8 @@ public class SimulationPresenter implements MapChangeListener {
 
   private boolean simulationStarted = false;
   private Simulation simulation;
+  private SimulationData simulationData;
+  private SimulationStatistics simulationStatistics;
 
   @FXML
   private GridPane gridPane;
@@ -116,15 +117,16 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
   }
+
   public void setSimulation(Simulation simulation) {
     this.simulation = simulation;
   }
+
   private void drawMap() {
     gridManager.clearGrid();
-    if (dataCollector == null) {
+    if (simulationData == null) {
       throw new DatacollectorNotInitialized();
     }
-    SimulationData simulationData = dataCollector.getSimulationData();
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
     drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
@@ -132,31 +134,26 @@ public class SimulationPresenter implements MapChangeListener {
     drawAnimalElements(simulationData.animalPositionSet(), offset, size);
     drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
   }
+
   private Animal selectAnimal(Animal animal) {
     if (animal != null) {
       return animal;
     }
 
-    if (dataCollector == null) {
+    if (simulationStatistics == null) {
       return null;
     }
 
-    SimulationStatistics stats = dataCollector.getSimulationStatistics();
-    if (stats == null) {
-      return null;
-    }
-
-    List<Genotype> dominantGenotypes = new ArrayList<>(stats.mostPopularGenotypes());
+    List<Genotype> dominantGenotypes = simulationStatistics.mostPopularGenotypes();
     if (dominantGenotypes.isEmpty()) {
       return null;
     }
 
-    List<Vector2d> positions = new ArrayList<>(dataCollector.getSimulationData().animalPositionSet());
-    for (Vector2d position : positions) {
-      List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
+    for (Vector2d position : simulationData.animalPositionSet()) {
+      List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
       if (animals.isEmpty()) continue;
       for (Animal a : animals) {
-        if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
+        if (a.getGenotype().equals(dominantGenotypes.get(0))) {
           return a;
         }
       }
@@ -172,7 +169,6 @@ public class SimulationPresenter implements MapChangeListener {
       e.printStackTrace();
     }
   }
-
 
   private void updateAnimalStatisticsDisplay(Animal animal) {
     if (animal != null) {
@@ -214,15 +210,15 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void drawElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
-
     for (Vector2d position : positions) {
       gridRenderer.setGridCell(
               position.getX() - offset.getX() + 1,
-               (position.getY() - offset.getY() + 1),
+              (position.getY() - offset.getY() + 1),
               color
       );
     }
   }
+
   public void initializeSimulation(Simulation simulation,
                                    ConfigMap mapConfig,
                                    ConfigAnimal animalConfig,
@@ -232,13 +228,13 @@ public class SimulationPresenter implements MapChangeListener {
     this.plantConfig = plantConfig;
     this.simulation = simulation;
   }
-  private void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset, Vector2d size) {
 
+  private void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
       int x = position.getX() - offset.getX() + 1;
       int y = (position.getY() - offset.getY()) + 1;
 
-      List<Animal> animals = new ArrayList<>(dataCollector.getAnimalsAtPosition(position));
+      List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
       Animal currentAnimal = getChosenAnimal(position, animals);
 
       if (currentAnimal == null) {
@@ -246,7 +242,7 @@ public class SimulationPresenter implements MapChangeListener {
       }
 
       Color color = getAnimalColor(dataCollector.getAnimalData(currentAnimal),
-              dataCollector.getSimulationStatistics(),
+              simulationStatistics,
               animalConfig.initialEnergy());
 
       StackPane stackPane = new StackPane();
@@ -261,7 +257,7 @@ public class SimulationPresenter implements MapChangeListener {
 
       final Vector2d finalPosition = position;
       stackPane.setOnMouseClicked(event -> {
-        chosenAnimal = getChosenAnimal(finalPosition, new ArrayList<>(dataCollector.getAnimalsAtPosition(finalPosition)));
+        chosenAnimal = getChosenAnimal(finalPosition, dataCollector.getAnimalsAtPosition(finalPosition));
         updateAnimalStatistics(chosenAnimal);
       });
 
@@ -273,7 +269,8 @@ public class SimulationPresenter implements MapChangeListener {
     if (animalList.isEmpty()) {
       return null;
     }
-    Collections.sort(animalList);
+    // TO DO
+    // Collections.sort(animalList);
     return animalList.getFirst();
   }
 
@@ -282,11 +279,12 @@ public class SimulationPresenter implements MapChangeListener {
     Platform.runLater(() -> {
       try {
         if (dataCollector != null && simulationStarted && simulation != null) {
-          SimulationStatistics stats = dataCollector.getSimulationStatistics();
-          chartManager.updateChart(stats);
+          simulationData = dataCollector.getSimulationData();
+          simulationStatistics = dataCollector.getSimulationStatistics();
+          chartManager.updateChart(simulationStatistics);
           drawMap();
-          if (stats != null) {
-            updateSimulationStatistics(stats);
+          if (simulationStatistics != null) {
+            updateSimulationStatistics(simulationStatistics);
             updateAnimalStatistics(chosenAnimal);
           }
         }
@@ -317,11 +315,10 @@ public class SimulationPresenter implements MapChangeListener {
     }
   }
 
-
   @FXML
   private void onSimulationStartClicked() {
     try {
-      if(simulationStarted)
+      if (simulationStarted)
         return;
       simulation.addObserver(this);
       dataCollector = new SimulationDataCollector(simulation);
