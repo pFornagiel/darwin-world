@@ -46,4 +46,18 @@ public class ElementRenderer {
             gridPane.add(stackPane, x, y);
         }
     }
+
+    public void drawColoredElements(Iterable<Vector2d> positions, Color color, Vector2d offset) {
+        for (Vector2d position : positions) {
+            int x = position.getX() - offset.getX() + 1;
+            int y = position.getY() - offset.getY() + 1;
+
+            Rectangle cell = new Rectangle();
+            cell.setWidth(gridManager.calculateCellSize());
+            cell.setHeight(gridManager.calculateCellSize());
+            cell.setFill(color);
+
+            gridPane.add(cell, x, y);
+        }
+    }
 }
