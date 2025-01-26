@@ -19,11 +19,11 @@ public class MapRenderer {
 
     public MapRenderer(GridManager gridManager, GridPane gridPane,
                        SimulationDataCollector dataCollector,
-                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer) {
+                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader) {
         this.gridManager = gridManager;
         this.gridPane = gridPane;
         this.borderRenderer = borderRenderer;
-        this.imageLoader = new ImageLoader();
+        this.imageLoader = imageLoader;
         this.elementRenderer = new ElementRenderer(gridManager, gridPane);
         this.animalRenderer = new AnimalRenderer(gridManager, gridPane, dataCollector, simulationPresenter, imageLoader);
     }

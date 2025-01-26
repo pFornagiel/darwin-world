@@ -113,6 +113,8 @@ public class SimulationPresenter implements MapChangeListener {
   private AnimalStatisticsUpdater animalStatisticsUpdater;
   private BorderRenderer borderRenderer;
   private MapRenderer mapRenderer;
+  ImageLoader imageLoader;
+
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane, grassGridPane);
@@ -126,15 +128,10 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[5] = genome;
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
+    imageLoader =  new ImageLoader();
     grassImages = new Image[amountOfGrassImages];
-    for (int i = 0; i < amountOfGrassImages; i++) {
-      grassImages[i] = new Image(getClass().getResourceAsStream("/grasses/grass" + (i + 1) + ".png"));
-    }
-
-    verdantImages = new Image[amountOfVerdantImages];
-    for (int i = 0; i < amountOfVerdantImages; i++) {
-      verdantImages[i] = new Image(getClass().getResourceAsStream("/verdant/verdant" + (i + 1) + ".png"));
-    }
+    grassImages = imageLoader.getGrassImages();
+    verdantImages = imageLoader.getVerdantImages();
 
     isGrassGridInitialized = false;
       animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
@@ -254,9 +251,8 @@ public class SimulationPresenter implements MapChangeListener {
 
           if (!isGrassGridInitialized) {
             initializeGrassGrid();
-            ImageLoader imageLoader = new ImageLoader();
 
-            mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this,borderRenderer);
+            mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this,borderRenderer,imageLoader);
             isGrassGridInitialized = true;
           }
 
