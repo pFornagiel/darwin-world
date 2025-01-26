@@ -14,6 +14,7 @@ public class BorderRenderer {
     private final Image borderImage;
     private final GridPane grassGridPane;
     private final int MAX_MAP_SIZE_FOR_IMAGES;
+    private static final Color BORDER_COLOR = new Color(0.6,0.3,0.1,1);
     public BorderRenderer(GridManager gridManager, Image borderImage, GridPane grassGridPane, int MAX_MAP_SIZE_FOR_IMAGES) {
         this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
         this.gridManager = gridManager;
@@ -27,7 +28,7 @@ public class BorderRenderer {
         int mapArea = mapWidth * mapHeight;
 
         if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
-            renderColoredBorders(mapWidth, mapHeight, new Color(0.8, 0.5, 0.2,1));
+            renderColoredBorders(mapWidth, mapHeight, BORDER_COLOR);
         } else {
             if (borderImage == null || borderImage.isError()) return;
 

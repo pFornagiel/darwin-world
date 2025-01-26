@@ -23,7 +23,16 @@ public class AnimalRenderer {
     private final SimulationDataCollector dataCollector;
     private final SimulationPresenter simulationPresenter;
     private final ImageLoader imageLoader;
-    private final int MAX_MAP_SIZE_FOR_IMAGES; // Threshold for switching to colors
+    private final int MAX_MAP_SIZE_FOR_IMAGES;
+
+    private static final String NORTH = "North";
+    private static final String SOUTH = "South";
+    private static final String EAST = "East";
+    private static final String WEST = "West";
+    private static final String NORTH_EAST = "North-East";
+    private static final String NORTH_WEST = "North-West";
+    private static final String SOUTH_EAST = "South-East";
+    private static final String SOUTH_WEST = "South-West";
 
     public AnimalRenderer(GridManager gridManager, GridPane gridPane,
                           SimulationDataCollector dataCollector,
@@ -78,32 +87,32 @@ public class AnimalRenderer {
             double rotation = 0;
 
             switch (orientation) {
-                case "NORTH":
+                case NORTH:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     break;
-                case "SOUTH":
+                case SOUTH:
                     snailImageView.setImage(imageLoader.getSnailFront());
                     break;
-                case "EAST":
+                case EAST:
                     snailImageView.setImage(imageLoader.getSnailSide());
                     break;
-                case "WEST":
+                case WEST:
                     snailImageView.setImage(imageLoader.getSnailSide());
                     snailImageView.setScaleX(-1);
                     break;
-                case "NORTH_EAST":
+                case NORTH_EAST:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     rotation = 45;
                     break;
-                case "NORTH_WEST":
+                case NORTH_WEST:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     rotation = -45;
                     break;
-                case "SOUTH_EAST":
+                case SOUTH_EAST:
                     snailImageView.setImage(imageLoader.getSnailFront());
                     rotation = 45;
                     break;
-                case "SOUTH_WEST":
+                case SOUTH_WEST:
                     snailImageView.setImage(imageLoader.getSnailFront());
                     rotation = -45;
                     break;
@@ -144,25 +153,17 @@ public class AnimalRenderer {
 
     private StackPane createColoredCellWithText(Color color, String textContent) {
         double cellSize = gridManager.calculateCellSize();
-
-        // Create the colored cell
         Pane cell = new Pane();
         cell.setMinSize(cellSize, cellSize);
         cell.setPrefSize(cellSize, cellSize);
         cell.setMaxSize(cellSize, cellSize);
-
         BackgroundFill backgroundFill = new BackgroundFill(color, null, null);
         Background background = new Background(backgroundFill);
         cell.setBackground(background);
-
-        // Create the text
         Text text = new Text(textContent);
         text.setFill(Color.WHITE);
-
-        // Create a StackPane to hold the cell and text
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(cell, text);
-
         StackPane.setAlignment(text, Pos.CENTER);
 
         return stackPane;

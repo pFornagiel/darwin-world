@@ -35,10 +35,10 @@ public class MapRenderer {
         int mapArea = mapSize.getX() * mapSize.getY();
 
         if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
-            elementRenderer.drawColoredElements(simulationData.plantPositionSet(), Color.GREEN, offset);
+            elementRenderer.drawColoredElements(simulationData.verdantFieldPositionSet(), Color.GREEN, offset);
+            elementRenderer.drawColoredElements(simulationData.plantPositionSet(), Color.DARKGREEN, offset);
             animalRenderer.drawColoredAnimalElements(simulationData.animalPositionSet(), offset);
             elementRenderer.drawColoredElements(simulationData.firePositionSet(), Color.RED, offset);
-            elementRenderer.drawColoredElements(simulationData.verdantFieldPositionSet(), Color.DARKGREEN, offset);
         } else {
             Image plantImage = imageLoader.getPlantImage();
             Image fireImage = imageLoader.getFireImage();

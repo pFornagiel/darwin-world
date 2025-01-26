@@ -21,40 +21,66 @@ public class ElementRenderer {
 
     public void drawElements(Iterable<Vector2d> positions, Image image, Vector2d offset) {
         for (Vector2d position : positions) {
-            int x = position.getX() - offset.getX() + 1;
-            int y = position.getY() - offset.getY() + 1;
-
-            StackPane stackPane = new StackPane();
-            stackPane.setSnapToPixel(true);
-
-            Rectangle cell = new Rectangle();
-            cell.setWidth(gridManager.calculateCellSize());
-            cell.setHeight(gridManager.calculateCellSize());
-            cell.setFill(new Color(0, 0, 0, 0));
-
-            if (image != null) {
-                ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(gridManager.calculateCellSize());
-                imageView.setFitHeight(gridManager.calculateCellSize());
-                imageView.setPreserveRatio(true);
-                imageView.setSmooth(false);
-                stackPane.getChildren().addAll(cell, imageView);
-            } else {
-                cell.setFill(Color.GRAY);
-                stackPane.getChildren().add(cell);
-            }
-
-            gridPane.add(stackPane, x, y);
+            int x = calculatePosition(position.getX(), offset.getX());
+            int y = calculatePosition(position.getY(), offset.getY());
+            StackPane stackPane = createCell(image);
+            addToGrid(stackPane, x, y);
         }
     }
+
     public void drawColoredElements(Iterable<Vector2d> positions, Color color, Vector2d offset) {
         for (Vector2d position : positions) {
-            int x = position.getX() - offset.getX() + 1;
-            int y = position.getY() - offset.getY() + 1;
-            setGridCell(x, y, color);
+            int x = calculatePosition(position.getX(), offset.getX());
+            int y = calculatePosition(position.getY(), offset.getY());
+            Pane cell = createColoredCell(color);
+            addToGrid(cell, x, y);
         }
     }
-    public void setGridCell(int xPosition, int yPosition, Color color) {
+
+    private int calculatePosition(int position, int offset) {
+        return position - offset + 1;
+    }
+
+    private void addToGrid(Pane pane, int x, int y) {
+        gridPane.add(pane, x, y);
+        GridPane.setHalignment(pane, HPos.CENTER);
+        GridPane.setValignment(pane, VPos.CENTER);
+    }
+
+    private StackPane createCell(Image image) {
+        StackPane stackPane = new StackPane();
+        stackPane.setSnapToPixel(true);
+
+        Rectangle cell = createRectangle();
+        if (image != null) {
+            ImageView imageView = createImageView(image);
+            stackPane.getChildren().addAll(cell, imageView);
+        } else {
+            cell.setFill(Color.GRAY);
+            stackPane.getChildren().add(cell);
+        }
+
+        return stackPane;
+    }
+
+    private Rectangle createRectangle() {
+        double cellSize = gridManager.calculateCellSize();
+        Rectangle cell = new Rectangle(cellSize, cellSize);
+        cell.setFill(new Color(0, 0, 0, 0));
+        return cell;
+    }
+
+    private ImageView createImageView(Image image) {
+        double cellSize = gridManager.calculateCellSize();
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(cellSize);
+        imageView.setFitHeight(cellSize);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(false);
+        return imageView;
+    }
+
+    private Pane createColoredCell(Color color) {
         double cellSize = gridManager.calculateCellSize();
         Pane cell = new Pane();
         cell.setMinSize(cellSize, cellSize);
@@ -65,9 +91,6 @@ public class ElementRenderer {
         Background background = new Background(backgroundFill);
         cell.setBackground(background);
 
-        gridPane.add(cell, xPosition, yPosition);
-        GridPane.setHalignment(cell, HPos.CENTER);
-        GridPane.setValignment(cell, VPos.CENTER);
+        return cell;
     }
-
 }
