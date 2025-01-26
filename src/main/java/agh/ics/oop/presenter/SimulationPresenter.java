@@ -77,8 +77,7 @@ public class SimulationPresenter implements MapChangeListener {
 
   private void initializeHelpersAndManagers() {
     imageLoader = new ImageLoader();
-    backgroundRenderer = new BackgroundRenderer(grassGridPane, imageLoader.getGrassImages(), imageLoader.getVerdantImages());
-    borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane, MAX_MAP_SIZE_FOR_IMAGES);
+    backgroundRenderer = new BackgroundRenderer(grassGridPane, imageLoader.getGrassImages(), imageLoader.getVerdantImages(), MAX_MAP_SIZE_FOR_IMAGES);    borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane, MAX_MAP_SIZE_FOR_IMAGES);
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
   }
 
