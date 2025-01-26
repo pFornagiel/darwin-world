@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.GridPane;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class AnimalRenderer {
 
@@ -20,13 +21,17 @@ public class AnimalRenderer {
     private final Image snailFront;
     private final Image snailSide;
     private final SimulationDataCollector dataCollector;
+    private final Consumer<Animal> onAnimalClicked;
 
-    public AnimalRenderer(GridManager gridManager, Image snailBack, Image snailFront, Image snailSide, SimulationDataCollector dataCollector) {
+
+    public AnimalRenderer(GridManager gridManager, Image snailBack, Image snailFront, Image snailSide,
+                          SimulationDataCollector dataCollector, Consumer<Animal> onAnimalClicked) {
         this.gridManager = gridManager;
         this.snailBack = snailBack;
         this.snailFront = snailFront;
         this.snailSide = snailSide;
         this.dataCollector = dataCollector;
+        this.onAnimalClicked = onAnimalClicked;
     }
 
     public void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset, Vector2d size, GridPane gridPane) {
@@ -102,11 +107,13 @@ public class AnimalRenderer {
 
             stackPane.getChildren().addAll(cell, snailImageView);
 
-            final Vector2d finalPosition = position;
             stackPane.setOnMouseClicked(event -> {
-                Animal chosenAnimal = getChosenAnimal(finalPosition, dataCollector.getAnimalsAtPosition(finalPosition));
-                // You can pass a callback or use an event bus to notify the presenter about the chosen animal
+                Animal chosenAnimal = getChosenAnimal(position, animals);
+                if (chosenAnimal != null && onAnimalClicked != null) {
+                    onAnimalClicked.accept(chosenAnimal); // Pass the chosen animal to the handler
+                }
             });
+
             gridPane.setSnapToPixel(true);
             gridPane.add(stackPane, x, y);
         }

@@ -18,6 +18,7 @@ import agh.ics.oop.presenter.renderer.AnimalRenderer;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.renderer.BorderRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
+import agh.ics.oop.presenter.statistics.StatisticsUpdater;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -37,18 +38,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.Random;
 import agh.ics.oop.model.exception.util.DatacollectorNotInitialized;
 
-import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
-
 public class SimulationPresenter implements MapChangeListener {
 
-  private static final String NO_ANIMAL_SELECTED = "No Animal Selected";
-  private static final String ALIVE = "Alive";
-  private static final String ANIMAL_AT = "Animal at (%d, %d)";
   private static final String SIMULATION_ERROR_TITLE = "Simulation Error";
   private static final String SIMULATION_ERROR_MESSAGE = "Failed to start simulation: ";
   private static final String RESUME = "Resume";
   private static final String PAUSE = "Pause";
-  private static final String DASH = "-";
   private static final String PARAMETERS = "parameters.fxml";
   private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
 
@@ -111,6 +106,7 @@ public class SimulationPresenter implements MapChangeListener {
   private Image plantImage = new Image(getClass().getResourceAsStream("/plant.png"));
   private Image borderImage;
   private MapRenderer mapRenderer;
+  private StatisticsUpdater statisticsUpdater;
 
   private ConfigMap mapConfig;
   private ConfigPlant plantConfig;
@@ -140,7 +136,6 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[5] = genome;
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
-
     grassImages = new Image[amountOfGrassImages];
     for (int i = 0; i < amountOfGrassImages; i++) {
       grassImages[i] = new Image(getClass().getResourceAsStream("/grasses/grass" + (i + 1) + ".png"));
@@ -152,12 +147,12 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     isGrassGridInitialized = false;
-    mapRenderer = new MapRenderer(gridManager, gridPane, plantImage, fireImage, snailBack, snailFront, snailSide, dataCollector);
-    mapRenderer.setOnAnimalClicked(this::onAnimalClicked);
+    mapRenderer = new MapRenderer(gridManager, gridPane, plantImage, fireImage, snailBack, snailFront, snailSide, dataCollector, this);    animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
 
     borderImage = new Image(getClass().getResourceAsStream("/border.png"));
     borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
-    animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
+    statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3,
+            averageEnergy, averageLifespan, averageChildren);
   }
 
   public void onAnimalClicked(Vector2d position, List<Animal> animals) {
@@ -210,8 +205,6 @@ public class SimulationPresenter implements MapChangeListener {
     borderRenderer.render(offset, size);
     drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
     drawElements(simulationData.firePositionSet(), fireImage, offset, size);
-
-    // Use animalRenderer only if it is initialized
     if (animalRenderer != null) {
       animalRenderer.drawAnimalElements(simulationData.animalPositionSet(), offset, size, gridPane);
     }
@@ -301,89 +294,6 @@ public class SimulationPresenter implements MapChangeListener {
     this.simulation = simulation;
   }
 
-  private void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset, Vector2d size) {
-    if (snailBack.isError() || snailFront.isError() || snailSide.isError()) {
-      System.err.println("Failed to load snail images.");
-      return;
-    }
-    double cellSize = gridManager.calculateCellSize();
-
-    for (Vector2d position : positions) {
-      int x = position.getX() - offset.getX() + 1;
-      int y = (position.getY() - offset.getY()) + 1;
-
-      List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
-      Animal currentAnimal = getChosenAnimal(position, animals);
-
-      if (currentAnimal == null) {
-        continue;
-      }
-
-      StackPane stackPane = new StackPane();
-      stackPane.setSnapToPixel(true);
-      Rectangle cell = new Rectangle();
-      cell.setWidth(cellSize);
-      cell.setHeight(cellSize);
-      cell.setFill(new Color(0, 0, 0, 0));
-
-      String orientation = String.valueOf(currentAnimal.getOrientation());
-      ImageView snailImageView = new ImageView();
-      snailImageView.setFitWidth(cellSize);
-      snailImageView.setFitHeight(cellSize);
-      snailImageView.setPreserveRatio(true);
-      snailImageView.setSmooth(false);
-
-      double rotation = 0;
-
-      switch (orientation) {
-        case "North":
-          snailImageView.setImage(snailBack);
-          break;
-        case "South":
-          snailImageView.setImage(snailFront);
-          break;
-        case "East":
-          snailImageView.setImage(snailSide);
-          break;
-        case "West":
-          snailImageView.setImage(snailSide);
-          snailImageView.setScaleX(-1);
-          break;
-        case "North-East":
-          snailImageView.setImage(snailBack);
-          rotation = 45;
-          break;
-        case "North-West":
-          snailImageView.setImage(snailBack);
-          rotation = -45;
-          break;
-        case "South-East":
-          snailImageView.setImage(snailFront);
-          rotation = 45;
-          break;
-        case "South-West":
-          snailImageView.setImage(snailFront);
-          rotation = -45;
-          break;
-        default:
-          snailImageView.setImage(snailFront);
-          break;
-      }
-
-      snailImageView.setRotate(rotation);
-
-      stackPane.getChildren().addAll(cell, snailImageView);
-
-      final Vector2d finalPosition = position;
-      stackPane.setOnMouseClicked(event -> {
-        chosenAnimal = getChosenAnimal(finalPosition, dataCollector.getAnimalsAtPosition(finalPosition));
-        updateAnimalStatistics(chosenAnimal);
-      });
-      gridPane.setSnapToPixel(true);
-      gridPane.add(stackPane, x, y);
-    }
-  }
-
   private Animal getChosenAnimal(Vector2d position, List<Animal> animalList) {
     if (animalList.isEmpty()) {
       return null;
@@ -406,7 +316,8 @@ public class SimulationPresenter implements MapChangeListener {
           }
 
           if (simulationStatistics != null) {
-            updateSimulationStatistics(simulationStatistics);
+            animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
+            statisticsUpdater.updateStatistics(simulationStatistics); // Use StatisticsUpdater
             updateAnimalStatistics(chosenAnimal);
           }
         }
@@ -418,33 +329,13 @@ public class SimulationPresenter implements MapChangeListener {
     });
   }
 
-  private void updateSimulationStatistics(SimulationStatistics statistics) {
-    freeFields.setText(String.valueOf(statistics.amountOfFreeFields()));
-    List<Genotype> mostPopularGenotypes = statistics.mostPopularGenotypes();
-    Label[] genotypeLabels = {genotype1, genotype2, genotype3};
-    for (int i = 0; i < genotypeLabels.length; i++) {
-      if (i < mostPopularGenotypes.size()) {
-        genotypeLabels[i].setText(mostPopularGenotypes.get(i).toString());
-      } else {
-        genotypeLabels[i].setText(DASH);
-      }
-    }
-    averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
-    averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));
-    averageChildren.setText(String.format("%.2f", statistics.averageChildren()));
-    if (statisticsCSVSaver != null && mapConfig.saveToCsv()) {
-      statisticsCSVSaver.saveStatistics(statistics);
-    }
-  }
-
-  @FXML
-  private void onSimulationStartClicked() {
+  public void onSimulationStartClicked() {
     try {
       if (simulationStarted)
         return;
       simulation.addObserver(this);
-      dataCollector = new SimulationDataCollector(simulation); // Initialize dataCollector
-      animalRenderer = new AnimalRenderer(gridManager, snailBack, snailFront, snailSide, dataCollector); // Initialize animalRenderer here
+      dataCollector = new SimulationDataCollector(simulation);
+      animalRenderer = new AnimalRenderer(gridManager, snailBack, snailFront, snailSide, dataCollector, this::handleAnimalClick); // Pass click handler
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
       simulationEngine.runAsync();
@@ -453,12 +344,10 @@ public class SimulationPresenter implements MapChangeListener {
       startButton.setDisable(true);
       simulationStarted = true;
       gridManager.setGridDimensions(dataCollector.getWorldMap());
-
     } catch (Exception e) {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
   }
-
 
   @FXML
   private void onPauseButtonClicked() {
@@ -466,6 +355,12 @@ public class SimulationPresenter implements MapChangeListener {
       isPaused = !isPaused;
       simulation.togglePause();
       pauseButton.setText(isPaused ? RESUME : PAUSE);
+    }
+  }
+  private void handleAnimalClick(Animal animal) {
+    if (animal != null) {
+      chosenAnimal = animal;
+      updateAnimalStatistics(chosenAnimal);
     }
   }
 

@@ -24,9 +24,11 @@ public class MapRenderer {
     private final Image snailFront;
     private final Image snailSide;
     private final SimulationDataCollector dataCollector;
+    private final SimulationPresenter simulationPresenter; // Add reference to SimulationPresenter
 
     public MapRenderer(GridManager gridManager, GridPane gridPane, Image plantImage, Image fireImage,
-                       Image snailBack, Image snailFront, Image snailSide, SimulationDataCollector dataCollector) {
+                       Image snailBack, Image snailFront, Image snailSide, SimulationDataCollector dataCollector,
+                       SimulationPresenter simulationPresenter) { // Add SimulationPresenter parameter
         this.gridManager = gridManager;
         this.gridPane = gridPane;
         this.plantImage = plantImage;
@@ -35,6 +37,7 @@ public class MapRenderer {
         this.snailFront = snailFront;
         this.snailSide = snailSide;
         this.dataCollector = dataCollector;
+        this.simulationPresenter = simulationPresenter; // Initialize SimulationPresenter
     }
 
     public void drawMap(SimulationData simulationData) {
@@ -154,10 +157,10 @@ public class MapRenderer {
 
             final Vector2d finalPosition = position;
             stackPane.setOnMouseClicked(event -> {
-                if (onAnimalClicked != null) {
-                    onAnimalClicked.onAnimalClicked(finalPosition, dataCollector.getAnimalsAtPosition(finalPosition));
-                }
+                // Directly call the method in SimulationPresenter
+                simulationPresenter.onAnimalClicked(finalPosition, animals);
             });
+
             gridPane.setSnapToPixel(true);
             gridPane.add(stackPane, x, y);
         }
@@ -167,19 +170,6 @@ public class MapRenderer {
         if (animalList.isEmpty()) {
             return null;
         }
-        // TO DO
-        // Collections.sort(animalList);
         return animalList.getFirst();
-    }
-
-    // Callback interface for handling animal clicks
-    public interface OnAnimalClicked {
-        void onAnimalClicked(Vector2d position, List<Animal> animals);
-    }
-
-    private OnAnimalClicked onAnimalClicked;
-
-    public void setOnAnimalClicked(OnAnimalClicked onAnimalClicked) {
-        this.onAnimalClicked = onAnimalClicked;
     }
 }
