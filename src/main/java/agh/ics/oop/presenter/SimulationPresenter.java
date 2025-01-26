@@ -46,9 +46,7 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML private Label freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren;
   @FXML private Label dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath, animalTitle;
 
-  private boolean simulationStarted = false;
   private boolean isPaused = false;
-  private boolean initialized = false;
   private Simulation simulation;
   private SimulationData simulationData;
   private SimulationStatistics simulationStatistics;
@@ -80,7 +78,6 @@ public class SimulationPresenter implements MapChangeListener {
     backgroundRenderer = new BackgroundRenderer(grassGridPane, gridManager, imageLoader.getGrassImages(), imageLoader.getVerdantImages());
     borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane);
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
-    animalStatisticsUpdater = new AnimalStatisticsUpdater(new Label[]{dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath}, animalTitle, dataCollector);
   }
 
   @FXML
@@ -102,8 +99,6 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   public void onSimulationStartClicked() {
-    if (simulationStarted) return;
-
     try {
       simulation.addObserver(this);
       dataCollector = new SimulationDataCollector(simulation);
@@ -111,10 +106,16 @@ public class SimulationPresenter implements MapChangeListener {
       simulationEngine.runAsync();
 
       chosenAnimal = null;
+      animalStatisticsUpdater = new AnimalStatisticsUpdater(new Label[]{dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath}, animalTitle, dataCollector);
       animalStatisticsUpdater.updateAnimalStatistics(null);
-      startButton.setDisable(true);
-      simulationStarted = true;
+
       gridManager.setGridDimensions(dataCollector.getWorldMap());
+      backgroundRenderer.initializeGrassGrid(simulationData, gridManager);
+      mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader);
+
+      startButton.setDisable(true);
+      pauseButton.setDisable(false);
+
     } catch (Exception e) {
       showError(SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
@@ -129,24 +130,15 @@ public class SimulationPresenter implements MapChangeListener {
   public void mapChanged(CountDownLatch latch) {
     Platform.runLater(() -> {
       try {
-        if (dataCollector != null && simulationStarted && simulation != null) {
-          simulationData = dataCollector.getSimulationData();
-          simulationStatistics = dataCollector.getSimulationStatistics();
-          chartManager.updateChart(simulationStatistics);
+        if (dataCollector == null) return;
 
-          if (!initialized) {
-            backgroundRenderer.initializeGrassGrid(simulationData, gridManager);
-            mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader);
-            initialized = true;
-          }
+        simulationData = dataCollector.getSimulationData();
+        simulationStatistics = dataCollector.getSimulationStatistics();
+        animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
+        chartManager.updateChart(simulationStatistics);
+        statisticsUpdater.updateStatistics(simulationStatistics);
 
-          if (simulationStatistics != null) {
-            statisticsUpdater.updateStatistics(simulationStatistics);
-            animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
-            mapRenderer.drawMap(simulationData);
-          }
-
-        }
+        mapRenderer.drawMap(simulationData);
       } catch (Exception e) {
         e.printStackTrace();
       } finally {
