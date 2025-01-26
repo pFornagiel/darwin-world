@@ -10,6 +10,11 @@ import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
 
 public class StatisticsUpdater {
 
+    // Constants for default values and formatting
+    private static final String DEFAULT_GENOTYPE_TEXT = "-";
+    private static final String AVERAGE_ENERGY_FORMAT = "%.2f";
+    private static final String AVERAGE_CHILDREN_FORMAT = "%.2f";
+
     private final Label freeFields;
     private final Label genotype1;
     private final Label genotype2;
@@ -42,12 +47,12 @@ public class StatisticsUpdater {
             if (i < mostPopularGenotypes.size()) {
                 genotypeLabels[i].setText(mostPopularGenotypes.get(i).toString());
             } else {
-                genotypeLabels[i].setText("-");
+                genotypeLabels[i].setText(DEFAULT_GENOTYPE_TEXT);
             }
         }
 
-        averageEnergy.setText(String.format("%.2f", statistics.averageEnergy()));
+        averageEnergy.setText(String.format(AVERAGE_ENERGY_FORMAT, statistics.averageEnergy()));
         averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));
-        averageChildren.setText(String.format("%.2f", statistics.averageChildren()));
+        averageChildren.setText(String.format(AVERAGE_CHILDREN_FORMAT, statistics.averageChildren()));
     }
 }

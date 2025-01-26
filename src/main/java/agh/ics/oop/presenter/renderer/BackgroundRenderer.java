@@ -12,14 +12,12 @@ import java.util.Random;
 public class BackgroundRenderer {
 
     private final GridPane grassGridPane;
-    private final GridManager gridManager;
     private final Image[] grassImages;
     private final Image[] verdantImages;
     private final Random random;
 
-    public BackgroundRenderer(GridPane grassGridPane, GridManager gridManager, Image[] grassImages, Image[] verdantImages) {
+    public BackgroundRenderer(GridPane grassGridPane, Image[] grassImages, Image[] verdantImages) {
         this.grassGridPane = grassGridPane;
-        this.gridManager = gridManager;
         this.grassImages = grassImages;
         this.verdantImages = verdantImages;
         this.random = new Random();
@@ -32,8 +30,7 @@ public class BackgroundRenderer {
         for (int i = 2; i < rows + 1; i++) {
             for (int j = 2; j < cols + 1; j++) {
                 ImageView imageView = new ImageView();
-                double cellSize = gridManager.calculateCellSize(); // Use GridManager to calculate cell size
-
+                double cellSize = gridManager.calculateCellSize();
                 Vector2d position = new Vector2d(j - 1, i - 1);
                 if (simulationData != null && simulationData.verdantFieldPositionSet().contains(position)) {
                     imageView.setImage(verdantImages[random.nextInt(verdantImages.length)]);

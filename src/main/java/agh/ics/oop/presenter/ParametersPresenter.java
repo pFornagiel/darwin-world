@@ -18,6 +18,22 @@ public class ParametersPresenter {
     private static final String SIMULATION = "Simulation";
     private static final String ERROR_TITLE = "Configuration Error";
 
+    private static final String MAP_WIDTH = "Map width";
+    private static final String MAP_HEIGHT = "Map height";
+    private static final String MAP_REFRESH_INTERVAL = "Map refresh interval";
+    private static final String FIRE_OUTBURST_INTERVAL = "Fire Outburst Interval";
+    private static final String FIRE_DURATION = "Fire Duration";
+    private static final String PLANT_COUNT = "Plant count";
+    private static final String PLANT_ENERGY = "Plant energy";
+    private static final String PLANT_PER_DAY = "Plant per day";
+    private static final String ANIMAL_COUNT = "Animal count";
+    private static final String ANIMAL_ENERGY = "Animal energy";
+    private static final String BREED_ENERGY_NEEDED = "Breed energy needed";
+    private static final String BREED_ENERGY_USAGE = "Breed energy usage";
+    private static final String MIN_MUTATIONS = "Min mutations";
+    private static final String MAX_MUTATIONS = "Max mutations";
+    private static final String GENES_COUNT = "Genes count";
+
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
     @FXML private TextField plantCount;
@@ -97,7 +113,7 @@ public class ParametersPresenter {
             SimulationApp.addSimulation(simulation);
             StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, loader -> {
                 SimulationPresenter presenter = loader.getController();
-                presenter.initializeSimulation(simulation, mapConfig, animalConfig, plantConfig);
+                presenter.initializeSimulation(simulation);
             });
             closeWindow(event);
         } catch (IllegalArgumentException e) {
@@ -108,14 +124,15 @@ public class ParametersPresenter {
     }
 
     private void validateAndCreateConfigs() {
-        int width = validator.validateInRange(mapWidth.getText(), 2, 100, "Map width");
-        int height = validator.validateInRange(mapHeight.getText(), 2, 100, "Map height");
-        int refreshInterval = validator.validateInRange(mapRefreshInterval.getText(), 100, 1000, "Map refresh interval");
+        int width = validator.validateInRange(mapWidth.getText(), 2, 100, MAP_WIDTH);
+        int height = validator.validateInRange(mapHeight.getText(), 2, 100, MAP_HEIGHT);
+        int refreshInterval = validator.validateInRange(mapRefreshInterval.getText(), 100, 1000, MAP_REFRESH_INTERVAL);
+
         int fireInterval = fireMap.isSelected()
-                ? validator.validatePositiveInt(fireOutburstInterval.getText(), "Fire Outburst Interval")
+                ? validator.validatePositiveInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
                 : -1;
         int fireDurationValue = fireMap.isSelected()
-                ? validator.validatePositiveInt(fireDuration.getText(), "Fire Duration")
+                ? validator.validatePositiveInt(fireDuration.getText(), FIRE_DURATION)
                 : -1;
 
         mapConfig = new ConfigMap(
@@ -128,11 +145,11 @@ public class ParametersPresenter {
                 saveToCsv.isSelected()
         );
 
-        int plantCountValue = validator.validateNonNegativeInt(plantCount.getText(), "Plant count");
-        int plantEnergyValue = validator.validatePositiveInt(plantEnergy.getText(), "Plant energy");
-        int plantPerDayValue = validator.validatePositiveInt(plantPerDay.getText(), "Plant per day");
+        int plantCountValue = validator.validateNonNegativeInt(plantCount.getText(), PLANT_COUNT);
+        int plantEnergyValue = validator.validatePositiveInt(plantEnergy.getText(), PLANT_ENERGY);
+        int plantPerDayValue = validator.validatePositiveInt(plantPerDay.getText(), PLANT_PER_DAY);
 
-        validator.validateEntityCount(plantCountValue, width, height, "Plant count");
+        validator.validateEntityCount(plantCountValue, width, height, PLANT_COUNT);
 
         plantConfig = new ConfigPlant(
                 plantCountValue,
@@ -144,17 +161,17 @@ public class ParametersPresenter {
     }
 
     private void validateAndCreateAnimalConfig(int mapWidth, int mapHeight) {
-        int animalCountValue = validator.validatePositiveInt(animalCount.getText(), "Animal count");
-        int animalEnergyValue = validator.validatePositiveInt(animalEnergy.getText(), "Animal energy");
-        int breedEnergyNeededValue = validator.validatePositiveInt(breedEnergyNeeded.getText(), "Breed energy needed");
-        int breedEnergyUsageValue = validator.validatePositiveInt(breedEnergyUsage.getText(), "Breed energy usage");
-        int minMutationsValue = validator.validateNonNegativeInt(minMutations.getText(), "Min mutations");
-        int maxMutationsValue = validator.validatePositiveInt(maxMutations.getText(), "Max mutations");
-        int genesCountValue = validator.validateInRange(genesCount.getText(), 2, 10, "Genes count");
+        int animalCountValue = validator.validatePositiveInt(animalCount.getText(), ANIMAL_COUNT);
+        int animalEnergyValue = validator.validatePositiveInt(animalEnergy.getText(), ANIMAL_ENERGY);
+        int breedEnergyNeededValue = validator.validatePositiveInt(breedEnergyNeeded.getText(), BREED_ENERGY_NEEDED);
+        int breedEnergyUsageValue = validator.validatePositiveInt(breedEnergyUsage.getText(), BREED_ENERGY_USAGE);
+        int minMutationsValue = validator.validateNonNegativeInt(minMutations.getText(), MIN_MUTATIONS);
+        int maxMutationsValue = validator.validatePositiveInt(maxMutations.getText(), MAX_MUTATIONS);
+        int genesCountValue = validator.validateInRange(genesCount.getText(), 2, 10, GENES_COUNT);
 
         validator.validateMutations(minMutationsValue, maxMutationsValue);
         validator.validateBreedEnergy(breedEnergyNeededValue, breedEnergyUsageValue);
-        validator.validateEntityCount(animalCountValue, mapWidth, mapHeight, "Animal count");
+        validator.validateEntityCount(animalCountValue, mapWidth, mapHeight, ANIMAL_COUNT);
 
         animalConfig = new ConfigAnimal(
                 animalCountValue,

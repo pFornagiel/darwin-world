@@ -75,7 +75,7 @@ public class SimulationPresenter implements MapChangeListener {
 
   private void initializeHelpersAndManagers() {
     imageLoader = new ImageLoader();
-    backgroundRenderer = new BackgroundRenderer(grassGridPane, gridManager, imageLoader.getGrassImages(), imageLoader.getVerdantImages());
+    backgroundRenderer = new BackgroundRenderer(grassGridPane, imageLoader.getGrassImages(), imageLoader.getVerdantImages());
     borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane);
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
   }
@@ -159,7 +159,7 @@ public class SimulationPresenter implements MapChangeListener {
     this.simulation = simulation;
   }
 
-  public void initializeSimulation(Simulation simulation, ConfigMap mapConfig, ConfigAnimal animalConfig, ConfigPlant plantConfig) {
+  public void initializeSimulation(Simulation simulation) {
     this.simulation = simulation;
   }
 }

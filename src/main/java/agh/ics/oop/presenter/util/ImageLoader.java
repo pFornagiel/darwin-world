@@ -2,42 +2,53 @@ package agh.ics.oop.presenter.util;
 
 import javafx.scene.image.Image;
 
+import java.util.Objects;
+
 public class ImageLoader {
-    private Image fireImage;
-    private Image plantImage;
-    private Image snailBack;
-    private Image snailFront;
-    private Image snailSide;
-    private Image[] grassImages;
-    private Image[] verdantImages;
-    private Image borderImage;
+
+    private static final String FIRE_IMAGE_PATH = "/fire.png";
+    private static final String PLANT_IMAGE_PATH = "/plant.png";
+    private static final String SNAIL_BACK_IMAGE_PATH = "/snail_back.png";
+    private static final String SNAIL_FRONT_IMAGE_PATH = "/snail_front.png";
+    private static final String SNAIL_SIDE_IMAGE_PATH = "/snail_side.png";
+    private static final String BORDER_IMAGE_PATH = "/border.png";
+    private static final String GRASS_IMAGE_BASE_PATH = "/grasses/grass";
+    private static final String VERDANT_IMAGE_BASE_PATH = "/verdant/verdant";
+    private static final String IMAGE_FILE_EXTENSION = ".png";
 
     private static final int AMOUNT_OF_GRASS_IMAGES = 7;
     private static final int AMOUNT_OF_VERDANT_IMAGES = 5;
 
-    public ImageLoader() {
-        fireImage = loadImage("/fire.png");
-        plantImage = loadImage("/plant.png");
-        snailBack = loadImage("/snail_back.png");
-        snailFront = loadImage("/snail_front.png");
-        snailSide = loadImage("/snail_side.png");
-        borderImage = loadImage("/border.png");
+    private final Image fireImage;
+    private final Image plantImage;
+    private final Image snailBack;
+    private final Image snailFront;
+    private final Image snailSide;
+    private final Image[] grassImages;
+    private final Image[] verdantImages;
+    private final Image borderImage;
 
-        // Load grass images
+    public ImageLoader() {
+        fireImage = loadImage(FIRE_IMAGE_PATH);
+        plantImage = loadImage(PLANT_IMAGE_PATH);
+        snailBack = loadImage(SNAIL_BACK_IMAGE_PATH);
+        snailFront = loadImage(SNAIL_FRONT_IMAGE_PATH);
+        snailSide = loadImage(SNAIL_SIDE_IMAGE_PATH);
+        borderImage = loadImage(BORDER_IMAGE_PATH);
+
         grassImages = new Image[AMOUNT_OF_GRASS_IMAGES];
         for (int i = 0; i < AMOUNT_OF_GRASS_IMAGES; i++) {
-            grassImages[i] = loadImage("/grasses/grass" + (i + 1) + ".png");
+            grassImages[i] = loadImage(GRASS_IMAGE_BASE_PATH + (i + 1) + IMAGE_FILE_EXTENSION);
         }
 
-        // Load verdant images
         verdantImages = new Image[AMOUNT_OF_VERDANT_IMAGES];
         for (int i = 0; i < AMOUNT_OF_VERDANT_IMAGES; i++) {
-            verdantImages[i] = loadImage("/verdant/verdant" + (i + 1) + ".png");
+            verdantImages[i] = loadImage(VERDANT_IMAGE_BASE_PATH + (i + 1) + IMAGE_FILE_EXTENSION);
         }
     }
 
     private Image loadImage(String path) {
-        return new Image(getClass().getResourceAsStream(path));
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
     }
 
     public Image getFireImage() {

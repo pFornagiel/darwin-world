@@ -11,7 +11,6 @@ import javafx.scene.layout.GridPane;
 
 public class MapRenderer {
     private final GridManager gridManager;
-    private final GridPane gridPane;
     private final ElementRenderer elementRenderer;
     private final AnimalRenderer animalRenderer;
     private final BorderRenderer borderRenderer;
@@ -21,7 +20,6 @@ public class MapRenderer {
                        SimulationDataCollector dataCollector,
                        SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader) {
         this.gridManager = gridManager;
-        this.gridPane = gridPane;
         this.borderRenderer = borderRenderer;
         this.imageLoader = imageLoader;
         this.elementRenderer = new ElementRenderer(gridManager, gridPane);

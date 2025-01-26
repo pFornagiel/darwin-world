@@ -15,6 +15,15 @@ import javafx.scene.shape.Rectangle;
 import java.util.List;
 
 public class AnimalRenderer {
+    private static final String NORTH = "North";
+    private static final String SOUTH = "South";
+    private static final String EAST = "East";
+    private static final String WEST = "West";
+    private static final String NORTH_EAST = "North-East";
+    private static final String NORTH_WEST = "North-West";
+    private static final String SOUTH_EAST = "South-East";
+    private static final String SOUTH_WEST = "South-West";
+
     private final GridManager gridManager;
     private final GridPane gridPane;
     private final SimulationDataCollector dataCollector;
@@ -62,32 +71,32 @@ public class AnimalRenderer {
             double rotation = 0;
 
             switch (orientation) {
-                case "North":
+                case NORTH:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     break;
-                case "South":
+                case SOUTH:
                     snailImageView.setImage(imageLoader.getSnailFront());
                     break;
-                case "East":
+                case EAST:
                     snailImageView.setImage(imageLoader.getSnailSide());
                     break;
-                case "West":
+                case WEST:
                     snailImageView.setImage(imageLoader.getSnailSide());
                     snailImageView.setScaleX(-1);
                     break;
-                case "North-East":
+                case NORTH_EAST:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     rotation = 45;
                     break;
-                case "North-West":
+                case NORTH_WEST:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     rotation = -45;
                     break;
-                case "South-East":
+                case SOUTH_EAST:
                     snailImageView.setImage(imageLoader.getSnailFront());
                     rotation = 45;
                     break;
-                case "South-West":
+                case SOUTH_WEST:
                     snailImageView.setImage(imageLoader.getSnailFront());
                     rotation = -45;
                     break;

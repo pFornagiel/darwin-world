@@ -10,6 +10,11 @@ import java.util.List;
 
 public class AnimalStatisticsUpdater {
 
+    private static final String ANIMAL_TITLE_FORMAT = "Animal at (%d, %d)";
+    private static final String NO_ANIMAL_SELECTED = "No Animal Selected";
+    private static final String DEFAULT_LABEL_TEXT = "-";
+    private static final String ALIVE_STATUS = "Alive";
+
     private final Label[] animalStatsLabels;
     private final Label animalTitle;
     private final SimulationDataCollector dataCollector;
@@ -24,13 +29,14 @@ public class AnimalStatisticsUpdater {
         if (animal != null) {
             var stats = dataCollector.getAnimalStatistics(animal);
             if (stats != null && stats.coordinates() != null) {
-                animalTitle.setText(String.format("Animal at (%d, %d)",
+                animalTitle.setText(String.format(ANIMAL_TITLE_FORMAT,
                         stats.coordinates().getX(),
                         stats.coordinates().getY()));
             } else {
-                animalTitle.setText("No Animal Selected");
+                animalTitle.setText(NO_ANIMAL_SELECTED);
             }
 
+            assert stats != null;
             String[] values = {
                     String.valueOf(stats.lifespan()),
                     String.valueOf(stats.eatenPlantsCount()),
@@ -39,15 +45,15 @@ public class AnimalStatisticsUpdater {
                     String.valueOf(stats.descendantCount()),
                     stats.genotype().toString(),
                     String.valueOf(stats.currentGene()),
-                    stats.dayOfDeath() == -1 ? "Alive" : String.valueOf(stats.dayOfDeath())
+                    stats.dayOfDeath() == -1 ? ALIVE_STATUS : String.valueOf(stats.dayOfDeath())
             };
             for (int i = 0; i < animalStatsLabels.length; i++) {
                 animalStatsLabels[i].setText(values[i]);
             }
         } else {
-            animalTitle.setText("No Animal Selected");
+            animalTitle.setText(NO_ANIMAL_SELECTED);
             for (Label label : animalStatsLabels) {
-                label.setText("-");
+                label.setText(DEFAULT_LABEL_TEXT);
             }
         }
     }
