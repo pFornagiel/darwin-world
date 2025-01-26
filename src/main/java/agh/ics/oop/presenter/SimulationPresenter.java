@@ -6,10 +6,8 @@ import agh.ics.oop.model.configuration.ConfigPlant;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
-import agh.ics.oop.model.datacollectors.SimulationStatisticsCSVSaver;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
-import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
@@ -49,7 +47,7 @@ public class SimulationPresenter implements MapChangeListener {
 
   private boolean simulationStarted = false;
   private boolean isPaused = false;
-  private boolean isGrassGridInitialized = false;
+  private boolean initialized = false;
   private Simulation simulation;
   private SimulationData simulationData;
   private SimulationStatistics simulationStatistics;
@@ -135,10 +133,10 @@ public class SimulationPresenter implements MapChangeListener {
           simulationStatistics = dataCollector.getSimulationStatistics();
           chartManager.updateChart(simulationStatistics);
 
-          if (!isGrassGridInitialized) {
+          if (!initialized) {
             backgroundRenderer.initializeGrassGrid(simulationData, gridManager);
             mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader);
-            isGrassGridInitialized = true;
+            initialized = true;
           }
 
           if (simulationStatistics != null) {
@@ -146,6 +144,7 @@ public class SimulationPresenter implements MapChangeListener {
             animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
             mapRenderer.drawMap(simulationData);
           }
+
         }
       } catch (Exception e) {
         e.printStackTrace();
