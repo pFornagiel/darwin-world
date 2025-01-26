@@ -116,6 +116,7 @@ public class SimulationPresenter implements MapChangeListener {
   private Image[] verdantImages;
   private final static int amountOfVerdantImages = 5;
   private boolean isGrassGridInitialized = false;
+  private AnimalStatisticsUpdater animalStatisticsUpdater;
 
   private BorderRenderer borderRenderer;
 
@@ -145,6 +146,7 @@ public class SimulationPresenter implements MapChangeListener {
     // Load border image and initialize renderer
     borderImage = new Image(getClass().getResourceAsStream("/border.png"));
     borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
+    animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
   }
 
   private void initializeGrassGrid() {
@@ -235,35 +237,7 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void updateAnimalStatisticsDisplay(Animal animal) {
-    if (animal != null) {
-      var stats = dataCollector.getAnimalStatistics(animal);
-      if (stats != null && stats.coordinates() != null) {
-        animalTitle.setText(String.format(ANIMAL_AT,
-                stats.coordinates().getX(),
-                stats.coordinates().getY()));
-      } else {
-        animalTitle.setText(NO_ANIMAL_SELECTED);
-      }
-
-      String[] values = {
-              String.valueOf(stats.lifespan()),
-              String.valueOf(stats.eatenPlantsCount()),
-              String.valueOf(stats.energy()),
-              String.valueOf(stats.childrenCount()),
-              String.valueOf(stats.descendantCount()),
-              stats.genotype().toString(),
-              String.valueOf(stats.currentGene()),
-              stats.dayOfDeath() == -1 ? ALIVE : String.valueOf(stats.dayOfDeath())
-      };
-      for (int i = 0; i < ANIMAL_STATS_LABELS.length; i++) {
-        ANIMAL_STATS_LABELS[i].setText(values[i]);
-      }
-    } else {
-      animalTitle.setText(NO_ANIMAL_SELECTED);
-      for (Label label : ANIMAL_STATS_LABELS) {
-        label.setText(DASH);
-      }
-    }
+    animalStatisticsUpdater.updateAnimalStatisticsDisplay(animal);
   }
 
   private void updateAnimalStatistics(Animal animal) {
