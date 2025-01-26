@@ -9,12 +9,12 @@
     "saveToCsv": false
   },
   "plantConfig": {
-    "initialPlantCount": 100,
+    "initialPlantCount": 5,
     "energyPerPlant": 100,
-    "dailyPlantGrowth": 5
+    "dailyPlantGrowth": 2
   },
   "animalConfig": {
-    "initialAnimalCount": 50,
+    "initialAnimalCount": 20,
     "initialEnergy": 300,
     "energyToReproduce": 1,
     "energyConsumedByParents": 1,
