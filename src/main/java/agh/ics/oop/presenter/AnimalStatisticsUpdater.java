@@ -18,7 +18,7 @@ public class AnimalStatisticsUpdater {
     }
 
     public void updateAnimalStatisticsDisplay(Animal animal) {
-        if (animal != null) {
+        if (animal != null && dataCollector != null) {
             var stats = dataCollector.getAnimalStatistics(animal);
             if (stats != null && stats.coordinates() != null) {
                 animalTitle.setText(String.format("Animal at (%d, %d)",

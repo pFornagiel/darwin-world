@@ -13,7 +13,6 @@ import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
-import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.renderer.BorderRenderer;
@@ -31,15 +30,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.Random;
 import agh.ics.oop.model.exception.util.DatacollectorNotInitialized;
 
-import static agh.ics.oop.presenter.util.AnimalColor.getAnimalColor;
 import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
 
 public class SimulationPresenter implements MapChangeListener {
@@ -92,25 +88,35 @@ public class SimulationPresenter implements MapChangeListener {
   private GridPane grassGridPane;
   private Image[] grassImages;
   private SimulationStatisticsCSVSaver statisticsCSVSaver;
-  @FXML private Label dayCount;
-  @FXML private Label plantCount;
-  @FXML private Label energy;
-  @FXML private Label children;
-  @FXML private Label descendants;
-  @FXML private Label genome;
-  @FXML private Label activeGene;
-  @FXML private Label dayOfDeath;
-  @FXML private Label animalTitle;
+  @FXML
+  private Label dayCount;
+  @FXML
+  private Label plantCount;
+  @FXML
+  private Label energy;
+  @FXML
+  private Label children;
+  @FXML
+  private Label descendants;
+  @FXML
+  private Label genome;
+  @FXML
+  private Label activeGene;
+  @FXML
+  private Label dayOfDeath;
+  @FXML
+  private Label animalTitle;
   private Image fireImage = new Image(getClass().getResourceAsStream("/fire.png"));
-  private Image plantImage =  new Image(getClass().getResourceAsStream("/plant.png"));
+  private Image plantImage = new Image(getClass().getResourceAsStream("/plant.png"));
   private Image borderImage;
+  private MapRenderer mapRenderer;
 
   private ConfigMap mapConfig;
   private ConfigPlant plantConfig;
   private ConfigAnimal animalConfig;
-  Image snailBack = new Image(getClass().getResourceAsStream("/snail_back.png"));
-  Image snailFront = new Image(getClass().getResourceAsStream("/snail_front.png"));
-  Image snailSide = new Image(getClass().getResourceAsStream("/snail_side.png"));
+  private Image snailBack = new Image(getClass().getResourceAsStream("/snail_back.png"));
+  private Image snailFront = new Image(getClass().getResourceAsStream("/snail_front.png"));
+  private Image snailSide = new Image(getClass().getResourceAsStream("/snail_side.png"));
   private final Label[] ANIMAL_STATS_LABELS = new Label[8];
   private final static int amountOfGrassImages = 7;
   private Image[] verdantImages;
@@ -133,20 +139,29 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[5] = genome;
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
+
     grassImages = new Image[amountOfGrassImages];
     for (int i = 0; i < amountOfGrassImages; i++) {
       grassImages[i] = new Image(getClass().getResourceAsStream("/grasses/grass" + (i + 1) + ".png"));
     }
+
     verdantImages = new Image[amountOfVerdantImages];
     for (int i = 0; i < amountOfVerdantImages; i++) {
       verdantImages[i] = new Image(getClass().getResourceAsStream("/verdant/verdant" + (i + 1) + ".png"));
     }
-    isGrassGridInitialized = false;
 
-    // Load border image and initialize renderer
+    isGrassGridInitialized = false;
+    mapRenderer = new MapRenderer(gridManager, gridPane, plantImage, fireImage, snailBack, snailFront, snailSide, dataCollector);
+    mapRenderer.setOnAnimalClicked(this::onAnimalClicked);
+
     borderImage = new Image(getClass().getResourceAsStream("/border.png"));
     borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
     animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
+  }
+
+  public void onAnimalClicked(Vector2d position, List<Animal> animals) {
+    chosenAnimal = getChosenAnimal(position, animals);
+    updateAnimalStatistics(chosenAnimal);
   }
 
   private void initializeGrassGrid() {
@@ -156,8 +171,8 @@ public class SimulationPresenter implements MapChangeListener {
 
     grassGridPane.getChildren().clear();
 
-    for (int i = 2; i < rows+1; i++) {
-      for (int j = 2; j < cols+1; j++) {
+    for (int i = 2; i < rows + 1; i++) {
+      for (int j = 2; j < cols + 1; j++) {
         ImageView imageView = new ImageView();
         double cellSize = gridManager.calculateCellSize();
 
@@ -187,17 +202,13 @@ public class SimulationPresenter implements MapChangeListener {
     if (simulationData == null) {
       throw new DatacollectorNotInitialized();
     }
+
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
 
-    // Draw border using dedicated renderer
     borderRenderer.render(offset, size);
-
-    // Draw plants and fire using images
     drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
     drawElements(simulationData.firePositionSet(), fireImage, offset, size);
-
-    // Draw animals
     drawAnimalElements(simulationData.animalPositionSet(), offset, size);
   }
 
@@ -373,8 +384,6 @@ public class SimulationPresenter implements MapChangeListener {
     if (animalList.isEmpty()) {
       return null;
     }
-    // TO DO
-    // Collections.sort(animalList);
     return animalList.getFirst();
   }
 
