@@ -34,8 +34,8 @@ public class MapRenderer {
         Image plantImage = imageLoader.getPlantImage();
         Image fireImage = imageLoader.getFireImage();
         elementRenderer.drawElements(simulationData.plantPositionSet(), plantImage, offset);
-        elementRenderer.drawElements(simulationData.firePositionSet(), fireImage, offset);
         animalRenderer.drawAnimalElements(simulationData.animalPositionSet(), offset);
+        elementRenderer.drawElements(simulationData.firePositionSet(), fireImage, offset);
         borderRenderer.render(offset, gridManager.getGridPaneSize());
     }
 }

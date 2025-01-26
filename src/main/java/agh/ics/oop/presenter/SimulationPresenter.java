@@ -14,6 +14,7 @@ import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
+import agh.ics.oop.presenter.renderer.BackgroundRenderer;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.renderer.BorderRenderer;
 import agh.ics.oop.presenter.util.ImageLoader;
@@ -100,6 +101,7 @@ public class SimulationPresenter implements MapChangeListener {
   private Label dayOfDeath;
   @FXML
   private Label animalTitle;
+  private BackgroundRenderer backgroundRenderer;
 
   private Image borderImage;
     private StatisticsUpdater statisticsUpdater;
@@ -114,6 +116,7 @@ public class SimulationPresenter implements MapChangeListener {
   private BorderRenderer borderRenderer;
   private MapRenderer mapRenderer;
   ImageLoader imageLoader;
+
 
   @FXML
   public void initialize() {
@@ -132,9 +135,9 @@ public class SimulationPresenter implements MapChangeListener {
     grassImages = new Image[amountOfGrassImages];
     grassImages = imageLoader.getGrassImages();
     verdantImages = imageLoader.getVerdantImages();
-
+    backgroundRenderer = new BackgroundRenderer(grassGridPane, gridManager, grassImages, verdantImages);
     isGrassGridInitialized = false;
-      animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
+    animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
 
     borderImage = new Image(getClass().getResourceAsStream("/border.png"));
     borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
@@ -145,35 +148,6 @@ public class SimulationPresenter implements MapChangeListener {
   public void onAnimalClicked(Vector2d position, List<Animal> animals) {
     chosenAnimal = getChosenAnimal(position, animals);
     updateAnimalStatistics(chosenAnimal);
-  }
-
-  private void initializeGrassGrid() {
-    Random random = new Random();
-    int rows = gridManager.getGridPaneSize().getY();
-    int cols = gridManager.getGridPaneSize().getX();
-
-    grassGridPane.getChildren().clear();
-
-    for (int i = 2; i < rows + 1; i++) {
-      for (int j = 2; j < cols + 1; j++) {
-        ImageView imageView = new ImageView();
-        double cellSize = gridManager.calculateCellSize();
-
-        Vector2d position = new Vector2d(j - 1, i - 1);
-        if (simulationData != null && simulationData.verdantFieldPositionSet().contains(position)) {
-          imageView.setImage(verdantImages[random.nextInt(amountOfVerdantImages)]);
-        } else {
-          imageView.setImage(grassImages[random.nextInt(amountOfGrassImages)]);
-        }
-
-        imageView.setFitWidth(cellSize);
-        imageView.setFitHeight(cellSize);
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(false);
-
-        grassGridPane.add(imageView, j, i);
-      }
-    }
   }
 
   public void setSimulation(Simulation simulation) {
@@ -250,8 +224,7 @@ public class SimulationPresenter implements MapChangeListener {
           chartManager.updateChart(simulationStatistics);
 
           if (!isGrassGridInitialized) {
-            initializeGrassGrid();
-
+            backgroundRenderer.initializeGrassGrid(simulationData,gridManager);
             mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this,borderRenderer,imageLoader);
             isGrassGridInitialized = true;
           }
