@@ -1,9 +1,7 @@
 package agh.ics.oop.presenter.util;
 
 import agh.ics.oop.model.datacollectors.AnimalData;
-import agh.ics.oop.model.datacollectors.AnimalStatistics;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
-import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import javafx.scene.paint.Color;
 

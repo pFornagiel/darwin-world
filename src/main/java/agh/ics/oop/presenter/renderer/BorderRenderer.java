@@ -13,27 +13,33 @@ public class BorderRenderer {
     private final GridManager gridManager;
     private final Image borderImage;
     private final GridPane grassGridPane;
-
-    public BorderRenderer(GridManager gridManager, Image borderImage, GridPane grassGridPane) {
+    private final int MAX_MAP_SIZE_FOR_IMAGES;
+    public BorderRenderer(GridManager gridManager, Image borderImage, GridPane grassGridPane, int MAX_MAP_SIZE_FOR_IMAGES) {
+        this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
         this.gridManager = gridManager;
         this.borderImage = borderImage;
         this.grassGridPane = grassGridPane;
     }
 
     public void render(Vector2d offset, Vector2d size) {
-        if (borderImage == null || borderImage.isError()) return;
-
         int mapWidth = size.getX();
         int mapHeight = size.getY();
+        int mapArea = mapWidth * mapHeight;
 
-        for (int x = 1; x < mapWidth + 2; x++) {
-            drawBorderCell(x, 1);
-            drawBorderCell(x, mapHeight + 1);
-        }
+        if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
+            renderColoredBorders(mapWidth, mapHeight, new Color(0.8, 0.5, 0.2,1));
+        } else {
+            if (borderImage == null || borderImage.isError()) return;
 
-        for (int y = 2; y <= mapHeight; y++) {
-            drawBorderCell(1, y);
-            drawBorderCell(mapWidth + 1, y);
+            for (int x = 1; x < mapWidth + 2; x++) {
+                drawBorderCell(x, 1);
+                drawBorderCell(x, mapHeight + 1);
+            }
+
+            for (int y = 2; y <= mapHeight; y++) {
+                drawBorderCell(1, y);
+                drawBorderCell(mapWidth + 1, y);
+            }
         }
     }
 
@@ -55,5 +61,27 @@ public class BorderRenderer {
 
         stackPane.getChildren().addAll(cell, imageView);
         grassGridPane.add(stackPane, x, y);
+    }
+
+    private void renderColoredBorders(int mapWidth, int mapHeight, Color color) {
+        for (int x = 1; x < mapWidth + 2; x++) {
+            drawColoredBorderCell(x, 1, color);
+            drawColoredBorderCell(x, mapHeight + 1, color);
+        }
+
+        for (int y = 2; y <= mapHeight; y++) {
+            drawColoredBorderCell(1, y, color);
+            drawColoredBorderCell(mapWidth + 1, y, color);
+        }
+    }
+
+    private void drawColoredBorderCell(int x, int y, Color color) {
+        Rectangle cell = new Rectangle();
+        double cellSize = gridManager.calculateCellSize();
+        cell.setWidth(cellSize);
+        cell.setHeight(cellSize);
+        cell.setFill(color);
+
+        grassGridPane.add(cell, x, y);
     }
 }

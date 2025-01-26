@@ -8,11 +8,12 @@ import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.util.AnimalColor;
 import agh.ics.oop.presenter.util.ImageLoader;
+import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -22,16 +23,17 @@ public class AnimalRenderer {
     private final SimulationDataCollector dataCollector;
     private final SimulationPresenter simulationPresenter;
     private final ImageLoader imageLoader;
-    private final int MAX_MAP_SIZE_FOR_IMAGES = 400; // Threshold for switching to colors
+    private final int MAX_MAP_SIZE_FOR_IMAGES; // Threshold for switching to colors
 
     public AnimalRenderer(GridManager gridManager, GridPane gridPane,
                           SimulationDataCollector dataCollector,
-                          SimulationPresenter simulationPresenter, ImageLoader imageLoader) {
+                          SimulationPresenter simulationPresenter, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES) {
         this.gridManager = gridManager;
         this.gridPane = gridPane;
         this.dataCollector = dataCollector;
         this.simulationPresenter = simulationPresenter;
         this.imageLoader = imageLoader;
+        this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
     }
 
     public void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset) {
@@ -39,10 +41,8 @@ public class AnimalRenderer {
         int mapArea = mapSize.getX() * mapSize.getY();
 
         if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
-            // Render animals using colors
             drawColoredAnimalElements(positions, offset);
         } else {
-            // Render animals using images
             drawAnimalImages(positions, offset);
         }
     }
@@ -124,8 +124,6 @@ public class AnimalRenderer {
     }
 
     public void drawColoredAnimalElements(Iterable<Vector2d> positions, Vector2d offset) {
-        double cellSize = gridManager.calculateCellSize();
-
         for (Vector2d position : positions) {
             int x = position.getX() - offset.getX() + 1;
             int y = (position.getY() - offset.getY()) + 1;
@@ -139,14 +137,35 @@ public class AnimalRenderer {
 
             AnimalData animalData = dataCollector.getAnimalData(currentAnimal);
             Color animalColor = AnimalColor.getAnimalColor(animalData, dataCollector.getSimulationStatistics(), 50);
-
-            Rectangle cell = new Rectangle();
-            cell.setWidth(cellSize);
-            cell.setHeight(cellSize);
-            cell.setFill(animalColor);
-
-            gridPane.add(cell, x, y);
+            StackPane stackPane = createColoredCellWithText(animalColor, currentAnimal.toString());
+            gridPane.add(stackPane, x, y);
         }
+    }
+
+    private StackPane createColoredCellWithText(Color color, String textContent) {
+        double cellSize = gridManager.calculateCellSize();
+
+        // Create the colored cell
+        Pane cell = new Pane();
+        cell.setMinSize(cellSize, cellSize);
+        cell.setPrefSize(cellSize, cellSize);
+        cell.setMaxSize(cellSize, cellSize);
+
+        BackgroundFill backgroundFill = new BackgroundFill(color, null, null);
+        Background background = new Background(backgroundFill);
+        cell.setBackground(background);
+
+        // Create the text
+        Text text = new Text(textContent);
+        text.setFill(Color.WHITE);
+
+        // Create a StackPane to hold the cell and text
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(cell, text);
+
+        StackPane.setAlignment(text, Pos.CENTER);
+
+        return stackPane;
     }
 
     private Animal getChosenAnimal(List<Animal> animals) {

@@ -61,6 +61,8 @@ public class SimulationPresenter implements MapChangeListener {
   private StatisticsUpdater statisticsUpdater;
   private AnimalStatisticsUpdater animalStatisticsUpdater;
   private ImageLoader imageLoader;
+  private static final int MAX_MAP_SIZE_FOR_IMAGES = 400;
+
 
   @FXML
   public void initialize() {
@@ -76,7 +78,7 @@ public class SimulationPresenter implements MapChangeListener {
   private void initializeHelpersAndManagers() {
     imageLoader = new ImageLoader();
     backgroundRenderer = new BackgroundRenderer(grassGridPane, imageLoader.getGrassImages(), imageLoader.getVerdantImages());
-    borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane);
+    borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane, MAX_MAP_SIZE_FOR_IMAGES);
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
   }
 
@@ -111,7 +113,7 @@ public class SimulationPresenter implements MapChangeListener {
 
       gridManager.setGridDimensions(dataCollector.getWorldMap());
       backgroundRenderer.initializeGrassGrid(simulationData, gridManager);
-      mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader);
+      mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES);
 
       startButton.setDisable(true);
       pauseButton.setDisable(false);

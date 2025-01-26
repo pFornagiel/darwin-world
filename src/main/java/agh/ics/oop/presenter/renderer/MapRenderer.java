@@ -16,15 +16,16 @@ public class MapRenderer {
     private final AnimalRenderer animalRenderer;
     private final BorderRenderer borderRenderer;
     private final ImageLoader imageLoader;
-
+    private final int MAX_MAP_SIZE_FOR_IMAGES;
     public MapRenderer(GridManager gridManager, GridPane gridPane,
                        SimulationDataCollector dataCollector,
-                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader) {
+                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES) {
+        this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
         this.gridManager = gridManager;
         this.borderRenderer = borderRenderer;
         this.imageLoader = imageLoader;
         this.elementRenderer = new ElementRenderer(gridManager, gridPane);
-        this.animalRenderer = new AnimalRenderer(gridManager, gridPane, dataCollector, simulationPresenter, imageLoader);
+        this.animalRenderer = new AnimalRenderer(gridManager, gridPane, dataCollector, simulationPresenter, imageLoader,MAX_MAP_SIZE_FOR_IMAGES);
     }
 
     public void drawMap(SimulationData simulationData) {
@@ -33,8 +34,6 @@ public class MapRenderer {
         Vector2d mapSize = gridManager.getGridPaneSize();
         int mapArea = mapSize.getX() * mapSize.getY();
 
-        // Threshold for switching to colors
-        int MAX_MAP_SIZE_FOR_IMAGES = 400;
         if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
             elementRenderer.drawColoredElements(simulationData.plantPositionSet(), Color.GREEN, offset);
             animalRenderer.drawColoredAnimalElements(simulationData.animalPositionSet(), offset);

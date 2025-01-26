@@ -2,9 +2,10 @@ package agh.ics.oop.presenter.renderer;
 
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.presenter.grid.GridManager;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.image.ImageView;
@@ -46,18 +47,27 @@ public class ElementRenderer {
             gridPane.add(stackPane, x, y);
         }
     }
-
     public void drawColoredElements(Iterable<Vector2d> positions, Color color, Vector2d offset) {
         for (Vector2d position : positions) {
             int x = position.getX() - offset.getX() + 1;
             int y = position.getY() - offset.getY() + 1;
-
-            Rectangle cell = new Rectangle();
-            cell.setWidth(gridManager.calculateCellSize());
-            cell.setHeight(gridManager.calculateCellSize());
-            cell.setFill(color);
-
-            gridPane.add(cell, x, y);
+            setGridCell(x, y, color);
         }
     }
+    public void setGridCell(int xPosition, int yPosition, Color color) {
+        double cellSize = gridManager.calculateCellSize();
+        Pane cell = new Pane();
+        cell.setMinSize(cellSize, cellSize);
+        cell.setPrefSize(cellSize, cellSize);
+        cell.setMaxSize(cellSize, cellSize);
+
+        BackgroundFill backgroundFill = new BackgroundFill(color, null, null);
+        Background background = new Background(backgroundFill);
+        cell.setBackground(background);
+
+        gridPane.add(cell, xPosition, yPosition);
+        GridPane.setHalignment(cell, HPos.CENTER);
+        GridPane.setValignment(cell, VPos.CENTER);
+    }
+
 }
