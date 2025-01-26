@@ -120,6 +120,9 @@ public class GridManager {
     public Vector2d getStaticGridPaneSize() {
         return staticGridPaneSize;
     }
+    public GridPane getGridPane() {
+        return dynamicGridPane;
+    }
 
     public Vector2d getGridPaneOffset() {
         return gridPaneOffset;

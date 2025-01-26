@@ -16,6 +16,7 @@ import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.model.worldmap.abstracts.WorldMap;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.GridRenderer;
+import agh.ics.oop.presenter.renderer.BorderRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Platform;
@@ -116,6 +117,8 @@ public class SimulationPresenter implements MapChangeListener {
   private final static int amountOfVerdantImages = 5;
   private boolean isGrassGridInitialized = false;
 
+  private BorderRenderer borderRenderer;
+
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane, grassGridPane);
@@ -139,11 +142,9 @@ public class SimulationPresenter implements MapChangeListener {
     }
     isGrassGridInitialized = false;
 
-    // Load border image
+    // Load border image and initialize renderer
     borderImage = new Image(getClass().getResourceAsStream("/border.png"));
-    if (borderImage.isError()) {
-      System.err.println("Failed to load border image.");
-    }
+    borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
   }
 
   private void initializeGrassGrid() {
@@ -151,10 +152,8 @@ public class SimulationPresenter implements MapChangeListener {
     int rows = gridManager.getGridPaneSize().getY();
     int cols = gridManager.getGridPaneSize().getX();
 
-    // Clear the grid before rendering
     grassGridPane.getChildren().clear();
 
-    // Render grass and verdant fields
     for (int i = 2; i < rows+1; i++) {
       for (int j = 2; j < cols+1; j++) {
         ImageView imageView = new ImageView();
@@ -162,10 +161,8 @@ public class SimulationPresenter implements MapChangeListener {
 
         Vector2d position = new Vector2d(j - 1, i - 1);
         if (simulationData != null && simulationData.verdantFieldPositionSet().contains(position)) {
-          // Render verdant image
           imageView.setImage(verdantImages[random.nextInt(amountOfVerdantImages)]);
         } else {
-          // Render grass image
           imageView.setImage(grassImages[random.nextInt(amountOfGrassImages)]);
         }
 
@@ -191,8 +188,8 @@ public class SimulationPresenter implements MapChangeListener {
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
 
-    // Draw the border around the map
-    drawBorder(offset, size);
+    // Draw border using dedicated renderer
+    borderRenderer.render(offset, size);
 
     // Draw plants and fire using images
     drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
@@ -200,46 +197,6 @@ public class SimulationPresenter implements MapChangeListener {
 
     // Draw animals
     drawAnimalElements(simulationData.animalPositionSet(), offset, size);
-  }
-
-  private void drawBorder(Vector2d offset, Vector2d size) {
-    if (borderImage == null || borderImage.isError()) {
-      System.err.println("Border image not loaded.");
-      return;
-    }
-
-    int mapWidth = size.getX();
-    int mapHeight = size.getY();
-
-    for (int x = 1; x < mapWidth + 2; x++) { // Start from 1 to skip (0, 1)
-      drawBorderCell(x, 1, borderImage);       // Top border
-      drawBorderCell(x, mapHeight + 1, borderImage); // Bottom border
-    }
-
-// Draw left and right borders
-    for (int y = 2; y <= mapHeight; y++) { // Start from 2 to skip (1, 1)
-      drawBorderCell(1, y, borderImage);       // Left border
-      drawBorderCell(mapWidth + 1, y, borderImage); // Right border
-    }
-  }
-
-  private void drawBorderCell(int x, int y, Image image) {
-    StackPane stackPane = new StackPane();
-    stackPane.setSnapToPixel(true);
-
-    Rectangle cell = new Rectangle();
-    cell.setWidth(gridManager.calculateCellSize());
-    cell.setHeight(gridManager.calculateCellSize());
-    cell.setFill(new Color(0, 0, 0, 0)); // Transparent background
-
-    ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(gridManager.calculateCellSize());
-    imageView.setFitHeight(gridManager.calculateCellSize());
-    imageView.setPreserveRatio(true);
-    imageView.setSmooth(false);
-
-    stackPane.getChildren().addAll(cell, imageView);
-    grassGridPane.add(stackPane, x, y); // Add to the static grid
   }
 
   private Animal selectAnimal(Animal animal) {
@@ -327,7 +284,7 @@ public class SimulationPresenter implements MapChangeListener {
       Rectangle cell = new Rectangle();
       cell.setWidth(gridManager.calculateCellSize());
       cell.setHeight(gridManager.calculateCellSize());
-      cell.setFill(new Color(0, 0, 0, 0)); // Transparent background
+      cell.setFill(new Color(0, 0, 0, 0));
 
       if (image != null) {
         ImageView imageView = new ImageView(image);
@@ -337,7 +294,7 @@ public class SimulationPresenter implements MapChangeListener {
         imageView.setSmooth(false);
         stackPane.getChildren().addAll(cell, imageView);
       } else {
-        cell.setFill(Color.GRAY); // Default color
+        cell.setFill(Color.GRAY);
         stackPane.getChildren().add(cell);
       }
 
@@ -378,7 +335,7 @@ public class SimulationPresenter implements MapChangeListener {
       Rectangle cell = new Rectangle();
       cell.setWidth(cellSize);
       cell.setHeight(cellSize);
-      cell.setFill(new Color(0, 0, 0, 0)); // Transparent background
+      cell.setFill(new Color(0, 0, 0, 0));
 
       String orientation = String.valueOf(currentAnimal.getOrientation());
       ImageView snailImageView = new ImageView();
