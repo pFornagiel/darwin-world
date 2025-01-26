@@ -16,6 +16,7 @@ import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.renderer.BorderRenderer;
+import agh.ics.oop.presenter.util.ImageLoader;
 import agh.ics.oop.presenter.renderer.MapRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import agh.ics.oop.presenter.statistics.StatisticsUpdater;
@@ -253,6 +254,8 @@ public class SimulationPresenter implements MapChangeListener {
 
           if (!isGrassGridInitialized) {
             initializeGrassGrid();
+            ImageLoader imageLoader = new ImageLoader();
+
             mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this,borderRenderer);
             isGrassGridInitialized = true;
           }
@@ -297,12 +300,6 @@ public class SimulationPresenter implements MapChangeListener {
       isPaused = !isPaused;
       simulation.togglePause();
       pauseButton.setText(isPaused ? RESUME : PAUSE);
-    }
-  }
-  private void handleAnimalClick(Animal animal) {
-    if (animal != null) {
-      chosenAnimal = animal;
-      updateAnimalStatistics(chosenAnimal);
     }
   }
 
