@@ -1,4 +1,4 @@
-package agh.ics.oop.presenter;
+package agh.ics.oop.presenter.statistics;
 
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.util.Vector2d;

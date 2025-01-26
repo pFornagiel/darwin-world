@@ -2,6 +2,8 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.configuration.*;
 import agh.ics.oop.model.simulation.Simulation;
+import agh.ics.oop.presenter.util.ConfigurationManager;
+import agh.ics.oop.presenter.util.ParameterValidator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import agh.ics.oop.presenter.util.StageUtil;
@@ -11,32 +13,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ParametersPresenter {
+
     private static final String SIMULATION_FXML = "simulation.fxml";
-    private static final String CONFIGURATION_ERROR = "Configuration Error";
     private static final String SIMULATION = "Simulation";
-    private static final String MUST_BE_POSITIVE = " must be positive";
-    private static final String MUST_BE_VALID_NUMBER = " must be a valid number";
-    private static final String CANNOT_BE_NEGATIVE = " cannot be negative";
-    private static final String MUTATIONS_ERROR = "Minimum mutations cannot be greater than maximum mutations.";
-    private static final String BREED_ENERGY_ERROR = "Breed energy needed cannot be less than breed energy usage.";
-    private static final String DIMENSION_ERROR = "Dimensions must be between 2 and 100.";
-    private static final String ENTITY_COUNT_ERROR = "Count cannot exceed map area.";
-    private static final String GENES_COUNT_ERROR = "Genes count must be between 2 and 10.";
-    private static final String REFRESH_INTERVAL_ERROR = "Map refresh interval must be between 100 and 1000.";
-    private static final String ERROR_MAP_WIDTH = "Map width";
-    private static final String ERROR_MAP_HEIGHT = "Map height";
-    private static final String ERROR_REFRESH_INTERVAL = "Map refresh interval";
-    private static final String ERROR_FIRE_OUTBURST = "Fire Outburst Interval";
-    private static final String ERROR_FIRE_DURATION = "Fire Duration";
-    private static final String ERROR_PLANT_COUNT = "Plant count";
-    private static final String ERROR_PLANT_ENERGY = "Plant energy";
-    private static final String ERROR_ANIMAL_COUNT = "Animal count";
-    private static final String ERROR_ANIMAL_ENERGY = "Animal energy";
-    private static final String ERROR_BREED_ENERGY_NEEDED = "Breed energy needed";
-    private static final String ERROR_BREED_ENERGY_USAGE = "Breed energy usage";
-    private static final String ERROR_MIN_MUTATIONS = "Min mutations";
-    private static final String ERROR_MAX_MUTATIONS = "Max mutations";
-    private static final String ERROR_GENES_COUNT = "Genes count";
+    private static final String ERROR_TITLE = "Configuration Error";
+
     @FXML private TextField mapWidth;
     @FXML private TextField mapHeight;
     @FXML private TextField plantCount;
@@ -55,52 +36,35 @@ public class ParametersPresenter {
     @FXML private TextField mapRefreshInterval;
     @FXML private TextField fireOutburstInterval;
     @FXML private TextField fireDuration;
-    @FXML private void mapWidth() {}
-    @FXML private void mapHeight() {}
-    @FXML private void plantCount() {}
-    @FXML private void plantEnergy() {}
-    @FXML private void plantPerDay() {}
-    @FXML private void animalCount() {}
-    @FXML private void animalEnergy() {}
-    @FXML private void breedEnergyNeeded() {}
-    @FXML private void breedEnergyUsage() {}
-    @FXML private void minMutations() {}
-    @FXML private void maxMutations() {}
-    @FXML private void genesCount() {}
-    @FXML private void mapRefreshInterval() {}
-    @FXML private void fireOutburstInterval() {}
-    @FXML private void fireDuration() {}
+
     private ConfigMap mapConfig = new ConfigMap(10, 10, 1000, MapVariant.EQUATORS);
     private ConfigAnimal animalConfig = new ConfigAnimal(5, 100, 6, 5, 2, 2, 3, BehaviorVariant.FULL_PREDESTINATION);
     private ConfigPlant plantConfig  = new ConfigPlant(5, 3, 4);
-    private static final int MIN_MAP_WIDTH = 2;
-    private static final int MAX_MAP_WIDTH = 100;
-    private static final int MIN_MAP_HEIGHT = 2;
-    private static final int MAX_MAP_HEIGHT = 100;
-    private static final int MIN_REFRESH_INTERVAL = 100;
-    private static final int MAX_REFRESH_INTERVAL = 1000;
-    private static final int MIN_GENES_COUNT = 2;
-    private static final int MAX_GENES_COUNT = 10;
+
+    private final ParameterValidator validator = new ParameterValidator();
+    private final ConfigurationManager configManager = new ConfigurationManager();
 
     @FXML
     private void save() {
         try {
             validateAndCreateConfigs();
             SimulationConfig config = new SimulationConfig(mapConfig, plantConfig, animalConfig);
-            SimulationConfigManager.saveConfig(config);
+            configManager.saveConfig(config);
         } catch (IllegalArgumentException e) {
-            showError(CONFIGURATION_ERROR, e.getMessage());
+            showError(e.getMessage());
         }
     }
 
     @FXML
     private void load() {
-        SimulationConfig config = SimulationConfigManager.loadConfig();
-        if (config != null) {
+        try {
+            SimulationConfig config = configManager.loadConfig();
             mapConfig = config.mapConfig();
             plantConfig = config.plantConfig();
             animalConfig = config.animalConfig();
             updateFieldsFromConfigs();
+        } catch (IllegalArgumentException e) {
+            showError(e.getMessage());
         }
     }
 
@@ -123,7 +87,6 @@ public class ParametersPresenter {
         insanity.setSelected(animalConfig.behaviorVariant() == BehaviorVariant.CRAZINESS);
         mapRefreshInterval.setText(String.valueOf(mapConfig.mapRefreshInterval()));
         saveToCsv.setSelected(mapConfig.saveToCsv());
-
     }
 
     @FXML
@@ -134,24 +97,25 @@ public class ParametersPresenter {
             SimulationApp.addSimulation(simulation);
             StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, loader -> {
                 SimulationPresenter presenter = loader.getController();
-                presenter.initializeSimulation(simulation,mapConfig,animalConfig,plantConfig);
+                presenter.initializeSimulation(simulation, mapConfig, animalConfig, plantConfig);
             });
             closeWindow(event);
         } catch (IllegalArgumentException e) {
-            showError(CONFIGURATION_ERROR, e.getMessage());
+            showError(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     private void validateAndCreateConfigs() {
-        int width = validateInRange(mapWidth.getText(), MIN_MAP_WIDTH, MAX_MAP_WIDTH, ERROR_MAP_WIDTH);
-        int height = validateInRange(mapHeight.getText(), MIN_MAP_HEIGHT, MAX_MAP_HEIGHT, ERROR_MAP_HEIGHT);
-        int refreshInterval = validateInRange(mapRefreshInterval.getText(), MIN_REFRESH_INTERVAL, MAX_REFRESH_INTERVAL, ERROR_REFRESH_INTERVAL);
+        int width = validator.validateInRange(mapWidth.getText(), 2, 100, "Map width");
+        int height = validator.validateInRange(mapHeight.getText(), 2, 100, "Map height");
+        int refreshInterval = validator.validateInRange(mapRefreshInterval.getText(), 100, 1000, "Map refresh interval");
         int fireInterval = fireMap.isSelected()
-                ? validatePositiveInt(fireOutburstInterval.getText(), ERROR_FIRE_OUTBURST)
+                ? validator.validatePositiveInt(fireOutburstInterval.getText(), "Fire Outburst Interval")
                 : -1;
         int fireDurationValue = fireMap.isSelected()
-                ? validatePositiveInt(fireDuration.getText(), ERROR_FIRE_DURATION)
+                ? validator.validatePositiveInt(fireDuration.getText(), "Fire Duration")
                 : -1;
 
         mapConfig = new ConfigMap(
@@ -164,11 +128,11 @@ public class ParametersPresenter {
                 saveToCsv.isSelected()
         );
 
-        int plantCountValue = validateNonNegativeInt(plantCount.getText(), ERROR_PLANT_COUNT);
-        int plantEnergyValue = validatePositiveInt(plantEnergy.getText(), ERROR_PLANT_ENERGY);
-        int plantPerDayValue = validatePositiveInt(plantPerDay.getText(), ERROR_PLANT_ENERGY);
+        int plantCountValue = validator.validateNonNegativeInt(plantCount.getText(), "Plant count");
+        int plantEnergyValue = validator.validatePositiveInt(plantEnergy.getText(), "Plant energy");
+        int plantPerDayValue = validator.validatePositiveInt(plantPerDay.getText(), "Plant per day");
 
-        validateEntityCount(plantCountValue, width, height, ERROR_PLANT_COUNT);
+        validator.validateEntityCount(plantCountValue, width, height, "Plant count");
 
         plantConfig = new ConfigPlant(
                 plantCountValue,
@@ -180,23 +144,17 @@ public class ParametersPresenter {
     }
 
     private void validateAndCreateAnimalConfig(int mapWidth, int mapHeight) {
-        int animalCountValue = validatePositiveInt(animalCount.getText(), ERROR_ANIMAL_COUNT);
-        int animalEnergyValue = validatePositiveInt(animalEnergy.getText(), ERROR_ANIMAL_ENERGY);
-        int breedEnergyNeededValue = validatePositiveInt(breedEnergyNeeded.getText(), ERROR_BREED_ENERGY_NEEDED);
-        int breedEnergyUsageValue = validatePositiveInt(breedEnergyUsage.getText(), ERROR_BREED_ENERGY_USAGE);
-        int minMutationsValue = validateNonNegativeInt(minMutations.getText(), ERROR_MIN_MUTATIONS);
-        int maxMutationsValue = validatePositiveInt(maxMutations.getText(), ERROR_MAX_MUTATIONS);
-        int genesCountValue = validateInRange(genesCount.getText(), MIN_GENES_COUNT, MAX_GENES_COUNT, ERROR_GENES_COUNT);
+        int animalCountValue = validator.validatePositiveInt(animalCount.getText(), "Animal count");
+        int animalEnergyValue = validator.validatePositiveInt(animalEnergy.getText(), "Animal energy");
+        int breedEnergyNeededValue = validator.validatePositiveInt(breedEnergyNeeded.getText(), "Breed energy needed");
+        int breedEnergyUsageValue = validator.validatePositiveInt(breedEnergyUsage.getText(), "Breed energy usage");
+        int minMutationsValue = validator.validateNonNegativeInt(minMutations.getText(), "Min mutations");
+        int maxMutationsValue = validator.validatePositiveInt(maxMutations.getText(), "Max mutations");
+        int genesCountValue = validator.validateInRange(genesCount.getText(), 2, 10, "Genes count");
 
-        if (minMutationsValue > maxMutationsValue) {
-            throw new IllegalArgumentException(MUTATIONS_ERROR);
-        }
-
-        if (breedEnergyNeededValue < breedEnergyUsageValue) {
-            throw new IllegalArgumentException(BREED_ENERGY_ERROR);
-        }
-
-        validateEntityCount(animalCountValue, mapWidth, mapHeight, ERROR_ANIMAL_COUNT);
+        validator.validateMutations(minMutationsValue, maxMutationsValue);
+        validator.validateBreedEnergy(breedEnergyNeededValue, breedEnergyUsageValue);
+        validator.validateEntityCount(animalCountValue, mapWidth, mapHeight, "Animal count");
 
         animalConfig = new ConfigAnimal(
                 animalCountValue,
@@ -209,51 +167,10 @@ public class ParametersPresenter {
                 insanity.isSelected() ? BehaviorVariant.CRAZINESS : BehaviorVariant.FULL_PREDESTINATION
         );
     }
-    private void validateEntityCount(int count, int width, int height, String fieldName) {
-        if (count > width * height) {
-            throw new IllegalArgumentException(String.format("%s %s", fieldName, ENTITY_COUNT_ERROR));
-        }
-    }
 
-    private int validatePositiveInt(String value, String fieldName) {
-        try {
-            int parsedValue = Integer.parseInt(value);
-            if (parsedValue <= 0) {
-                throw new IllegalArgumentException(fieldName + MUST_BE_POSITIVE);
-            }
-            return parsedValue;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(fieldName + MUST_BE_VALID_NUMBER);
-        }
-    }
-
-    private int validateNonNegativeInt(String value, String fieldName) {
-        try {
-            int parsedValue = Integer.parseInt(value);
-            if (parsedValue < 0) {
-                throw new IllegalArgumentException(fieldName + CANNOT_BE_NEGATIVE);
-            }
-            return parsedValue;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(fieldName + MUST_BE_VALID_NUMBER);
-        }
-    }
-
-    private int validateInRange(String value, int min, int max, String fieldName) {
-        try {
-            int parsedValue = Integer.parseInt(value);
-            if (parsedValue < min || parsedValue > max) {
-                throw new IllegalArgumentException(String.format("%s must be between %d and %d.", fieldName, min, max));
-            }
-            return parsedValue;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(fieldName + MUST_BE_VALID_NUMBER);
-        }
-    }
-
-    private void showError(String title, String message) {
+    private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle(ERROR_TITLE);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

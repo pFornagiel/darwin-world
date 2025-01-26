@@ -12,6 +12,7 @@ import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.*;
+import agh.ics.oop.presenter.statistics.AnimalStatisticsUpdater;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import agh.ics.oop.presenter.statistics.StatisticsUpdater;
 import agh.ics.oop.presenter.util.ImageLoader;
