@@ -1,8 +1,12 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
+import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
+import agh.ics.oop.model.worldelement.util.Genotype;
 import javafx.scene.control.Label;
+
+import java.util.List;
 
 public class AnimalStatisticsUpdater {
 
@@ -46,5 +50,38 @@ public class AnimalStatisticsUpdater {
                 label.setText("-");
             }
         }
+    }
+
+    public void updateAnimalStatistics(Animal animal) {
+        if (dataCollector != null) {
+            Animal selectedAnimal = selectAnimal(animal);
+            updateAnimalStatisticsDisplay(selectedAnimal);
+        }
+    }
+
+    private Animal selectAnimal(Animal animal) {
+        if (animal != null) {
+            return animal;
+        }
+
+        if (dataCollector.getSimulationStatistics() == null) {
+            return null;
+        }
+
+        List<Genotype> dominantGenotypes = dataCollector.getSimulationStatistics().mostPopularGenotypes();
+        if (dominantGenotypes.isEmpty()) {
+            return null;
+        }
+
+        for (Vector2d position : dataCollector.getSimulationData().animalPositionSet()) {
+            List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
+            if (animals.isEmpty()) continue;
+            for (Animal a : animals) {
+                if (a.getGenotype().equals(dominantGenotypes.get(0))) {
+                    return a;
+                }
+            }
+        }
+        return null;
     }
 }

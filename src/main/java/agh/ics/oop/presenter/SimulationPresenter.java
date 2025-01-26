@@ -11,7 +11,6 @@ import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
-import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.renderer.BackgroundRenderer;
@@ -104,10 +103,9 @@ public class SimulationPresenter implements MapChangeListener {
   private BackgroundRenderer backgroundRenderer;
 
   private Image borderImage;
-    private StatisticsUpdater statisticsUpdater;
+  private StatisticsUpdater statisticsUpdater;
 
-
-  private final Label[] ANIMAL_STATS_LABELS = new Label[8];
+  private Label[] ANIMAL_STATS_LABELS = new Label[8];
   private final static int amountOfGrassImages = 7;
   private Image[] verdantImages;
   private final static int amountOfVerdantImages = 5;
@@ -117,20 +115,12 @@ public class SimulationPresenter implements MapChangeListener {
   private MapRenderer mapRenderer;
   ImageLoader imageLoader;
 
-
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane, grassGridPane);
     gridRenderer = new GridRenderer(gridPane, gridManager);
     chartManager = new StatisticsChartManager(statisticsChart);
-    ANIMAL_STATS_LABELS[0] = dayCount;
-    ANIMAL_STATS_LABELS[1] = plantCount;
-    ANIMAL_STATS_LABELS[2] = energy;
-    ANIMAL_STATS_LABELS[3] = children;
-    ANIMAL_STATS_LABELS[4] = descendants;
-    ANIMAL_STATS_LABELS[5] = genome;
-    ANIMAL_STATS_LABELS[6] = activeGene;
-    ANIMAL_STATS_LABELS[7] = dayOfDeath;
+    ANIMAL_STATS_LABELS = new Label[] { dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath };
     imageLoader =  new ImageLoader();
     grassImages = new Image[amountOfGrassImages];
     grassImages = imageLoader.getGrassImages();
@@ -138,8 +128,7 @@ public class SimulationPresenter implements MapChangeListener {
     backgroundRenderer = new BackgroundRenderer(grassGridPane, gridManager, grassImages, verdantImages);
     isGrassGridInitialized = false;
     animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
-
-    borderImage = new Image(getClass().getResourceAsStream("/border.png"));
+    borderImage = imageLoader.getBorderImage();
     borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3,
             averageEnergy, averageLifespan, averageChildren);
@@ -147,37 +136,11 @@ public class SimulationPresenter implements MapChangeListener {
 
   public void onAnimalClicked(Vector2d position, List<Animal> animals) {
     chosenAnimal = getChosenAnimal(position, animals);
-    updateAnimalStatistics(chosenAnimal);
+    animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
   }
 
   public void setSimulation(Simulation simulation) {
     this.simulation = simulation;
-  }
-
-  private Animal selectAnimal(Animal animal) {
-    if (animal != null) {
-      return animal;
-    }
-
-    if (simulationStatistics == null) {
-      return null;
-    }
-
-    List<Genotype> dominantGenotypes = simulationStatistics.mostPopularGenotypes();
-    if (dominantGenotypes.isEmpty()) {
-      return null;
-    }
-
-    for (Vector2d position : simulationData.animalPositionSet()) {
-      List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
-      if (animals.isEmpty()) continue;
-      for (Animal a : animals) {
-        if (a.getGenotype().equals(dominantGenotypes.get(0))) {
-          return a;
-        }
-      }
-    }
-    return null;
   }
 
   @FXML
@@ -189,22 +152,11 @@ public class SimulationPresenter implements MapChangeListener {
     }
   }
 
-  private void updateAnimalStatisticsDisplay(Animal animal) {
-    animalStatisticsUpdater.updateAnimalStatisticsDisplay(animal);
-  }
-
-  private void updateAnimalStatistics(Animal animal) {
-    if (dataCollector != null && simulation != null) {
-      Animal selectedAnimal = selectAnimal(animal);
-      updateAnimalStatisticsDisplay(selectedAnimal);
-    }
-  }
-
   public void initializeSimulation(Simulation simulation,
                                    ConfigMap mapConfig,
                                    ConfigAnimal animalConfig,
                                    ConfigPlant plantConfig) {
-      this.simulation = simulation;
+    this.simulation = simulation;
   }
 
   private Animal getChosenAnimal(Vector2d position, List<Animal> animalList) {
@@ -232,7 +184,7 @@ public class SimulationPresenter implements MapChangeListener {
           if (simulationStatistics != null) {
             animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
             statisticsUpdater.updateStatistics(simulationStatistics); // Use StatisticsUpdater
-            updateAnimalStatistics(chosenAnimal);
+            animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
             mapRenderer.drawMap(simulationData);
           }
         }
@@ -254,7 +206,7 @@ public class SimulationPresenter implements MapChangeListener {
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
       simulationEngine.runAsync();
       chosenAnimal = null;
-      updateAnimalStatistics(null);
+      animalStatisticsUpdater.updateAnimalStatistics(null);
       startButton.setDisable(true);
       simulationStarted = true;
       gridManager.setGridDimensions(dataCollector.getWorldMap());
