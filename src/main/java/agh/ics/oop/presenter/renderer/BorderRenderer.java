@@ -26,7 +26,6 @@ public class BorderRenderer {
         int mapWidth = size.getX();
         int mapHeight = size.getY();
 
-        // Preserve original coordinate calculations
         for (int x = 1; x < mapWidth + 2; x++) {
             drawBorderCell(x, 1);
             drawBorderCell(x, mapHeight + 1);

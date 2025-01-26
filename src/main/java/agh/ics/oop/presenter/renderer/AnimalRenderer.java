@@ -32,10 +32,6 @@ public class AnimalRenderer {
     }
 
     public void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset) {
-        if (imageLoader.getSnailBack().isError() || imageLoader.getSnailFront().isError() || imageLoader.getSnailSide().isError()) {
-            System.err.println("Failed to load snail images.");
-            return;
-        }
         double cellSize = gridManager.calculateCellSize();
 
         for (Vector2d position : positions) {
@@ -43,7 +39,7 @@ public class AnimalRenderer {
             int y = (position.getY() - offset.getY()) + 1;
 
             List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
-            Animal currentAnimal = getChosenAnimal(position, animals);
+            Animal currentAnimal = getChosenAnimal(animals);
 
             if (currentAnimal == null) {
                 continue;
@@ -104,18 +100,14 @@ public class AnimalRenderer {
 
             stackPane.getChildren().addAll(cell, snailImageView);
 
-            final Vector2d finalPosition = position;
-            stackPane.setOnMouseClicked(event -> {
-                // Directly call the method in SimulationPresenter
-                simulationPresenter.onAnimalClicked(finalPosition, animals);
-            });
+            stackPane.setOnMouseClicked(e -> simulationPresenter.onAnimalClicked(animals));
 
             gridPane.setSnapToPixel(true);
             gridPane.add(stackPane, x, y);
         }
     }
 
-    private Animal getChosenAnimal(Vector2d position, List<Animal> animalList) {
+    private Animal getChosenAnimal(List<Animal> animalList) {
         if (animalList.isEmpty()) {
             return null;
         }
