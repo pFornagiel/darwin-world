@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
+import java.util.Random;
 import agh.ics.oop.model.exception.util.DatacollectorNotInitialized;
 
 import static agh.ics.oop.presenter.util.AnimalColor.getAnimalColor;
@@ -87,7 +87,9 @@ public class SimulationPresenter implements MapChangeListener {
   private Label averageLifespan;
   @FXML
   private Label averageChildren;
-
+  @FXML
+  private GridPane grassGridPane;
+  private Image[] grassImages;
   private SimulationStatisticsCSVSaver statisticsCSVSaver;
   @FXML private Label dayCount;
   @FXML private Label plantCount;
@@ -98,6 +100,9 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML private Label activeGene;
   @FXML private Label dayOfDeath;
   @FXML private Label animalTitle;
+  private Image fireImage = new Image(getClass().getResourceAsStream("/fire.png"));
+  private Image plantImage =  new Image(getClass().getResourceAsStream("/plant.png"));
+  private Image borderImage;
 
   private ConfigMap mapConfig;
   private ConfigPlant plantConfig;
@@ -106,10 +111,14 @@ public class SimulationPresenter implements MapChangeListener {
   Image snailFront = new Image(getClass().getResourceAsStream("/snail_front.png"));
   Image snailSide = new Image(getClass().getResourceAsStream("/snail_side.png"));
   private final Label[] ANIMAL_STATS_LABELS = new Label[8];
+  private final static int amountOfGrassImages = 7;
+  private Image[] verdantImages;
+  private final static int amountOfVerdantImages = 5;
+  private boolean isGrassGridInitialized = false;
 
   @FXML
   public void initialize() {
-    gridManager = new GridManager(gridPane);
+    gridManager = new GridManager(gridPane, grassGridPane);
     gridRenderer = new GridRenderer(gridPane, gridManager);
     chartManager = new StatisticsChartManager(statisticsChart);
     ANIMAL_STATS_LABELS[0] = dayCount;
@@ -120,6 +129,54 @@ public class SimulationPresenter implements MapChangeListener {
     ANIMAL_STATS_LABELS[5] = genome;
     ANIMAL_STATS_LABELS[6] = activeGene;
     ANIMAL_STATS_LABELS[7] = dayOfDeath;
+    grassImages = new Image[amountOfGrassImages];
+    for (int i = 0; i < amountOfGrassImages; i++) {
+      grassImages[i] = new Image(getClass().getResourceAsStream("/grasses/grass" + (i + 1) + ".png"));
+    }
+    verdantImages = new Image[amountOfVerdantImages];
+    for (int i = 0; i < amountOfVerdantImages; i++) {
+      verdantImages[i] = new Image(getClass().getResourceAsStream("/verdant/verdant" + (i + 1) + ".png"));
+    }
+    isGrassGridInitialized = false;
+
+    // Load border image
+    borderImage = new Image(getClass().getResourceAsStream("/border.png"));
+    if (borderImage.isError()) {
+      System.err.println("Failed to load border image.");
+    }
+  }
+
+  private void initializeGrassGrid() {
+    Random random = new Random();
+    int rows = gridManager.getGridPaneSize().getY();
+    int cols = gridManager.getGridPaneSize().getX();
+
+    // Clear the grid before rendering
+    grassGridPane.getChildren().clear();
+
+    // Render grass and verdant fields
+    for (int i = 2; i < rows+1; i++) {
+      for (int j = 2; j < cols+1; j++) {
+        ImageView imageView = new ImageView();
+        double cellSize = gridManager.calculateCellSize();
+
+        Vector2d position = new Vector2d(j - 1, i - 1);
+        if (simulationData != null && simulationData.verdantFieldPositionSet().contains(position)) {
+          // Render verdant image
+          imageView.setImage(verdantImages[random.nextInt(amountOfVerdantImages)]);
+        } else {
+          // Render grass image
+          imageView.setImage(grassImages[random.nextInt(amountOfGrassImages)]);
+        }
+
+        imageView.setFitWidth(cellSize);
+        imageView.setFitHeight(cellSize);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(false);
+
+        grassGridPane.add(imageView, j, i);
+      }
+    }
   }
 
   public void setSimulation(Simulation simulation) {
@@ -133,10 +190,56 @@ public class SimulationPresenter implements MapChangeListener {
     }
     Vector2d offset = gridManager.getGridPaneOffset();
     Vector2d size = gridManager.getGridPaneSize();
-    drawElements(simulationData.verdantFieldPositionSet(), Color.GRAY, offset, size);
-    drawElements(simulationData.plantPositionSet(), Color.GREEN, offset, size);
+
+    // Draw the border around the map
+    drawBorder(offset, size);
+
+    // Draw plants and fire using images
+    drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
+    drawElements(simulationData.firePositionSet(), fireImage, offset, size);
+
+    // Draw animals
     drawAnimalElements(simulationData.animalPositionSet(), offset, size);
-    drawElements(simulationData.firePositionSet(), Color.RED, offset, size);
+  }
+
+  private void drawBorder(Vector2d offset, Vector2d size) {
+    if (borderImage == null || borderImage.isError()) {
+      System.err.println("Border image not loaded.");
+      return;
+    }
+
+    int mapWidth = size.getX();
+    int mapHeight = size.getY();
+
+    for (int x = 1; x < mapWidth + 2; x++) { // Start from 1 to skip (0, 1)
+      drawBorderCell(x, 1, borderImage);       // Top border
+      drawBorderCell(x, mapHeight + 1, borderImage); // Bottom border
+    }
+
+// Draw left and right borders
+    for (int y = 2; y <= mapHeight; y++) { // Start from 2 to skip (1, 1)
+      drawBorderCell(1, y, borderImage);       // Left border
+      drawBorderCell(mapWidth + 1, y, borderImage); // Right border
+    }
+  }
+
+  private void drawBorderCell(int x, int y, Image image) {
+    StackPane stackPane = new StackPane();
+    stackPane.setSnapToPixel(true);
+
+    Rectangle cell = new Rectangle();
+    cell.setWidth(gridManager.calculateCellSize());
+    cell.setHeight(gridManager.calculateCellSize());
+    cell.setFill(new Color(0, 0, 0, 0)); // Transparent background
+
+    ImageView imageView = new ImageView(image);
+    imageView.setFitWidth(gridManager.calculateCellSize());
+    imageView.setFitHeight(gridManager.calculateCellSize());
+    imageView.setPreserveRatio(true);
+    imageView.setSmooth(false);
+
+    stackPane.getChildren().addAll(cell, imageView);
+    grassGridPane.add(stackPane, x, y); // Add to the static grid
   }
 
   private Animal selectAnimal(Animal animal) {
@@ -213,13 +316,32 @@ public class SimulationPresenter implements MapChangeListener {
     }
   }
 
-  private void drawElements(Iterable<Vector2d> positions, Color color, Vector2d offset, Vector2d size) {
+  private void drawElements(Iterable<Vector2d> positions, Image image, Vector2d offset, Vector2d size) {
     for (Vector2d position : positions) {
-      gridRenderer.setGridCell(
-              position.getX() - offset.getX() + 1,
-              (position.getY() - offset.getY() + 1),
-              color
-      );
+      int x = position.getX() - offset.getX() + 1;
+      int y = position.getY() - offset.getY() + 1;
+
+      StackPane stackPane = new StackPane();
+      stackPane.setSnapToPixel(true);
+
+      Rectangle cell = new Rectangle();
+      cell.setWidth(gridManager.calculateCellSize());
+      cell.setHeight(gridManager.calculateCellSize());
+      cell.setFill(new Color(0, 0, 0, 0)); // Transparent background
+
+      if (image != null) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(gridManager.calculateCellSize());
+        imageView.setFitHeight(gridManager.calculateCellSize());
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(false);
+        stackPane.getChildren().addAll(cell, imageView);
+      } else {
+        cell.setFill(Color.GRAY); // Default color
+        stackPane.getChildren().add(cell);
+      }
+
+      gridPane.add(stackPane, x, y);
     }
   }
 
@@ -251,17 +373,13 @@ public class SimulationPresenter implements MapChangeListener {
         continue;
       }
 
-      //Color color = getAnimalColor(dataCollector.getAnimalData(currentAnimal),
-       //       simulationStatistics,
-        //      animalConfig.initialEnergy());
-
       StackPane stackPane = new StackPane();
       stackPane.setSnapToPixel(true);
       Rectangle cell = new Rectangle();
       cell.setWidth(cellSize);
       cell.setHeight(cellSize);
-      //cell.setFill(color);
-      cell.setFill(new Color(0,0,0,0));
+      cell.setFill(new Color(0, 0, 0, 0)); // Transparent background
+
       String orientation = String.valueOf(currentAnimal.getOrientation());
       ImageView snailImageView = new ImageView();
       snailImageView.setFitWidth(cellSize);
@@ -319,6 +437,7 @@ public class SimulationPresenter implements MapChangeListener {
       gridPane.add(stackPane, x, y);
     }
   }
+
   private Animal getChosenAnimal(Vector2d position, List<Animal> animalList) {
     if (animalList.isEmpty()) {
       return null;
@@ -337,6 +456,11 @@ public class SimulationPresenter implements MapChangeListener {
           simulationStatistics = dataCollector.getSimulationStatistics();
           chartManager.updateChart(simulationStatistics);
           drawMap();
+          if (!isGrassGridInitialized) {
+            initializeGrassGrid();
+            isGrassGridInitialized = true;
+          }
+
           if (simulationStatistics != null) {
             updateSimulationStatistics(simulationStatistics);
             updateAnimalStatistics(chosenAnimal);
@@ -381,9 +505,9 @@ public class SimulationPresenter implements MapChangeListener {
       simulationEngine.runAsync();
       chosenAnimal = null;
       updateAnimalStatistics(null);
-      gridManager.setGridDimensions(dataCollector.getWorldMap());
       startButton.setDisable(true);
       simulationStarted = true;
+      gridManager.setGridDimensions(dataCollector.getWorldMap());
 
     } catch (Exception e) {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
