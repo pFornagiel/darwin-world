@@ -54,11 +54,7 @@ public class BorderRenderer {
         cell.setHeight(cellSize);
         cell.setFill(Color.TRANSPARENT);
 
-        ImageView imageView = new ImageView(borderImage);
-        imageView.setFitWidth(cellSize);
-        imageView.setFitHeight(cellSize);
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(false);
+        ImageView imageView = GridRenderer.createImageView(borderImage, cellSize);
 
         stackPane.getChildren().addAll(cell, imageView);
         grassGridPane.add(stackPane, x, y);

@@ -19,8 +19,7 @@ public class BackgroundRenderer {
     private final Random random;
     private final int maxMapSizeForImages;
 
-    // Improved green color definition
-    private static final Color GREEN_COLOR = Color.rgb(114, 117, 25); // Dark green color
+    private static final Color GRASS_COLOR = Color.rgb(114, 117, 25);
 
     public BackgroundRenderer(GridPane grassGridPane, Image[] grassImages, Image[] verdantImages, int maxMapSizeForImages) {
         this.grassGridPane = grassGridPane;
@@ -42,8 +41,7 @@ public class BackgroundRenderer {
                 Vector2d position = new Vector2d(j - 1, i - 1);
 
                 if (isMapTooLarge) {
-                    // Use the constant GREEN_COLOR
-                    Pane greenCell = GridRenderer.createColoredCell(cellSize, GREEN_COLOR);
+                    Pane greenCell = GridRenderer.createColoredCell(cellSize, GRASS_COLOR);
                     GridRenderer.addToGrid(grassGridPane, greenCell, j, i);
                 } else {
                     Image image = getImageForPosition(simulationData, position);
