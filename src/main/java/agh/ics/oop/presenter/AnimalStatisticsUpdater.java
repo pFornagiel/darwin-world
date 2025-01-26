@@ -1,4 +1,3 @@
-// File: AnimalStatisticsUpdater.java
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;

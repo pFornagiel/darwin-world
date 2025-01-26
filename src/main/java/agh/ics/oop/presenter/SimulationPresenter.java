@@ -14,6 +14,7 @@ import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
+import agh.ics.oop.presenter.renderer.AnimalRenderer;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.renderer.BorderRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
@@ -123,7 +124,7 @@ public class SimulationPresenter implements MapChangeListener {
   private final static int amountOfVerdantImages = 5;
   private boolean isGrassGridInitialized = false;
   private AnimalStatisticsUpdater animalStatisticsUpdater;
-
+  private AnimalRenderer animalRenderer;
   private BorderRenderer borderRenderer;
 
   @FXML
@@ -209,9 +210,12 @@ public class SimulationPresenter implements MapChangeListener {
     borderRenderer.render(offset, size);
     drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
     drawElements(simulationData.firePositionSet(), fireImage, offset, size);
-    drawAnimalElements(simulationData.animalPositionSet(), offset, size);
-  }
 
+    // Use animalRenderer only if it is initialized
+    if (animalRenderer != null) {
+      animalRenderer.drawAnimalElements(simulationData.animalPositionSet(), offset, size, gridPane);
+    }
+  }
   private Animal selectAnimal(Animal animal) {
     if (animal != null) {
       return animal;
@@ -439,7 +443,8 @@ public class SimulationPresenter implements MapChangeListener {
       if (simulationStarted)
         return;
       simulation.addObserver(this);
-      dataCollector = new SimulationDataCollector(simulation);
+      dataCollector = new SimulationDataCollector(simulation); // Initialize dataCollector
+      animalRenderer = new AnimalRenderer(gridManager, snailBack, snailFront, snailSide, dataCollector); // Initialize animalRenderer here
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
       simulationEngine.runAsync();
@@ -453,6 +458,7 @@ public class SimulationPresenter implements MapChangeListener {
       showError(SIMULATION_ERROR_TITLE, SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
   }
+
 
   @FXML
   private void onPauseButtonClicked() {
