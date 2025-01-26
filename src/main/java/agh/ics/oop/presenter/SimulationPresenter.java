@@ -14,9 +14,9 @@ import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
-import agh.ics.oop.presenter.renderer.AnimalRenderer;
 import agh.ics.oop.presenter.renderer.GridRenderer;
 import agh.ics.oop.presenter.renderer.BorderRenderer;
+import agh.ics.oop.presenter.renderer.MapRenderer;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
 import agh.ics.oop.presenter.statistics.StatisticsUpdater;
 import agh.ics.oop.presenter.util.StageUtil;
@@ -29,14 +29,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.Random;
-import agh.ics.oop.model.exception.util.DatacollectorNotInitialized;
 
 public class SimulationPresenter implements MapChangeListener {
 
@@ -102,27 +99,19 @@ public class SimulationPresenter implements MapChangeListener {
   private Label dayOfDeath;
   @FXML
   private Label animalTitle;
-  private Image fireImage = new Image(getClass().getResourceAsStream("/fire.png"));
-  private Image plantImage = new Image(getClass().getResourceAsStream("/plant.png"));
-  private Image borderImage;
-  private MapRenderer mapRenderer;
-  private StatisticsUpdater statisticsUpdater;
 
-  private ConfigMap mapConfig;
-  private ConfigPlant plantConfig;
-  private ConfigAnimal animalConfig;
-  private Image snailBack = new Image(getClass().getResourceAsStream("/snail_back.png"));
-  private Image snailFront = new Image(getClass().getResourceAsStream("/snail_front.png"));
-  private Image snailSide = new Image(getClass().getResourceAsStream("/snail_side.png"));
+  private Image borderImage;
+    private StatisticsUpdater statisticsUpdater;
+
+
   private final Label[] ANIMAL_STATS_LABELS = new Label[8];
   private final static int amountOfGrassImages = 7;
   private Image[] verdantImages;
   private final static int amountOfVerdantImages = 5;
   private boolean isGrassGridInitialized = false;
   private AnimalStatisticsUpdater animalStatisticsUpdater;
-  private AnimalRenderer animalRenderer;
   private BorderRenderer borderRenderer;
-
+  private MapRenderer mapRenderer;
   @FXML
   public void initialize() {
     gridManager = new GridManager(gridPane, grassGridPane);
@@ -147,7 +136,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     isGrassGridInitialized = false;
-    mapRenderer = new MapRenderer(gridManager, gridPane, plantImage, fireImage, snailBack, snailFront, snailSide, dataCollector, this);    animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
+      animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
 
     borderImage = new Image(getClass().getResourceAsStream("/border.png"));
     borderRenderer = new BorderRenderer(gridManager, borderImage, grassGridPane);
@@ -193,22 +182,6 @@ public class SimulationPresenter implements MapChangeListener {
     this.simulation = simulation;
   }
 
-  private void drawMap() {
-    gridManager.clearGrid();
-    if (simulationData == null) {
-      throw new DatacollectorNotInitialized();
-    }
-
-    Vector2d offset = gridManager.getGridPaneOffset();
-    Vector2d size = gridManager.getGridPaneSize();
-
-    borderRenderer.render(offset, size);
-    drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
-    drawElements(simulationData.firePositionSet(), fireImage, offset, size);
-    if (animalRenderer != null) {
-      animalRenderer.drawAnimalElements(simulationData.animalPositionSet(), offset, size, gridPane);
-    }
-  }
   private Animal selectAnimal(Animal animal) {
     if (animal != null) {
       return animal;
@@ -255,43 +228,11 @@ public class SimulationPresenter implements MapChangeListener {
     }
   }
 
-  private void drawElements(Iterable<Vector2d> positions, Image image, Vector2d offset, Vector2d size) {
-    for (Vector2d position : positions) {
-      int x = position.getX() - offset.getX() + 1;
-      int y = position.getY() - offset.getY() + 1;
-
-      StackPane stackPane = new StackPane();
-      stackPane.setSnapToPixel(true);
-
-      Rectangle cell = new Rectangle();
-      cell.setWidth(gridManager.calculateCellSize());
-      cell.setHeight(gridManager.calculateCellSize());
-      cell.setFill(new Color(0, 0, 0, 0));
-
-      if (image != null) {
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(gridManager.calculateCellSize());
-        imageView.setFitHeight(gridManager.calculateCellSize());
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(false);
-        stackPane.getChildren().addAll(cell, imageView);
-      } else {
-        cell.setFill(Color.GRAY);
-        stackPane.getChildren().add(cell);
-      }
-
-      gridPane.add(stackPane, x, y);
-    }
-  }
-
   public void initializeSimulation(Simulation simulation,
                                    ConfigMap mapConfig,
                                    ConfigAnimal animalConfig,
                                    ConfigPlant plantConfig) {
-    this.mapConfig = mapConfig;
-    this.animalConfig = animalConfig;
-    this.plantConfig = plantConfig;
-    this.simulation = simulation;
+      this.simulation = simulation;
   }
 
   private Animal getChosenAnimal(Vector2d position, List<Animal> animalList) {
@@ -309,9 +250,10 @@ public class SimulationPresenter implements MapChangeListener {
           simulationData = dataCollector.getSimulationData();
           simulationStatistics = dataCollector.getSimulationStatistics();
           chartManager.updateChart(simulationStatistics);
-          drawMap();
+
           if (!isGrassGridInitialized) {
             initializeGrassGrid();
+            mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this,borderRenderer);
             isGrassGridInitialized = true;
           }
 
@@ -319,6 +261,7 @@ public class SimulationPresenter implements MapChangeListener {
             animalStatisticsUpdater = new AnimalStatisticsUpdater(ANIMAL_STATS_LABELS, animalTitle, dataCollector);
             statisticsUpdater.updateStatistics(simulationStatistics); // Use StatisticsUpdater
             updateAnimalStatistics(chosenAnimal);
+            mapRenderer.drawMap(simulationData);
           }
         }
       } catch (Exception e) {
@@ -335,7 +278,6 @@ public class SimulationPresenter implements MapChangeListener {
         return;
       simulation.addObserver(this);
       dataCollector = new SimulationDataCollector(simulation);
-      animalRenderer = new AnimalRenderer(gridManager, snailBack, snailFront, snailSide, dataCollector, this::handleAnimalClick); // Pass click handler
       SimulationEngine simulationEngine = new SimulationEngine(simulation);
       statisticsCSVSaver = new SimulationStatisticsCSVSaver();
       simulationEngine.runAsync();

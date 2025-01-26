@@ -1,9 +1,10 @@
-package agh.ics.oop.presenter;
+package agh.ics.oop.presenter.renderer;
 
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
+import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.grid.GridManager;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
@@ -18,39 +19,32 @@ public class MapRenderer {
 
     private final GridManager gridManager;
     private final GridPane gridPane;
-    private final Image plantImage;
-    private final Image fireImage;
-    private final Image snailBack;
-    private final Image snailFront;
-    private final Image snailSide;
+    private Image fireImage = new Image(getClass().getResourceAsStream("/fire.png"));
+    private Image plantImage = new Image(getClass().getResourceAsStream("/plant.png"));
+    private Image snailBack = new Image(getClass().getResourceAsStream("/snail_back.png"));
+    private Image snailFront = new Image(getClass().getResourceAsStream("/snail_front.png"));
+    private Image snailSide = new Image(getClass().getResourceAsStream("/snail_side.png"));
     private final SimulationDataCollector dataCollector;
     private final SimulationPresenter simulationPresenter; // Add reference to SimulationPresenter
-
-    public MapRenderer(GridManager gridManager, GridPane gridPane, Image plantImage, Image fireImage,
-                       Image snailBack, Image snailFront, Image snailSide, SimulationDataCollector dataCollector,
-                       SimulationPresenter simulationPresenter) { // Add SimulationPresenter parameter
+    private BorderRenderer borderRenderer;
+    public MapRenderer(GridManager gridManager, GridPane gridPane,
+                        SimulationDataCollector dataCollector,
+                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer) { // Add SimulationPresenter parameter
         this.gridManager = gridManager;
         this.gridPane = gridPane;
-        this.plantImage = plantImage;
-        this.fireImage = fireImage;
-        this.snailBack = snailBack;
-        this.snailFront = snailFront;
-        this.snailSide = snailSide;
         this.dataCollector = dataCollector;
-        this.simulationPresenter = simulationPresenter; // Initialize SimulationPresenter
+        this.simulationPresenter = simulationPresenter;
+        this.borderRenderer = borderRenderer;
     }
 
     public void drawMap(SimulationData simulationData) {
         gridManager.clearGrid();
         Vector2d offset = gridManager.getGridPaneOffset();
         Vector2d size = gridManager.getGridPaneSize();
-
-        // Draw plants and fire using images
         drawElements(simulationData.plantPositionSet(), plantImage, offset, size);
         drawElements(simulationData.firePositionSet(), fireImage, offset, size);
-
-        // Draw animals
         drawAnimalElements(simulationData.animalPositionSet(), offset, size);
+        borderRenderer.render(offset, size);
     }
 
     private void drawElements(Iterable<Vector2d> positions, Image image, Vector2d offset, Vector2d size) {
