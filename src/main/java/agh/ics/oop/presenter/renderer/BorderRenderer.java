@@ -23,7 +23,8 @@ public class BorderRenderer {
         this.grassGridPane = grassGridPane;
     }
 
-    public void render(Vector2d offset, Vector2d size) {
+    public void render() {
+        Vector2d size = gridManager.getGridPaneSize();
         int mapWidth = size.getX();
         int mapHeight = size.getY();
         int mapArea = mapWidth * mapHeight;

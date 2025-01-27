@@ -6,6 +6,7 @@ import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.grid.GridManager;
+import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.AnimalColor;
 import agh.ics.oop.presenter.util.ImageLoader;
 import javafx.geometry.Pos;
@@ -26,7 +27,6 @@ public class AnimalRenderer {
     private final int MAX_MAP_SIZE_FOR_IMAGES;
 
     private static final String NORTH = "North";
-    private static final String SOUTH = "South";
     private static final String EAST = "East";
     private static final String WEST = "West";
     private static final String NORTH_EAST = "North-East";
@@ -91,9 +91,6 @@ public class AnimalRenderer {
                 case NORTH:
                     snailImageView.setImage(imageLoader.getSnailBack());
                     break;
-                case SOUTH:
-                    snailImageView.setImage(imageLoader.getSnailFront());
-                    break;
                 case EAST:
                     snailImageView.setImage(imageLoader.getSnailSide());
                     break;
@@ -155,13 +152,7 @@ public class AnimalRenderer {
 
     private StackPane createColoredCellWithText(Color color, String textContent) {
         double cellSize = gridManager.calculateCellSize();
-        Pane cell = new Pane();
-        cell.setMinSize(cellSize, cellSize);
-        cell.setPrefSize(cellSize, cellSize);
-        cell.setMaxSize(cellSize, cellSize);
-        BackgroundFill backgroundFill = new BackgroundFill(color, null, null);
-        Background background = new Background(backgroundFill);
-        cell.setBackground(background);
+        Pane cell = GridRenderer.createColoredCell(cellSize, color);
         Text text = new Text(textContent);
         text.setFill(Color.WHITE);
         StackPane stackPane = new StackPane();

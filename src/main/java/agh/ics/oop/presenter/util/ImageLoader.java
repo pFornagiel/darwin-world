@@ -29,6 +29,7 @@ public class ImageLoader {
     private final Image borderImage;
 
     public ImageLoader() {
+
         fireImage = loadImage(FIRE_IMAGE_PATH);
         plantImage = loadImage(PLANT_IMAGE_PATH);
         snailBack = loadImage(SNAIL_BACK_IMAGE_PATH);
@@ -45,6 +46,7 @@ public class ImageLoader {
         for (int i = 0; i < AMOUNT_OF_VERDANT_IMAGES; i++) {
             verdantImages[i] = loadImage(VERDANT_IMAGE_BASE_PATH + (i + 1) + IMAGE_FILE_EXTENSION);
         }
+
     }
 
     private Image loadImage(String path) {

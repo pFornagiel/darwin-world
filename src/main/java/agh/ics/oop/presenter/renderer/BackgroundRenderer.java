@@ -19,15 +19,16 @@ public class BackgroundRenderer {
     private final Image[] verdantImages;
     private final Random random;
     private final int maxMapSizeForImages;
-
+    private final BorderRenderer borderRenderer;
     private static final Color GRASS_COLOR = Color.rgb(114, 117, 25);
 
-    public BackgroundRenderer(GridPane grassGridPane, Image[] grassImages, Image[] verdantImages, int maxMapSizeForImages) {
+    public BackgroundRenderer(GridPane grassGridPane, Image[] grassImages, Image[] verdantImages, int maxMapSizeForImages,BorderRenderer borderRenderer) {
         this.grassGridPane = grassGridPane;
         this.grassImages = grassImages;
         this.verdantImages = verdantImages;
         this.random = new Random();
         this.maxMapSizeForImages = maxMapSizeForImages;
+        this.borderRenderer = borderRenderer;
     }
 
     public void initializeGrassGrid(SimulationData simulationData, GridManager gridManager) {
@@ -51,6 +52,7 @@ public class BackgroundRenderer {
                 }
             }
         }
+        borderRenderer.render();
     }
 
     private Image getImageForPosition(SimulationData simulationData, Vector2d position) {

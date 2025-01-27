@@ -47,6 +47,5 @@ public class MapRenderer {
             animalRenderer.drawAnimalElements(simulationData.animalPositionSet(), offset);
             elementRenderer.drawElements(simulationData.firePositionSet(), fireImage, offset);
         }
-        borderRenderer.render(offset, mapSize);
     }
 }
