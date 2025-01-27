@@ -29,9 +29,7 @@ public class BorderRenderer {
         int mapHeight = size.getY();
         int mapArea = mapWidth * mapHeight;
 
-        if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
-            renderColoredBorders(mapWidth, mapHeight, BORDER_COLOR);
-        } else {
+        if (mapArea <= MAX_MAP_SIZE_FOR_IMAGES)  {
             if (borderImage == null || borderImage.isError()) return;
 
             for (int x = 1; x < mapWidth + 2; x++) {
