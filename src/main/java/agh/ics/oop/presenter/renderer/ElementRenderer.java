@@ -2,6 +2,7 @@ package agh.ics.oop.presenter.renderer;
 
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.presenter.grid.GridManager;
+import agh.ics.oop.presenter.grid.GridRenderer;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;

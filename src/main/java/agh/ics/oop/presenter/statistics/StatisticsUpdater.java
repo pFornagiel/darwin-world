@@ -10,7 +10,6 @@ import static agh.ics.oop.presenter.util.Rounder.roundToTwoDecimal;
 
 public class StatisticsUpdater {
 
-    // Constants for default values and formatting
     private static final String DEFAULT_GENOTYPE_TEXT = "-";
     private static final String AVERAGE_ENERGY_FORMAT = "%.2f";
     private static final String AVERAGE_CHILDREN_FORMAT = "%.2f";

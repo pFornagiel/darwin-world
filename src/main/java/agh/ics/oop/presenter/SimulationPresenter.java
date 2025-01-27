@@ -1,8 +1,6 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.configuration.ConfigAnimal;
-import agh.ics.oop.model.configuration.ConfigMap;
-import agh.ics.oop.model.configuration.ConfigPlant;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
@@ -37,6 +35,8 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String PAUSE = "Pause";
   private static final String PARAMETERS = "parameters.fxml";
   private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
+  private static final int MAX_MAP_SIZE_FOR_IMAGES = 400;
+
 
   @FXML private GridPane gridPane;
   @FXML private GridPane grassGridPane;
@@ -61,8 +61,7 @@ public class SimulationPresenter implements MapChangeListener {
   private StatisticsUpdater statisticsUpdater;
   private AnimalStatisticsUpdater animalStatisticsUpdater;
   private ImageLoader imageLoader;
-  private static final int MAX_MAP_SIZE_FOR_IMAGES = 400;
-
+  private ConfigAnimal animalConfig;
 
   @FXML
   public void initialize() {
@@ -112,7 +111,7 @@ public class SimulationPresenter implements MapChangeListener {
 
       gridManager.setGridDimensions(dataCollector.getWorldMap());
       backgroundRenderer.initializeGrassGrid(simulationData, gridManager);
-      mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES);
+      mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig);
 
       startButton.setDisable(true);
       pauseButton.setDisable(false);
@@ -156,11 +155,9 @@ public class SimulationPresenter implements MapChangeListener {
     alert.showAndWait();
   }
 
-  public void setSimulation(Simulation simulation) {
+  public void initializeSimulation(Simulation simulation, ConfigAnimal animalConfig) {
     this.simulation = simulation;
+    this.animalConfig = animalConfig;
   }
 
-  public void initializeSimulation(Simulation simulation) {
-    this.simulation = simulation;
-  }
 }

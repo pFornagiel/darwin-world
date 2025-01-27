@@ -1,4 +1,4 @@
-package agh.ics.oop.presenter.renderer;
+package agh.ics.oop.presenter.grid;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;

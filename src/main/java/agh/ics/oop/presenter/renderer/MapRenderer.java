@@ -1,5 +1,6 @@
 package agh.ics.oop.presenter.renderer;
 
+import agh.ics.oop.model.configuration.ConfigAnimal;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.util.Vector2d;
@@ -17,15 +18,17 @@ public class MapRenderer {
     private final BorderRenderer borderRenderer;
     private final ImageLoader imageLoader;
     private final int MAX_MAP_SIZE_FOR_IMAGES;
+    private ConfigAnimal animalConfig;
     public MapRenderer(GridManager gridManager, GridPane gridPane,
                        SimulationDataCollector dataCollector,
-                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES) {
+                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES, ConfigAnimal animalConfig) {
         this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
         this.gridManager = gridManager;
         this.borderRenderer = borderRenderer;
         this.imageLoader = imageLoader;
         this.elementRenderer = new ElementRenderer(gridManager, gridPane);
-        this.animalRenderer = new AnimalRenderer(gridManager, gridPane, dataCollector, simulationPresenter, imageLoader,MAX_MAP_SIZE_FOR_IMAGES);
+        this.animalRenderer = new AnimalRenderer(gridManager, gridPane, dataCollector, simulationPresenter, imageLoader,MAX_MAP_SIZE_FOR_IMAGES, animalConfig.initialEnergy());
+        this.animalConfig = animalConfig;
     }
 
     public void drawMap(SimulationData simulationData) {

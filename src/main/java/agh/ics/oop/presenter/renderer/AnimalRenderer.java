@@ -33,16 +33,17 @@ public class AnimalRenderer {
     private static final String NORTH_WEST = "North-West";
     private static final String SOUTH_EAST = "South-East";
     private static final String SOUTH_WEST = "South-West";
-
+    private final int initialEnergy;
     public AnimalRenderer(GridManager gridManager, GridPane gridPane,
                           SimulationDataCollector dataCollector,
-                          SimulationPresenter simulationPresenter, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES) {
+                          SimulationPresenter simulationPresenter, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES, int initialEnergy) {
         this.gridManager = gridManager;
         this.gridPane = gridPane;
         this.dataCollector = dataCollector;
         this.simulationPresenter = simulationPresenter;
         this.imageLoader = imageLoader;
         this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
+        this.initialEnergy = initialEnergy;
     }
 
     public void drawAnimalElements(Iterable<Vector2d> positions, Vector2d offset) {
@@ -145,7 +146,7 @@ public class AnimalRenderer {
             }
 
             AnimalData animalData = dataCollector.getAnimalData(currentAnimal);
-            Color animalColor = AnimalColor.getAnimalColor(animalData, dataCollector.getSimulationStatistics(), 50);
+            Color animalColor = AnimalColor.getAnimalColor(animalData, dataCollector.getSimulationStatistics(), initialEnergy);
             StackPane stackPane = createColoredCellWithText(animalColor, currentAnimal.toString());
             gridPane.add(stackPane, x, y);
         }
