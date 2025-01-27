@@ -49,8 +49,8 @@ public class GridManager {
             availableHeight = 600;
         }
         int maxDimension = Math.max(gridPaneSize.getX(), gridPaneSize.getY());
-        double cellSizeByWidth = (availableWidth * 0.9) / maxDimension;
-        double cellSizeByHeight = (availableHeight * 0.9) / maxDimension;
+        double cellSizeByWidth = (availableWidth) / maxDimension;
+        double cellSizeByHeight = (availableHeight) / maxDimension;
         return Math.max(MIN_CELL_SIZE, Math.min(cellSizeByWidth, cellSizeByHeight));
     }
 
