@@ -148,6 +148,7 @@ public class AnimalRenderer {
             AnimalData animalData = dataCollector.getAnimalData(currentAnimal);
             Color animalColor = AnimalColor.getAnimalColor(animalData, dataCollector.getSimulationStatistics(), initialEnergy);
             StackPane stackPane = createColoredCellWithText(animalColor, currentAnimal.toString());
+            stackPane.setOnMouseClicked(e -> simulationPresenter.onAnimalClicked(animals));
             gridPane.add(stackPane, x, y);
         }
     }
