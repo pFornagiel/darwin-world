@@ -59,6 +59,7 @@ public class ParametersPresenter {
 
     private final ParameterValidator validator = new ParameterValidator();
     private final ConfigurationManager configManager = new ConfigurationManager();
+    private Simulation simulation;
 
     @FXML
     private void save() {
@@ -109,9 +110,10 @@ public class ParametersPresenter {
     private void accept(ActionEvent event) {
         try {
             validateAndCreateConfigs();
-            Simulation simulation = new Simulation(mapConfig, animalConfig, plantConfig);
+            simulation = new Simulation(mapConfig, animalConfig, plantConfig);
             SimulationApp.addSimulation(simulation);
-            StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, loader -> {
+
+            StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, simulation, loader -> {
                 SimulationPresenter presenter = loader.getController();
                 presenter.initializeSimulation(simulation,animalConfig);
             });

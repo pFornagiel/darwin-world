@@ -84,7 +84,7 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private void onNewSimulationButtonClicked() {
     try {
-      StageUtil.openNewStage(PARAMETERS, SIMULATION_PARAMETERS, null);
+      StageUtil.openNewStage(PARAMETERS, SIMULATION_PARAMETERS, simulation, null);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -132,7 +132,6 @@ public class SimulationPresenter implements MapChangeListener {
     Platform.runLater(() -> {
       try {
         if (dataCollector == null) return;
-
         simulationData = dataCollector.getSimulationData();
         simulationStatistics = dataCollector.getSimulationStatistics();
         animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);

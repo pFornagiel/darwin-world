@@ -10,17 +10,17 @@ import javafx.scene.layout.RowConstraints;
 
 public class GridManager {
     private static final int MIN_CELL_SIZE = 1;
-    private Vector2d gridPaneSize; // Size of the dynamic grid (map)
-    private Vector2d staticGridPaneSize; // Size of the static grid (border)
+    private Vector2d gridPaneSize;
+    private Vector2d staticGridPaneSize;
     private Vector2d gridPaneOffset;
-    private final GridPane dynamicGridPane; // Grid for animals and plants
-    private final GridPane staticGridPane;  // Grid for static grass and border
+    private final GridPane dynamicGridPane;
+    private final GridPane staticGridPane;
 
     public GridManager(GridPane dynamicGridPane, GridPane staticGridPane) {
         this.dynamicGridPane = dynamicGridPane;
         this.staticGridPane = staticGridPane;
         this.gridPaneSize = new Vector2d(8, 8);
-        this.staticGridPaneSize = new Vector2d(10, 10); // Default size for static grid
+        this.staticGridPaneSize = new Vector2d(10, 10);
         this.gridPaneOffset = new Vector2d(0, 0);
     }
 
@@ -29,10 +29,7 @@ public class GridManager {
         int mapWidth = mapBounds.upperBoundary().getX() - mapBounds.lowerBoundary().getX() + 1;
         int mapHeight = mapBounds.upperBoundary().getY() - mapBounds.lowerBoundary().getY() + 1;
 
-        // Dynamic grid size (map size)
         gridPaneSize = new Vector2d(mapWidth, mapHeight);
-
-        // Static grid size (map size + 2 for the border)
         staticGridPaneSize = new Vector2d(mapWidth + 2, mapHeight + 2);
 
         gridPaneOffset = new Vector2d(
@@ -59,8 +56,6 @@ public class GridManager {
 
     public void setGridConstraints() {
         double cellSize = calculateCellSize();
-
-        // Clear and set constraints for the dynamic grid
         dynamicGridPane.getColumnConstraints().clear();
         dynamicGridPane.getRowConstraints().clear();
         for (int i = 0; i < gridPaneSize.getY(); i++) {
@@ -78,7 +73,6 @@ public class GridManager {
             dynamicGridPane.getColumnConstraints().add(columnConstraints);
         }
 
-        // Clear and set constraints for the static grid
         staticGridPane.getColumnConstraints().clear();
         staticGridPane.getRowConstraints().clear();
         for (int i = 0; i < staticGridPaneSize.getY(); i++) {
