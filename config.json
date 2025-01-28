@@ -6,7 +6,7 @@
     "mapVariant": "FIRES",
     "fireOutburstInterval": 1,
     "fireDuration": 1,
-    "saveToCsv": false
+    "saveToCsv": true
   },
   "plantConfig": {
     "initialPlantCount": 3,

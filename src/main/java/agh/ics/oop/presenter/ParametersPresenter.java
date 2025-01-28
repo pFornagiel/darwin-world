@@ -115,7 +115,7 @@ public class ParametersPresenter {
 
             StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, simulation, loader -> {
                 SimulationPresenter presenter = loader.getController();
-                presenter.initializeSimulation(simulation,animalConfig);
+                presenter.initializeSimulation(simulation,animalConfig,mapConfig);
             });
             closeWindow(event);
         } catch (IllegalArgumentException e) {

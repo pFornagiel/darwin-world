@@ -9,8 +9,8 @@ public class SimulationStatisticsCSVSaver {
     private static final String HEADER = "day,animals,plants,freeFields,avgEnergy,avgLifespan,avgChildren,mostPopularGenotype";
     private int lastDay = -1;
 
-    public SimulationStatisticsCSVSaver() {
-        this.csvFilePath = Paths.get("simulation_stats.csv");
+    public SimulationStatisticsCSVSaver(int hash) {
+        this.csvFilePath = Paths.get(String.format("simulation_csv_%d", hash));
         initializeFile();
     }
 

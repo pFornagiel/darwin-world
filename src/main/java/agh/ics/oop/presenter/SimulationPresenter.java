@@ -1,9 +1,11 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.configuration.ConfigAnimal;
+import agh.ics.oop.model.configuration.ConfigMap;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
+import agh.ics.oop.model.datacollectors.SimulationStatisticsCSVSaver;
 import agh.ics.oop.model.exception.resources.ImageFileCouldNotBeFoundException;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
@@ -71,8 +73,11 @@ public class SimulationPresenter implements MapChangeListener {
   private AnimalStatisticsUpdater animalStatisticsUpdater;
   private ImageLoader imageLoader;
   private ConfigAnimal animalConfig;
+  private ConfigMap mapConfig;
   private GridRenderer gridRenderer;
   private AnimalRenderer animalRenderer;
+  private SimulationStatisticsCSVSaver csvSaver;
+
   @FXML
   public void initialize() {
     initializeUIComponents();
@@ -125,7 +130,8 @@ public class SimulationPresenter implements MapChangeListener {
       GridStaticRenderer gridStaticRenderer = new GridStaticRenderer(staticCanvas, gridManager, imageLoader, MAX_MAP_SIZE_FOR_IMAGES);
       gridStaticRenderer.drawBackground(simulationData);
       gridStaticRenderer.drawBorder();
-
+      if (mapConfig.saveToCsv())
+        csvSaver = new SimulationStatisticsCSVSaver(simulation.hashCode());
       gridRenderer = new GridRenderer(simulationCanvas, gridManager);
       animalRenderer = new AnimalRenderer(gridManager, gridRenderer, dataCollector, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig.initialEnergy());
       mapRenderer = new MapRenderer(gridManager, gridRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalRenderer);
@@ -159,6 +165,8 @@ public class SimulationPresenter implements MapChangeListener {
         animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
         chartManager.updateChart(simulationStatistics);
         statisticsUpdater.updateStatistics(simulationStatistics);
+        if(csvSaver != null)
+          csvSaver.saveStatistics(simulationStatistics);
         gridRenderer.clearCanvas();
         mapRenderer.drawMap(simulationData);
       } catch (Exception e) {
@@ -177,9 +185,10 @@ public class SimulationPresenter implements MapChangeListener {
     alert.showAndWait();
   }
 
-  public void initializeSimulation(Simulation simulation, ConfigAnimal animalConfig) {
+  public void initializeSimulation(Simulation simulation, ConfigAnimal animalConfig, ConfigMap mapConfig) {
     this.simulation = simulation;
     this.animalConfig = animalConfig;
+    this.mapConfig = mapConfig;
   }
 
 }
