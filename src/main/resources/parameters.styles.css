@@ -1,6 +1,6 @@
 
 .split-pane {
-    -fx-background-image: url("forest.jpg");
+    -fx-background-image: url("img/forest.jpg");
     -fx-background-size: cover;
 }
 .root {
