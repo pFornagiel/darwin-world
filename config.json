@@ -1,8 +1,8 @@
 {
   "mapConfig": {
-    "width": 50,
-    "height": 50,
-    "mapRefreshInterval": 10,
+    "width": 15,
+    "height": 15,
+    "mapRefreshInterval": 100,
     "mapVariant": "FIRES",
     "fireOutburstInterval": 1,
     "fireDuration": 1,
