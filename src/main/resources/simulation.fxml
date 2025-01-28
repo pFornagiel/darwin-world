@@ -18,7 +18,7 @@
         <AnchorPane id="rootAnchorPane" stylesheets="@parameters.styles.css" prefHeight="350.0" prefWidth="350.0" BorderPane.alignment="CENTER">
             <children>
                 <!-- Static Grass Grid -->
-                <GridPane fx:id="grassGridPane" alignment="CENTER" gridLinesVisible="false" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <GridPane fx:id="grassGridPane" alignment="CENTER" gridLinesVisible="false" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                     <columnConstraints>
                         <ColumnConstraints />
                     </columnConstraints>
@@ -28,7 +28,7 @@
                 </GridPane>
 
                 <!-- Dynamic Grid for Animals and Plants -->
-                <GridPane fx:id="gridPane" alignment="CENTER" gridLinesVisible="true" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <GridPane fx:id="gridPane" alignment="CENTER" gridLinesVisible="true" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                     <columnConstraints>
                         <ColumnConstraints />
                     </columnConstraints>

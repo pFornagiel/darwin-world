@@ -35,7 +35,7 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String PAUSE = "Pause";
   private static final String PARAMETERS = "parameters.fxml";
   private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
-  private static final int MAX_MAP_SIZE_FOR_IMAGES = 100000;
+  private static final int MAX_MAP_SIZE_FOR_IMAGES = 400;
 
 
   @FXML private GridPane gridPane;

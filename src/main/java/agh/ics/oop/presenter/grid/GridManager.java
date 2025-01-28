@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
 public class GridManager {
-    private static final int MIN_CELL_SIZE = 1;
+    private static final int MIN_CELL_SIZE = 0;
     private Vector2d gridPaneSize;
     private Vector2d staticGridPaneSize;
     private Vector2d gridPaneOffset;
