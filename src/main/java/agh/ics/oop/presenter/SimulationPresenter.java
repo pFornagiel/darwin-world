@@ -4,6 +4,7 @@ import agh.ics.oop.model.configuration.ConfigAnimal;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
+import agh.ics.oop.model.exception.resources.ImageFileCouldNotBeFoundException;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
@@ -32,7 +33,8 @@ import java.util.concurrent.CountDownLatch;
 public class SimulationPresenter implements MapChangeListener {
 
   private static final String SIMULATION_ERROR_TITLE = "Simulation Error";
-  private static final String SIMULATION_ERROR_MESSAGE = "Failed to start simulation: ";
+  private static final String SIMULATION_ERROR_MESSAGE = "Failed to start simulation: %s";
+  private static final String NEW_WINDOW_FAILURE = "New window creation failure.";
   private static final String RESUME = "Resume";
   private static final String PAUSE = "Pause";
   private static final String PARAMETERS = "parameters.fxml";
@@ -81,7 +83,12 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void initializeHelpersAndManagers() {
-    imageLoader = new ImageLoader();
+    try{
+      imageLoader = new ImageLoader();
+    } catch (ImageFileCouldNotBeFoundException e){
+      showError(e.getMessage());
+    }
+
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
   }
 
@@ -90,7 +97,7 @@ public class SimulationPresenter implements MapChangeListener {
     try {
       StageUtil.openNewStage(PARAMETERS, SIMULATION_PARAMETERS, simulation, null);
     } catch (IOException e) {
-      e.printStackTrace();
+      showError(SIMULATION_ERROR_MESSAGE.formatted(NEW_WINDOW_FAILURE));
     }
   }
 
@@ -130,7 +137,7 @@ public class SimulationPresenter implements MapChangeListener {
       simulationEngine.runAsync();
 
     } catch (Exception e) {
-      showError(SIMULATION_ERROR_MESSAGE + e.getMessage());
+      showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
     }
   }
 
@@ -155,7 +162,7 @@ public class SimulationPresenter implements MapChangeListener {
 
         mapRenderer.drawMap(simulationData);
       } catch (Exception e) {
-        e.printStackTrace();
+        showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
       } finally {
         latch.countDown();
       }
