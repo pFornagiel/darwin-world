@@ -23,8 +23,8 @@ public class SimulationDataCollector {
     this.worldMap = worldMap;
   }
 
-  public SimulatableMap<Animal> getWorldMap(){
-    return worldMap;
+  public Vector2d getWorldMapSize(){
+    return worldMap.getBoundaries().upperBoundary();
   }
   
   public AnimalStatistics getAnimalStatistics(Animal animal) {

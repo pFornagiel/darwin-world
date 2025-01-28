@@ -10,4 +10,6 @@ module org.example.darwinworld {
   opens agh.ics.oop.model.util to javafx.fxml;
   exports agh.ics.oop.model.util.random;
   opens agh.ics.oop.model.util.random to javafx.fxml;
+  exports agh.ics.oop.model.util.abstracts;
+  opens agh.ics.oop.model.util.abstracts to javafx.fxml;
 }

@@ -3,50 +3,50 @@ package agh.ics.oop.presenter.renderer;
 import agh.ics.oop.model.configuration.ConfigAnimal;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
-import agh.ics.oop.model.util.Vector2d;
-import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.grid.GridManager;
+import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.ImageLoader;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 public class MapRenderer {
-    private final GridManager gridManager;
+    private final static Color COLOR_PLANT = Color.DARKGREEN;
+    private final static Color COLOR_FIRE = Color.RED;
+
     private final ElementRenderer elementRenderer;
     private final AnimalRenderer animalRenderer;
-    private final BorderRenderer borderRenderer;
+    private final GridRenderer gridRenderer;
     private final ImageLoader imageLoader;
-    private final int MAX_MAP_SIZE_FOR_IMAGES;
-    public MapRenderer(GridManager gridManager, GridPane gridPane,
-                       SimulationDataCollector dataCollector,
-                       SimulationPresenter simulationPresenter, BorderRenderer borderRenderer, ImageLoader imageLoader, int MAX_MAP_SIZE_FOR_IMAGES, ConfigAnimal animalConfig) {
-        this.MAX_MAP_SIZE_FOR_IMAGES = MAX_MAP_SIZE_FOR_IMAGES;
-        this.gridManager = gridManager;
-        this.borderRenderer = borderRenderer;
+    private final int maxMapSizeForImages;
+    private final int mapArea;
+    public MapRenderer(
+       GridManager gridManager,
+       GridRenderer gridRenderer,
+       SimulationDataCollector dataCollector,
+       ImageLoader imageLoader,
+       int maxMapSizeForImages,
+       ConfigAnimal animalConfig
+    ) {
+        this.maxMapSizeForImages = maxMapSizeForImages;
         this.imageLoader = imageLoader;
-        this.elementRenderer = new ElementRenderer(gridManager, gridPane);
-        this.animalRenderer = new AnimalRenderer(gridManager, gridPane, dataCollector, simulationPresenter, imageLoader,MAX_MAP_SIZE_FOR_IMAGES, animalConfig.initialEnergy());
+        this.elementRenderer = new ElementRenderer(gridRenderer);
+        this.animalRenderer = new AnimalRenderer(gridManager, gridRenderer, dataCollector, imageLoader, maxMapSizeForImages, animalConfig.initialEnergy());
+        this.gridRenderer = gridRenderer;
+        this.mapArea = gridManager.getGridArea();
     }
 
     public void drawMap(SimulationData simulationData) {
-        gridManager.clearGrid();
-        Vector2d offset = gridManager.getGridPaneOffset();
-        Vector2d mapSize = gridManager.getGridPaneSize();
-        int mapArea = mapSize.getX() * mapSize.getY();
-
-        if (mapArea > MAX_MAP_SIZE_FOR_IMAGES) {
-            elementRenderer.drawColoredElements(simulationData.verdantFieldPositionSet(), Color.GREEN, offset);
-            elementRenderer.drawColoredElements(simulationData.plantPositionSet(), Color.DARKGREEN, offset);
-            animalRenderer.drawColoredAnimalElements(simulationData.animalPositionSet(), offset);
-            elementRenderer.drawColoredElements(simulationData.firePositionSet(), Color.RED, offset);
+        gridRenderer.clearCanvas();
+        if (mapArea > maxMapSizeForImages) {
+            elementRenderer.drawColoredElements(simulationData.plantPositionSet(), COLOR_PLANT);
+            animalRenderer.drawColoredAnimalElements(simulationData.animalPositionSet());
+            elementRenderer.drawColoredElements(simulationData.firePositionSet(), COLOR_FIRE);
         } else {
             Image plantImage = imageLoader.getPlantImage();
             Image fireImage = imageLoader.getFireImage();
-            elementRenderer.drawElements(simulationData.plantPositionSet(), plantImage, offset);
-            animalRenderer.drawAnimalElements(simulationData.animalPositionSet(), offset);
-            elementRenderer.drawElements(simulationData.firePositionSet(), fireImage, offset);
+            elementRenderer.drawElements(simulationData.plantPositionSet(), plantImage);
+            animalRenderer.drawAnimalElements(simulationData.animalPositionSet());
+            elementRenderer.drawElements(simulationData.firePositionSet(), fireImage);
         }
-        borderRenderer.render(offset, mapSize);
     }
 }

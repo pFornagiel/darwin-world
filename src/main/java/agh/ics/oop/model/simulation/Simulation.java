@@ -2,15 +2,13 @@ package agh.ics.oop.model.simulation;
 
 import agh.ics.oop.model.configuration.*;
 import agh.ics.oop.model.datacollectors.*;
-import agh.ics.oop.model.util.OrderMap;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.util.random.RandomRepeatingPositionGenerator;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
-import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
-import agh.ics.oop.model.worldmap.MapChangeListener;
+import agh.ics.oop.model.worldmap.abstracts.MapChangeListener;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 
 import java.util.*;

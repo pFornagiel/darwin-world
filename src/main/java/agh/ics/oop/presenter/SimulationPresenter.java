@@ -6,9 +6,12 @@ import agh.ics.oop.model.datacollectors.SimulationDataCollector;
 import agh.ics.oop.model.datacollectors.SimulationStatistics;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
+import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
-import agh.ics.oop.model.worldmap.MapChangeListener;
+import agh.ics.oop.model.worldmap.abstracts.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
+import agh.ics.oop.presenter.grid.GridRenderer;
+import agh.ics.oop.presenter.grid.GridStaticRenderer;
 import agh.ics.oop.presenter.renderer.*;
 import agh.ics.oop.presenter.statistics.AnimalStatisticsUpdater;
 import agh.ics.oop.presenter.statistics.StatisticsChartManager;
@@ -17,14 +20,13 @@ import agh.ics.oop.presenter.util.ImageLoader;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class SimulationPresenter implements MapChangeListener {
@@ -38,13 +40,21 @@ public class SimulationPresenter implements MapChangeListener {
   private static final int MAX_MAP_SIZE_FOR_IMAGES = 400;
 
 
-  @FXML private GridPane gridPane;
-  @FXML private GridPane grassGridPane;
-  @FXML private LineChart<Number, Number> statisticsChart;
-  @FXML private Button pauseButton;
-  @FXML private Button startButton;
-  @FXML private Label freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren;
-  @FXML private Label dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath, animalTitle;
+  @FXML
+  private Canvas staticCanvas;
+  @FXML
+  private Canvas simulationCanvas;
+
+  @FXML
+  private LineChart<Number, Number> statisticsChart;
+  @FXML
+  private Button pauseButton;
+  @FXML
+  private Button startButton;
+  @FXML
+  private Label freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren;
+  @FXML
+  private Label dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath, animalTitle;
 
   private boolean isPaused = false;
   private Simulation simulation;
@@ -52,11 +62,8 @@ public class SimulationPresenter implements MapChangeListener {
   private SimulationStatistics simulationStatistics;
   private Animal chosenAnimal;
 
-  private GridManager gridManager;
   private StatisticsChartManager chartManager;
   private SimulationDataCollector dataCollector;
-  private BackgroundRenderer backgroundRenderer;
-  private BorderRenderer borderRenderer;
   private MapRenderer mapRenderer;
   private StatisticsUpdater statisticsUpdater;
   private AnimalStatisticsUpdater animalStatisticsUpdater;
@@ -70,13 +77,11 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void initializeUIComponents() {
-    gridManager = new GridManager(gridPane, grassGridPane);
     chartManager = new StatisticsChartManager(statisticsChart);
   }
 
   private void initializeHelpersAndManagers() {
     imageLoader = new ImageLoader();
-    backgroundRenderer = new BackgroundRenderer(grassGridPane, imageLoader.getGrassImages(), imageLoader.getVerdantImages(), MAX_MAP_SIZE_FOR_IMAGES);    borderRenderer = new BorderRenderer(gridManager, imageLoader.getBorderImage(), grassGridPane, MAX_MAP_SIZE_FOR_IMAGES);
     statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
   }
 
@@ -102,27 +107,38 @@ public class SimulationPresenter implements MapChangeListener {
     try {
       simulation.addObserver(this);
       dataCollector = new SimulationDataCollector(simulation);
-      SimulationEngine simulationEngine = new SimulationEngine(simulation);
-      simulationEngine.runAsync();
+      simulationData = dataCollector.getSimulationData();
 
-      chosenAnimal = null;
-      animalStatisticsUpdater = new AnimalStatisticsUpdater(new Label[]{dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath}, animalTitle, dataCollector);
-      animalStatisticsUpdater.updateAnimalStatistics(null);
+      Label[] labels = new Label[] {dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath};
+      animalStatisticsUpdater = new AnimalStatisticsUpdater(labels, animalTitle, dataCollector);
 
-      gridManager.setGridDimensions(dataCollector.getWorldMap());
-      backgroundRenderer.initializeGrassGrid(simulationData, gridManager);
-      mapRenderer = new MapRenderer(gridManager, gridPane, dataCollector, this, borderRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig);
+      GridManager gridManager = new GridManager(simulationCanvas, dataCollector.getWorldMapSize());
+      gridManager.setOnClickEventHandling(this::onAnimalClicked);
+
+      GridStaticRenderer gridStaticRenderer = new GridStaticRenderer(staticCanvas, gridManager, imageLoader, MAX_MAP_SIZE_FOR_IMAGES);
+      gridStaticRenderer.drawBackground(simulationData);
+      gridStaticRenderer.drawBorder();
+
+      GridRenderer gridRenderer = new GridRenderer(simulationCanvas, gridManager);
+
+      mapRenderer = new MapRenderer(gridManager, gridRenderer, dataCollector, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig);
 
       startButton.setDisable(true);
       pauseButton.setDisable(false);
+
+      SimulationEngine simulationEngine = new SimulationEngine(simulation);
+      simulationEngine.runAsync();
 
     } catch (Exception e) {
       showError(SIMULATION_ERROR_MESSAGE + e.getMessage());
     }
   }
 
-  public void onAnimalClicked(List<Animal> animals) {
-    chosenAnimal = animals.isEmpty() ? null : animals.getFirst();
+  private void onAnimalClicked(Vector2d position) {
+    chosenAnimal =
+        simulationData.animalPositionSet().contains(position)
+            ? dataCollector.getAnimalsAtPosition(position).getFirst()
+            : null;
     animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
   }
 
