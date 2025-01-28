@@ -19,6 +19,8 @@ public class AnimalStatisticsUpdater {
     private final Label animalTitle;
     private final SimulationDataCollector dataCollector;
 
+    private Animal selectedAnimal;
+
     public AnimalStatisticsUpdater(Label[] animalStatsLabels, Label animalTitle, SimulationDataCollector dataCollector) {
         this.animalStatsLabels = animalStatsLabels;
         this.animalTitle = animalTitle;
@@ -32,8 +34,6 @@ public class AnimalStatisticsUpdater {
                 animalTitle.setText(String.format(ANIMAL_TITLE_FORMAT,
                         stats.coordinates().getX(),
                         stats.coordinates().getY()));
-            } else {
-                animalTitle.setText(NO_ANIMAL_SELECTED);
             }
 
             assert stats != null;
@@ -50,7 +50,7 @@ public class AnimalStatisticsUpdater {
             for (int i = 0; i < animalStatsLabels.length; i++) {
                 animalStatsLabels[i].setText(values[i]);
             }
-        } else {
+        } else if (selectedAnimal == null) {
             animalTitle.setText(NO_ANIMAL_SELECTED);
             for (Label label : animalStatsLabels) {
                 label.setText(DEFAULT_LABEL_TEXT);
@@ -60,7 +60,7 @@ public class AnimalStatisticsUpdater {
 
     public void updateAnimalStatistics(Animal animal) {
         if (dataCollector != null) {
-            Animal selectedAnimal = selectAnimal(animal);
+            selectedAnimal = selectAnimal(animal);
             updateAnimalStatisticsDisplay(selectedAnimal);
         }
     }
@@ -83,11 +83,11 @@ public class AnimalStatisticsUpdater {
             List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
             if (animals.isEmpty()) continue;
             for (Animal a : animals) {
-                if (a.getGenotype().equals(dominantGenotypes.get(0))) {
+                if (a.getGenotype().equals(dominantGenotypes.getFirst())) {
                     return a;
                 }
             }
         }
-        return null;
+        return selectedAnimal;
     }
 }
