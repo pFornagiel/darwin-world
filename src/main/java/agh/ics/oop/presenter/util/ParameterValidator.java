@@ -8,16 +8,6 @@ public class ParameterValidator {
     private static final String MUTATIONS_ERROR = "Minimum mutations cannot be greater than maximum mutations.";
     private static final String BREED_ENERGY_ERROR = "Breed energy needed cannot be less than breed energy usage.";
     private static final String ENTITY_COUNT_ERROR = "Count cannot exceed map area.";
-    private static final String DIMENSION_ERROR = "Dimensions must be between %d and %d.";
-    private static final String GENES_COUNT_ERROR = "Genes count must be between %d and %d.";
-    private static final String REFRESH_INTERVAL_ERROR = "Map refresh interval must be between %d and %d.";
-
-    private static final int MIN_MAP_DIMENSION = 2;
-    private static final int MAX_MAP_DIMENSION = 100;
-    private static final int MIN_GENES_COUNT = 2;
-    private static final int MAX_GENES_COUNT = 10;
-    private static final int MIN_REFRESH_INTERVAL = 100;
-    private static final int MAX_REFRESH_INTERVAL = 1000;
 
     public int validatePositiveInt(String value, String fieldName) {
         try {

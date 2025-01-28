@@ -128,7 +128,7 @@ public class ParametersPresenter {
     private void validateAndCreateConfigs() {
         int width = validator.validateInRange(mapWidth.getText(), 2, 100, MAP_WIDTH);
         int height = validator.validateInRange(mapHeight.getText(), 2, 100, MAP_HEIGHT);
-        int refreshInterval = validator.validateInRange(mapRefreshInterval.getText(), 100, 1000, MAP_REFRESH_INTERVAL);
+        int refreshInterval = validator.validateInRange(mapRefreshInterval.getText(), 50, 2000, MAP_REFRESH_INTERVAL);
 
         int fireInterval = fireMap.isSelected()
                 ? validator.validatePositiveInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
