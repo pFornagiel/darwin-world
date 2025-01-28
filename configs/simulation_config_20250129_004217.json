@@ -1,0 +1,26 @@
+{
+  "mapConfig": {
+    "width": 40,
+    "height": 30,
+    "mapRefreshInterval": 50,
+    "mapVariant": "FIRES",
+    "fireOutburstInterval": 1,
+    "fireDuration": 1,
+    "saveToCsv": true
+  },
+  "plantConfig": {
+    "initialPlantCount": 3,
+    "energyPerPlant": 100,
+    "dailyPlantGrowth": 30
+  },
+  "animalConfig": {
+    "initialAnimalCount": 50,
+    "initialEnergy": 5,
+    "energyToReproduce": 1,
+    "energyConsumedByParents": 1,
+    "minMutations": 1,
+    "maxMutations": 2,
+    "genomeLength": 10,
+    "behaviorVariant": "CRAZINESS"
+  }
+}

@@ -18,7 +18,7 @@ public class SimulationStatisticsCSVSaver {
         try {
             Files.write(csvFilePath, (HEADER + System.lineSeparator()).getBytes());
         } catch (IOException e) {
-            System.err.println("Failed to initialize CSV file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -60,7 +60,7 @@ public class SimulationStatisticsCSVSaver {
                     StandardOpenOption.APPEND
             );
         } catch (IOException e) {
-            System.err.println("Failed to save statistics to CSV: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
