@@ -54,9 +54,7 @@ public class SimulationDataCollector {
 
 //  Consider making it a sorted list if needed
   public List<Animal> getAnimalsAtPosition(Vector2d position){
-    synchronized (worldMap){
       return List.copyOf(worldMap.objectsAt(position));
-    }
   }
 
   public SimulationStatistics getSimulationStatistics() {
