@@ -3,6 +3,7 @@ package agh.ics.oop.presenter.renderer;
 import agh.ics.oop.model.configuration.ConfigAnimal;
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
+import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.ImageLoader;
@@ -19,24 +20,23 @@ public class MapRenderer {
     private final ImageLoader imageLoader;
     private final int maxMapSizeForImages;
     private final int mapArea;
+
     public MapRenderer(
        GridManager gridManager,
        GridRenderer gridRenderer,
-       SimulationDataCollector dataCollector,
        ImageLoader imageLoader,
        int maxMapSizeForImages,
-       ConfigAnimal animalConfig
+       AnimalRenderer animalRenderer
     ) {
         this.maxMapSizeForImages = maxMapSizeForImages;
         this.imageLoader = imageLoader;
         this.elementRenderer = new ElementRenderer(gridRenderer);
-        this.animalRenderer = new AnimalRenderer(gridManager, gridRenderer, dataCollector, imageLoader, maxMapSizeForImages, animalConfig.initialEnergy());
+        this.animalRenderer = animalRenderer;
         this.gridRenderer = gridRenderer;
         this.mapArea = gridManager.getGridArea();
     }
 
     public void drawMap(SimulationData simulationData) {
-        gridRenderer.clearCanvas();
         if (mapArea > maxMapSizeForImages) {
             elementRenderer.drawColoredElements(simulationData.plantPositionSet(), COLOR_PLANT);
             animalRenderer.drawColoredAnimalElements(simulationData.animalPositionSet());
@@ -48,5 +48,6 @@ public class MapRenderer {
             animalRenderer.drawAnimalElements(simulationData.animalPositionSet());
             elementRenderer.drawElements(simulationData.firePositionSet(), fireImage);
         }
+
     }
 }

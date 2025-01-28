@@ -10,18 +10,7 @@ public class AnimalColor {
     public static Color getAnimalColor(AnimalData animalData, SimulationStatistics stats, int animalEnergy){
         if(animalData == null) return Color.GRAY;
         double ONE = 1.0;
-        double HALF = 0.5;
-        double QUARTER = 0.25;
-        List<Genotype> mostPopularGenotypes = stats.mostPopularGenotypes();
-        double energyRatio = Math.min((double) animalData.energy() / animalEnergy, ONE);
-        double r = 0.0, g = 0.0, b;
-        if (!mostPopularGenotypes.isEmpty() && animalData.genotype().equals(mostPopularGenotypes)) {
-            r = energyRatio * HALF + HALF;
-            b = energyRatio * HALF + HALF;
-            g = energyRatio * QUARTER;
-        } else {
-            b = energyRatio;
-        }
+        double r = 0.0, g = 0.0, b = Math.min((double) animalData.energy() / animalEnergy, ONE);
         return new Color(r, g, b, ONE);
     }
 }

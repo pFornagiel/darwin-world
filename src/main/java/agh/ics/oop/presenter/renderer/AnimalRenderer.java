@@ -2,9 +2,11 @@ package agh.ics.oop.presenter.renderer;
 
 import agh.ics.oop.model.datacollectors.AnimalData;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
+import agh.ics.oop.model.datacollectors.SimulationStatistics;
 import agh.ics.oop.model.util.Direction;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
+import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.AnimalColor;
@@ -116,9 +118,25 @@ public class AnimalRenderer {
       Animal currentAnimal = animals.getFirst();
       AnimalData animalData = dataCollector.getAnimalData(currentAnimal);
       Color animalColor = AnimalColor.getAnimalColor(animalData, dataCollector.getSimulationStatistics(), initialEnergy);
-
       gridRenderer.drawColor(animalColor, position);
     }
   }
+  public void drawDominantAnimalElements(Iterable<Vector2d> positions, SimulationStatistics stats) {
+    List<Genotype> mostPopularGenotypes = stats.mostPopularGenotypes();
+    if (mostPopularGenotypes.isEmpty()) return;
+
+    List<Genotype> topGenotypes = mostPopularGenotypes.subList(0, Math.min(3, mostPopularGenotypes.size()));
+
+    for (Vector2d position : positions) {
+      List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
+      for (Animal animal : animals) {
+        AnimalData animalData = dataCollector.getAnimalData(animal);
+        if (topGenotypes.contains(animalData.genotype())) {
+          gridRenderer.drawBorder(position);
+        }
+      }
+    }
+  }
+
 
 }

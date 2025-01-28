@@ -71,7 +71,8 @@ public class SimulationPresenter implements MapChangeListener {
   private AnimalStatisticsUpdater animalStatisticsUpdater;
   private ImageLoader imageLoader;
   private ConfigAnimal animalConfig;
-
+  private GridRenderer gridRenderer;
+  private AnimalRenderer animalRenderer;
   @FXML
   public void initialize() {
     initializeUIComponents();
@@ -103,11 +104,10 @@ public class SimulationPresenter implements MapChangeListener {
 
   @FXML
   private void onPauseButtonClicked() {
-    if (simulation != null) {
+      animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
       isPaused = !isPaused;
       simulation.togglePause();
       pauseButton.setText(isPaused ? RESUME : PAUSE);
-    }
   }
 
   public void onSimulationStartClicked() {
@@ -126,9 +126,9 @@ public class SimulationPresenter implements MapChangeListener {
       gridStaticRenderer.drawBackground(simulationData);
       gridStaticRenderer.drawBorder();
 
-      GridRenderer gridRenderer = new GridRenderer(simulationCanvas, gridManager);
-
-      mapRenderer = new MapRenderer(gridManager, gridRenderer, dataCollector, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig);
+      gridRenderer = new GridRenderer(simulationCanvas, gridManager);
+      animalRenderer = new AnimalRenderer(gridManager, gridRenderer, dataCollector, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig.initialEnergy());
+      mapRenderer = new MapRenderer(gridManager, gridRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalRenderer);
 
       startButton.setDisable(true);
       pauseButton.setDisable(false);
@@ -159,7 +159,7 @@ public class SimulationPresenter implements MapChangeListener {
         animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
         chartManager.updateChart(simulationStatistics);
         statisticsUpdater.updateStatistics(simulationStatistics);
-
+        gridRenderer.clearCanvas();
         mapRenderer.drawMap(simulationData);
       } catch (Exception e) {
         showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
