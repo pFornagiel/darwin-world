@@ -34,12 +34,6 @@ public class StatisticsUpdater {
     }
 
     public void updateStatistics(SimulationStatistics statistics) {
-        if (statistics == null) {
-            return;
-        }
-
-        freeFields.setText(String.valueOf(statistics.amountOfFreeFields()));
-
         List<Genotype> mostPopularGenotypes = statistics.mostPopularGenotypes();
         Label[] genotypeLabels = {genotype1, genotype2, genotype3};
         for (int i = 0; i < genotypeLabels.length; i++) {
@@ -50,6 +44,7 @@ public class StatisticsUpdater {
             }
         }
 
+        freeFields.setText(String.valueOf(statistics.amountOfFreeFields()));
         averageEnergy.setText(String.format(AVERAGE_ENERGY_FORMAT, statistics.averageEnergy()));
         averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));
         averageChildren.setText(String.format(AVERAGE_CHILDREN_FORMAT, statistics.averageChildren()));

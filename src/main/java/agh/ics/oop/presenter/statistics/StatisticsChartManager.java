@@ -57,7 +57,6 @@ public class StatisticsChartManager {
     }
 
     public void updateChart(SimulationStatistics statistics) {
-        if (statistics == null) return;
 
         Platform.runLater(() -> {
             XYChart.Data<Number, Number> animalData = new XYChart.Data<>(
