@@ -1,6 +1,4 @@
-package agh.ics.oop.model.worldmap;
-
-import agh.ics.oop.model.worldmap.abstracts.WorldMap;
+package agh.ics.oop.model.worldmap.abstracts;
 
 import java.util.concurrent.CountDownLatch;
 

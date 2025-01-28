@@ -1,4 +1,6 @@
-package agh.ics.oop.model.util;
+package agh.ics.oop.model.util.abstracts;
+
+import agh.ics.oop.model.util.Vector2d;
 
 public interface MoveHandler {
 

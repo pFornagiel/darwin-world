@@ -1,7 +1,7 @@
 package agh.ics.oop.model.worldmap.abstracts;
 
 import agh.ics.oop.model.exception.IncorrectPositionException;
-import agh.ics.oop.model.util.MoveHandler;
+import agh.ics.oop.model.util.abstracts.MoveHandler;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.WorldElement;
 import agh.ics.oop.model.worldmap.util.Boundary;
