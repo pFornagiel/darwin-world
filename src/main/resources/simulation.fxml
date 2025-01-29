@@ -115,7 +115,7 @@
                         <Label fx:id="freeFields" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                         <!-- Most Popular Genotypes -->
-                        <Label text="Most Popular Genotypes:" GridPane.rowIndex="1" />
+                        <Label text="Top genes:" GridPane.rowIndex="1" />
                         <VBox fx:id="popularGenotypes" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <padding>
                                 <Insets top="10" bottom="10" /> <!-- Add padding for better spacing -->
