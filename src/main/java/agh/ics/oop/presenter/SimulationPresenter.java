@@ -42,7 +42,7 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String PAUSE = "Pause";
   private static final String PARAMETERS = "parameters.fxml";
   private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
-  private static final int MAX_MAP_SIZE_FOR_IMAGES = 400;
+  private static final int MAX_MAP_SIZE_FOR_IMAGES = 650;
 
 
   @FXML
@@ -161,6 +161,7 @@ public class SimulationPresenter implements MapChangeListener {
       // Trigger redraw to mark the selected animal
       mapRenderer.drawMap(simulationData, chosenAnimal);
       animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
+      animalRenderer.drawBorderAroundChosenAnimal(chosenAnimal);
     }
   }
 

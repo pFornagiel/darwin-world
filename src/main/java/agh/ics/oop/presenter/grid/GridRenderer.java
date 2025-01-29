@@ -8,6 +8,8 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class GridRenderer {
+  private static final int STROKE_WIDTH = 2;
+
   protected final GridManager gridManager;
   protected final GraphicsContext gc;
   protected final Vector2d gridOffset;
@@ -66,7 +68,7 @@ public class GridRenderer {
     double originalStrokeWidth = gc.getLineWidth();
 
     gc.setStroke(color);
-    gc.setLineWidth(3);
+    gc.setLineWidth(STROKE_WIDTH);
 
     gc.strokeRect(
             canvasPos.getX(),
