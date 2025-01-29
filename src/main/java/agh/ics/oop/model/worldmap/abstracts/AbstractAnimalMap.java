@@ -30,7 +30,7 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
   }
 
   @Override
-  public Animal createNewAnimalOnMap(Vector2d position){
+  public Animal createNewCreatureOnMap(Vector2d position){
     Animal animal = animalFactory.createAnimal(position);
     placeElement(animal);
     incrementGenotypeCount(animal.getGenotype());
@@ -38,7 +38,7 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
   }
 
   @Override
-  public Animal createNewAnimalOnMap(Animal firstParent, Animal secondParent){
+  public Animal createNewCreatureOnMap(Animal firstParent, Animal secondParent){
     Animal animal = animalFactory.createAnimal(firstParent, secondParent);
     placeElement(animal);
     incrementGenotypeCount(animal.getGenotype());
@@ -98,7 +98,7 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
       Animal secondParent = animalList.get(1);
 
       if(firstParent.doesHaveEnoughEnergyToReproduce() && secondParent.doesHaveEnoughEnergyToReproduce()) {
-        createNewAnimalOnMap(firstParent,secondParent);
+        createNewCreatureOnMap(firstParent,secondParent);
 
         firstParent.drainEnergyDuringReproduction();
         secondParent.drainEnergyDuringReproduction();

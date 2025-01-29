@@ -79,7 +79,7 @@ public class WorldMapTest {
   void testAddAnimal() {
     // Given
     Vector2d position = new Vector2d(2, 2);
-    Animal animal = worldMap.createNewAnimalOnMap(position);
+    Animal animal = worldMap.createNewCreatureOnMap(position);
 
     // Then & Then
     assertTrue(
@@ -97,7 +97,7 @@ public class WorldMapTest {
   void testRemoveAnimal() {
     // Given
     Vector2d position = new Vector2d(3, 3);
-    Animal animal = worldMap.createNewAnimalOnMap(position);
+    Animal animal = worldMap.createNewCreatureOnMap(position);
 
     // When
     worldMap.removeElement(animal);
@@ -125,7 +125,7 @@ public class WorldMapTest {
     // Given
     Vector2d initialPosition = new Vector2d(1, 1);
     Vector2d newPosition = new Vector2d(2, 2);
-    Animal animal = worldMap.createNewAnimalOnMap(initialPosition);
+    Animal animal = worldMap.createNewCreatureOnMap(initialPosition);
     animal.setOrientation(Direction.SOUTH_EAST);
 
     // When
@@ -159,8 +159,8 @@ public class WorldMapTest {
   void testMultipleAnimalsAtSamePosition() {
     // Given
     Vector2d position = new Vector2d(0, 0);
-    Animal animal1 = worldMap.createNewAnimalOnMap(position);
-    Animal animal2 = worldMap.createNewAnimalOnMap(position);
+    Animal animal1 = worldMap.createNewCreatureOnMap(position);
+    Animal animal2 = worldMap.createNewCreatureOnMap(position);
 
 
     // Then & Then
@@ -188,7 +188,7 @@ public class WorldMapTest {
     // When & Then
     assertThrows(
         IncorrectPositionException.class,
-        () -> worldMap.createNewAnimalOnMap(outOfBoundsPosition),
+        () -> worldMap.createNewCreatureOnMap(outOfBoundsPosition),
         "Placing an animal outside the map should throw an exception."
     );
   }
@@ -198,7 +198,7 @@ public class WorldMapTest {
     // Given
     Vector2d position = new Vector2d(2, 2);
     worldMap.growPlantAtPosition(position);
-    Animal animal = worldMap.createNewAnimalOnMap(position);
+    Animal animal = worldMap.createNewCreatureOnMap(position);
 
     // When
     worldMap.consumePlant(position);
@@ -219,7 +219,7 @@ public class WorldMapTest {
   void testKillDyingCreature() {
     // Given
     Vector2d position = new Vector2d(1, 1);
-    Animal animal = worldMap.createNewAnimalOnMap(position);
+    Animal animal = worldMap.createNewCreatureOnMap(position);
     animal.drainEnergy(animal.getEnergy()); // Drain energy to 0
 
     // When
@@ -234,7 +234,7 @@ public class WorldMapTest {
   void testRotateCreature() {
     // Given
     Vector2d position = new Vector2d(1, 1);
-    Animal animal = worldMap.createNewAnimalOnMap(position);
+    Animal animal = worldMap.createNewCreatureOnMap(position);
     Direction initialOrientation = animal.getOrientation();
     int initialGene = animal.getCurrentGene();
 
@@ -259,8 +259,8 @@ public class WorldMapTest {
     // Given
     Vector2d position = new Vector2d(2, 2);
 
-    Animal parent1 = worldMap.createNewAnimalOnMap(position);
-    Animal parent2 = worldMap.createNewAnimalOnMap(position);
+    Animal parent1 = worldMap.createNewCreatureOnMap(position);
+    Animal parent2 = worldMap.createNewCreatureOnMap(position);
     parent1.gainEnergy(animalConfig.energyToReproduce());
     parent2.gainEnergy(animalConfig.energyToReproduce());
 
@@ -314,8 +314,8 @@ public class WorldMapTest {
   @Test
   void testGetAverageEnergy() {
     // Given
-    Animal animal1 = worldMap.createNewAnimalOnMap(new Vector2d(1, 1));
-    Animal animal2 = worldMap.createNewAnimalOnMap(new Vector2d(2, 2));
+    Animal animal1 = worldMap.createNewCreatureOnMap(new Vector2d(1, 1));
+    Animal animal2 = worldMap.createNewCreatureOnMap(new Vector2d(2, 2));
 
     animal1.gainEnergy(10);
     animal2.gainEnergy(20);
@@ -335,7 +335,7 @@ public class WorldMapTest {
   void testMoveAnimalOutOfBounds() {
     // Given
     Vector2d initialPosition = new Vector2d(0, 0); // Corner of the map
-    Animal animal = worldMap.createNewAnimalOnMap(initialPosition);
+    Animal animal = worldMap.createNewCreatureOnMap(initialPosition);
     Direction initialOrientation = Direction.NORTH_WEST;
     animal.setOrientation(initialOrientation);
 

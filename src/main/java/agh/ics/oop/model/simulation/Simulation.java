@@ -67,7 +67,7 @@ public class Simulation implements Runnable, SimulationVisitor {
     );
 
     for(Vector2d animalPosition: animalPositionGenerator) {
-      worldMap.createNewAnimalOnMap(animalPosition);
+      worldMap.createNewCreatureOnMap(animalPosition);
     }
 
     worldMap.randomPlantGrowth(configPlant.initialPlantCount());
