@@ -4,6 +4,11 @@ import java.io.*;
 import java.nio.file.*;
 import agh.ics.oop.model.worldelement.util.Genotype;
 
+/**
+ * A class responsible for saving the simulation statistics into a CSV file. It writes data such as
+ * the number of animals, plants, free fields, and other relevant statistics (e.g., average energy,
+ * lifespan, children, and the most popular genotype) to a CSV file on each simulation day.
+ */
 public class SimulationStatisticsCSVSaver {
     private final Path csvFilePath;
     private static final String HEADER = "day;animals;plants;freeFields;avgEnergy;avgLifespan;avgChildren;mostPopularGenotype";

@@ -6,6 +6,11 @@ import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 import java.util.List;
 
+
+/**
+ * A class that collects data from the simulation, such as information about animals, world map,
+ * and simulation statistics.
+ */
 public class SimulationDataCollector {
   private SimulatableMap<Animal> worldMap;
   private final Simulation simulation;
