@@ -7,7 +7,7 @@ public class ConfigTestSingleton {
   private static final ConfigMap mapConfig = new ConfigMap(
       20,
       20,
-      1000,
+      500,
       MapVariant.FIRES,
       2,
       4,
