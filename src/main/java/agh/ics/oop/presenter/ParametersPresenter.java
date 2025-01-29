@@ -4,6 +4,7 @@ import agh.ics.oop.model.configuration.*;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.presenter.util.ConfigurationManager;
 import agh.ics.oop.presenter.util.ParameterValidator;
+import agh.ics.oop.presenter.util.SimulationConfig;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import agh.ics.oop.presenter.util.StageUtil;

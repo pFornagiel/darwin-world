@@ -7,7 +7,6 @@ import agh.ics.oop.model.util.Direction;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.util.Genotype;
-import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.AnimalColor;
 import agh.ics.oop.presenter.util.ColorProvider;
@@ -128,7 +127,7 @@ public class AnimalRenderer {
       if(animal == null) return;
       AnimalData animalData = dataCollector.getAnimalData(animal);
       if(animal.isAlive()){
-        gridRenderer.drawBorder(animalData.position(), ColorProvider.BORDER_CHOSEN_COLOR);
+        gridRenderer.drawBorder(animalData.position(), ColorProvider.BORDER_CHOSEN_ANIMAL_COLOR);
       }
     }
 }
