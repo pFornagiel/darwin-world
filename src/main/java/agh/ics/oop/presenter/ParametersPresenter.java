@@ -166,10 +166,10 @@ public class ParametersPresenter {
         int refreshInterval = validator.validateInRange(mapRefreshInterval.getText(), 50, 2000, MAP_REFRESH_INTERVAL);
 
         int fireInterval = fireMap.isSelected()
-                ? validator.validatePositiveInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
+                ? validator.validateNonNegativeInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
                 : -1;
         int fireDurationValue = fireMap.isSelected()
-                ? validator.validatePositiveInt(fireDuration.getText(), FIRE_DURATION)
+                ? validator.validateNonNegativeInt(fireDuration.getText(), FIRE_DURATION)
                 : -1;
 
         mapConfig = new ConfigMap(
@@ -183,8 +183,8 @@ public class ParametersPresenter {
         );
 
         int plantCountValue = validator.validateNonNegativeInt(plantCount.getText(), PLANT_COUNT);
-        int plantEnergyValue = validator.validatePositiveInt(plantEnergy.getText(), PLANT_ENERGY);
-        int plantPerDayValue = validator.validatePositiveInt(plantPerDay.getText(), PLANT_PER_DAY);
+        int plantEnergyValue = validator.validateNonNegativeInt(plantEnergy.getText(), PLANT_ENERGY);
+        int plantPerDayValue = validator.validateNonNegativeInt(plantPerDay.getText(), PLANT_PER_DAY);
 
         validator.validateEntityCount(plantCountValue, width, height, PLANT_COUNT);
 
