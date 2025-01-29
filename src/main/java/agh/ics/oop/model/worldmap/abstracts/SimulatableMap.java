@@ -13,6 +13,10 @@ public interface SimulatableMap<E extends LivingCreature> extends WorldMap<E> {
 
   void killDyingCreature(E creature);
 
+  E createNewAnimalOnMap(Vector2d position);
+
+  E createNewAnimalOnMap(E parent1, E parent2);
+
   void rotateCreature(E animal);
 
   void moveCreature(E animal);

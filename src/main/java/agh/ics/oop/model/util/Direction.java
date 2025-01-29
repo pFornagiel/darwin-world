@@ -57,7 +57,7 @@ public enum Direction {
   public Direction previous() {
     int currentIndex = this.ordinal();
     Direction[] values = Direction.values();
-    return values[(currentIndex - 1) % Direction.values().length];
+    return values[Math.floorMod(currentIndex - 1, values.length)];
   }
 
   public Direction opposite() {
@@ -68,16 +68,14 @@ public enum Direction {
 
   public Direction rotate(int n){
     int currentIndex = this.ordinal();
-    return Direction.values()[(currentIndex + n) % Direction.values().length];
+    Direction[] values = Direction.values();
+    return values[Math.floorMod(currentIndex + n, values.length)];
   }
 
   public Vector2d toUnitVector() {
     int currentIndex = this.ordinal();
     return DIRECTION_UNIT_VECTORS[currentIndex];
   }
-
-
-
 
 
 }

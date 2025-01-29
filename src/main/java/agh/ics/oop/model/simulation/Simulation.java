@@ -51,7 +51,6 @@ public class Simulation implements Runnable, SimulationVisitor {
         configAnimal.behaviorVariant()
     );
     this.worldMap = initialiseWorldMap();
-
   }
 
   private SimulatableMap<Animal> initialiseWorldMap() {
@@ -67,10 +66,8 @@ public class Simulation implements Runnable, SimulationVisitor {
         configAnimal.initialAnimalCount()
     );
 
-    for (Vector2d animalPosition : animalPositionGenerator) {
-      Animal animal = animalFactory.createAnimal(animalPosition);
-      worldMap.placeElement(animal);
-      worldMap.incrementGenotypeCount(animal.getGenotype());
+    for(Vector2d animalPosition: animalPositionGenerator) {
+      worldMap.createNewAnimalOnMap(animalPosition);
     }
 
     worldMap.randomPlantGrowth(configPlant.initialPlantCount());
@@ -80,6 +77,10 @@ public class Simulation implements Runnable, SimulationVisitor {
 //  Getters
   public int getDayCount() {
     return dayCount;
+  }
+
+  public boolean isPuased() {
+    return paused;
   }
 
 //  DataCollector

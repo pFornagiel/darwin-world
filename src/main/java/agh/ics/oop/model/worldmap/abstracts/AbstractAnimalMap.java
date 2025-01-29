@@ -29,6 +29,22 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
     orderedAmountOfGenotypes.decrement(genotype);
   }
 
+  @Override
+  public Animal createNewAnimalOnMap(Vector2d position){
+    Animal animal = animalFactory.createAnimal(position);
+    placeElement(animal);
+    incrementGenotypeCount(animal.getGenotype());
+    return animal;
+  }
+
+  @Override
+  public Animal createNewAnimalOnMap(Animal firstParent, Animal secondParent){
+    Animal animal = animalFactory.createAnimal(firstParent, secondParent);
+    placeElement(animal);
+    incrementGenotypeCount(animal.getGenotype());
+    return animal;
+  }
+
   protected void killAnimal(Animal animal){
     removeElement(animal);
     animal.kill();
@@ -78,16 +94,14 @@ public abstract class AbstractAnimalMap<M extends MapTile<Animal>> extends Abstr
     if(objectsAt(position).size() > 1){
       ArrayList<Animal> animalList = new ArrayList<>(objectsAt(position));
       Collections.sort(animalList);
-      Animal firstAnimal = animalList.getFirst();
-      Animal secondAnimal = animalList.get(1);
+      Animal firstParent = animalList.getFirst();
+      Animal secondParent = animalList.get(1);
 
-      if(firstAnimal.doesHaveEnoughEnergyToReproduce() && secondAnimal.doesHaveEnoughEnergyToReproduce()) {
-        Animal newAnimal = animalFactory.createAnimal(firstAnimal, secondAnimal);
-        placeElement(newAnimal);
-        incrementGenotypeCount(newAnimal.getGenotype());
+      if(firstParent.doesHaveEnoughEnergyToReproduce() && secondParent.doesHaveEnoughEnergyToReproduce()) {
+        createNewAnimalOnMap(firstParent,secondParent);
 
-        firstAnimal.drainEnergyDuringReproduction();
-        secondAnimal.drainEnergyDuringReproduction();
+        firstParent.drainEnergyDuringReproduction();
+        secondParent.drainEnergyDuringReproduction();
       }
     }
   }
