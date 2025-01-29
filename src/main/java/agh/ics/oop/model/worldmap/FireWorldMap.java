@@ -22,7 +22,7 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
   private static final Vector2d MOVE_DOWN = new Vector2d(0,1);
   private static final List<Vector2d> MOVE_LIST = List.of(MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN);
 
-  int maxFireDuration = 0;
+  private final int maxFireDuration;
 
   public FireWorldMap(int mapWidth, int mapHeight, AnimalFactory animalFactory, int maxFireDuration) {
     super(mapWidth, mapHeight, animalFactory);

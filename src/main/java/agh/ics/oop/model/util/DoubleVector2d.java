@@ -2,6 +2,8 @@ package agh.ics.oop.model.util;
 
 import agh.ics.oop.model.util.abstracts.Vector;
 
+import java.util.Objects;
+
 public class DoubleVector2d implements Vector<DoubleVector2d> {
   private final double x;
   private final double y;
@@ -65,10 +67,6 @@ public class DoubleVector2d implements Vector<DoubleVector2d> {
 
   @Override
   public int hashCode() {
-    long temp = Double.doubleToLongBits(x);
-    int result = (int) (temp ^ (temp >>> 32));
-    temp = Double.doubleToLongBits(y);
-    result = 31 * result + (int) (temp ^ (temp >>> 32));
-    return result;
+    return Objects.hash(x,y);
   }
 }

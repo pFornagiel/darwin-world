@@ -2,6 +2,8 @@ package agh.ics.oop.model.util;
 
 import agh.ics.oop.model.util.abstracts.Vector;
 
+import java.util.Objects;
+
 public class Vector2d implements Vector<Vector2d> {
   private final int x;
   private final int y;
@@ -70,6 +72,6 @@ public class Vector2d implements Vector<Vector2d> {
 
   @Override
   public int hashCode() {
-    return ((17 * 73) ^ x) << 7 + y;
+    return Objects.hash(x,y);
   }
 }
