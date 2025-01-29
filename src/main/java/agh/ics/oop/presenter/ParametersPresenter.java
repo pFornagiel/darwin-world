@@ -19,10 +19,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ParametersPresenter {
-
     private static final String SIMULATION_FXML = "simulation.fxml";
-    private static final String SIMULATION = "Simulation";
+    private static final String SIMULATION_TITLE = "Simulation";
     private static final String ERROR_TITLE = "Configuration Error";
+
+    private static final String FILE_CHOOSER_TITLE = "Open Configuration File";
+    private static final String JSON_FILES = "JSON Files";
+    private static final String JSON_EXTENSION = "*.json";
+    private static final String CONFIGS_FOLDER = "configs";
+
+    private static final String CONFIG_ERROR = "Failed to load configuration: Invalid configuration file.";
+    private static final String CREATE_FOLDER_ERROR = "Failed to create configs folder: %s";
+    private static final String LOAD_CONFIG_ERROR = "Failed to load configuration: %s";
 
     private static final String MAP_WIDTH = "Map width";
     private static final String MAP_HEIGHT = "Map height";
@@ -61,7 +69,7 @@ public class ParametersPresenter {
 
     private ConfigMap mapConfig = new ConfigMap(10, 10, 1000, MapVariant.EQUATORS);
     private ConfigAnimal animalConfig = new ConfigAnimal(5, 100, 6, 5, 2, 2, 3, BehaviorVariant.FULL_PREDESTINATION);
-    private ConfigPlant plantConfig  = new ConfigPlant(5, 3, 4);
+    private ConfigPlant plantConfig = new ConfigPlant(5, 3, 4);
 
     private final ParameterValidator validator = new ParameterValidator();
     private final ConfigurationManager configManager = new ConfigurationManager();
@@ -73,7 +81,7 @@ public class ParametersPresenter {
             validateAndCreateConfigs();
             SimulationConfig config = new SimulationConfig(mapConfig, plantConfig, animalConfig);
             Stage stage = (Stage) saveToCsv.getScene().getWindow();
-            configManager.saveConfig(config,stage);
+            configManager.saveConfig(config, stage);
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         }
@@ -81,21 +89,21 @@ public class ParametersPresenter {
 
     @FXML
     private void load() {
-        Path configsFolderPath = Paths.get(System.getProperty("user.dir"), "configs");
+        Path configsFolderPath = Paths.get(System.getProperty("user.dir"), CONFIGS_FOLDER);
 
         if (!Files.exists(configsFolderPath)) {
             try {
                 Files.createDirectories(configsFolderPath);
             } catch (IOException e) {
-                showError("Failed to create configs folder: " + e.getMessage());
+                showError(String.format(CREATE_FOLDER_ERROR, e.getMessage()));
                 return;
             }
         }
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Configuration File");
+        fileChooser.setTitle(FILE_CHOOSER_TITLE);
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("JSON Files", "*.json")
+                new FileChooser.ExtensionFilter(JSON_FILES, JSON_EXTENSION)
         );
 
         fileChooser.setInitialDirectory(configsFolderPath.toFile());
@@ -109,7 +117,7 @@ public class ParametersPresenter {
         try {
             SimulationConfig config = configManager.loadConfig(selectedFile.toPath());
             if (config == null) {
-                showError("Failed to load configuration: Invalid configuration file.");
+                showError(CONFIG_ERROR);
                 return;
             }
             mapConfig = config.mapConfig();
@@ -117,7 +125,26 @@ public class ParametersPresenter {
             animalConfig = config.animalConfig();
             updateFieldsFromConfigs();
         } catch (IllegalArgumentException e) {
-            showError("Failed to load configuration: " + e.getMessage());
+            showError(String.format(LOAD_CONFIG_ERROR, e.getMessage()));
+        }
+    }
+
+    @FXML
+    private void accept(ActionEvent event) {
+        try {
+            validateAndCreateConfigs();
+            simulation = new Simulation(mapConfig, animalConfig, plantConfig);
+            SimulationApp.addSimulation(simulation);
+
+            StageUtil.openNewStage(SIMULATION_FXML, SIMULATION_TITLE, simulation, loader -> {
+                SimulationPresenter presenter = loader.getController();
+                presenter.initializeSimulation(simulation, animalConfig, mapConfig);
+            });
+            closeWindow(event);
+        } catch (IllegalArgumentException e) {
+            showError(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -140,25 +167,6 @@ public class ParametersPresenter {
         insanity.setSelected(animalConfig.behaviorVariant() == BehaviorVariant.CRAZINESS);
         mapRefreshInterval.setText(String.valueOf(mapConfig.mapRefreshInterval()));
         saveToCsv.setSelected(mapConfig.saveToCsv());
-    }
-
-    @FXML
-    private void accept(ActionEvent event) {
-        try {
-            validateAndCreateConfigs();
-            simulation = new Simulation(mapConfig, animalConfig, plantConfig);
-            SimulationApp.addSimulation(simulation);
-
-            StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, simulation, loader -> {
-                SimulationPresenter presenter = loader.getController();
-                presenter.initializeSimulation(simulation, animalConfig, mapConfig);
-            });
-            closeWindow(event);
-        } catch (IllegalArgumentException e) {
-            showError(e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void validateAndCreateConfigs() {
