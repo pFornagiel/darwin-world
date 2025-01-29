@@ -20,8 +20,6 @@ public class AnimalStatisticsUpdater {
   private final Label animalTitle;
   private final SimulationDataCollector dataCollector;
 
-  private Animal selectedAnimal;
-
   public AnimalStatisticsUpdater(Label[] animalStatsLabels, Label animalTitle, SimulationDataCollector dataCollector) {
     this.animalStatsLabels = animalStatsLabels;
     this.animalTitle = animalTitle;
