@@ -44,7 +44,8 @@ public class SimulationDataCollector {
           animal.getPosition(),
           animal.getOrientation(),
           animal.getCurrentGene(),
-          animal.getGenotype()
+          animal.getGenotype(),
+          animal.isAlive()
       );
   }
 

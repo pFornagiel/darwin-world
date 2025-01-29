@@ -9,6 +9,7 @@ public record AnimalData(
     Vector2d position,
     Direction orientation,
     int currentGene,
-    Genotype genotype
+    Genotype genotype,
+    boolean isAlive
 ) {
 }

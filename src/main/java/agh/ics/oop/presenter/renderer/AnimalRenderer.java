@@ -10,6 +10,7 @@ import agh.ics.oop.model.worldelement.util.Genotype;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.AnimalColor;
+import agh.ics.oop.presenter.util.ColorProvider;
 import agh.ics.oop.presenter.util.ImageLoader;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
@@ -19,41 +20,26 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 public class AnimalRenderer {
-  private final GridManager gridManager;
+
   private final GridRenderer gridRenderer;
   private final SimulationDataCollector dataCollector;
   private final ImageLoader imageLoader;
-  private final int maxMapSizeForImages;
 
   private final int initialEnergy;
 
   public AnimalRenderer(
-      GridManager gridManager,
       GridRenderer gridRenderer,
       SimulationDataCollector dataCollector,
       ImageLoader imageLoader,
-      int maxMapSizeForImages,
       int initialEnergy
   ) {
-    this.gridManager = gridManager;
     this.gridRenderer = gridRenderer;
     this.dataCollector = dataCollector;
     this.imageLoader = imageLoader;
-    this.maxMapSizeForImages = maxMapSizeForImages;
     this.initialEnergy = initialEnergy;
   }
 
-  public void drawAnimalElements(Iterable<Vector2d> positions) {
-    int mapArea = gridManager.getGridArea();
-
-    if (mapArea > maxMapSizeForImages) {
-      drawColoredAnimalElements(positions);
-    } else {
-      drawAnimalImages(positions);
-    }
-  }
-
-  private void drawAnimalImages(Iterable<Vector2d> positions) {
+  public void drawAnimalImages(Iterable<Vector2d> positions) {
     for (Vector2d position : positions) {
       List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
       Animal currentAnimal = animals.getFirst();
@@ -112,12 +98,12 @@ public class AnimalRenderer {
     }
   }
 
-  public void drawColoredAnimalElements(Iterable<Vector2d> positions) {
+  public void drawColoredAnimalElements(Iterable<Vector2d> positions, Color color) {
     for (Vector2d position : positions) {
       List<Animal> animals = dataCollector.getAnimalsAtPosition(position);
       Animal currentAnimal = animals.getFirst();
       AnimalData animalData = dataCollector.getAnimalData(currentAnimal);
-      Color animalColor = AnimalColor.getAnimalColor(animalData, dataCollector.getSimulationStatistics(), initialEnergy);
+      Color animalColor = AnimalColor.getAnimalColor(animalData, initialEnergy, color);
       gridRenderer.drawColor(animalColor, position);
     }
   }
@@ -132,11 +118,17 @@ public class AnimalRenderer {
       for (Animal animal : animals) {
         AnimalData animalData = dataCollector.getAnimalData(animal);
         if (topGenotypes.contains(animalData.genotype())) {
-          gridRenderer.drawBorder(position);
+          gridRenderer.drawBorder(position, ColorProvider.BORDER_DOMINANT_COLOR);
         }
       }
     }
   }
 
-
+  public void drawBorderAroundChosenAnimal(Animal animal) {
+      if(animal == null) return;
+      AnimalData animalData = dataCollector.getAnimalData(animal);
+      if(animal.isAlive()){
+        gridRenderer.drawBorder(animalData.position(), ColorProvider.BORDER_CHOSEN_COLOR);
+      }
+    }
 }
