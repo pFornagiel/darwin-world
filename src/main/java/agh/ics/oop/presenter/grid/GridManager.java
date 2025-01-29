@@ -59,16 +59,15 @@ public class GridManager {
     double canvasHeight = cellSize * mapSizeWithOffset.getY();
 
     double windowWidth = simulationCanvas.getScene().getWindow().getWidth();
-
-    double translateX = (windowWidth - canvasWidth) / 2;
+    //double translateX = (windowWidth - canvasWidth) / 2;
 
     simulationCanvas.setWidth(canvasWidth);
     simulationCanvas.setHeight(canvasHeight);
     staticCanvas.setWidth(canvasWidth);
     staticCanvas.setHeight(canvasHeight);
 
-    simulationCanvas.setTranslateX(translateX);
-    staticCanvas.setTranslateX(translateX);
+    //simulationCanvas.setTranslateX(translateX);
+    //staticCanvas.setTranslateX(translateX);
   }
 
   public DoubleVector2d mapToCanvasPosition(Vector2d mapPosition) {
