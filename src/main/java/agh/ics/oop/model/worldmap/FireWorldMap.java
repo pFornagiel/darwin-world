@@ -61,7 +61,7 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
   @Override
   public void killDyingCreature(Animal animal) {
     super.killDyingCreature(animal);
-    if(firePositionSet.contains(animal.getPosition())){
+    if(animal.isAlive() && firePositionSet.contains(animal.getPosition())){
       killAnimal(animal);
     }
   }
@@ -102,29 +102,6 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
       extenguish(position);
     }
   }
-
-  @Override
-  public String toString() {
-//    Temporary solution
-    return "";
-//    Boundary currentBoundary = getBoundaries();
-//    String map = "";
-//    for(int i=0;i<currentBoundary.upperBoundary().getY();i++){
-//      for(int j=0; j<currentBoundary.upperBoundary().getX();j++){
-//        FireMapTile position = tileMap.get(new Vector2d(j,i));
-//        if(position.isOccupied()){
-//          map += position.getElementList().getFirst().toString() + ' ';
-//        } else if(position.isOnFire()) {
-//          map += "▣ ";
-//        } else {
-//          map += tileMap.get(new Vector2d(j,i)).isPlantGrown() ? "■ " : "□ ";
-//        }
-//      }
-//      map += "\n";
-//    }
-//    return map;
-  }
-
 
   @Override
   public void accept(SimulationVisitor visitor){
