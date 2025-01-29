@@ -8,7 +8,7 @@ public class ConfigTestSingleton {
       20,
       20,
       500,
-      MapVariant.FIRES,
+      MapVariant.EQUATORS,
       2,
       4,
       false
