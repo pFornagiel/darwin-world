@@ -1,7 +1,5 @@
 package agh.ics.oop.presenter.util;
 
-import agh.ics.oop.presenter.SimulationConfig;
-import agh.ics.oop.presenter.SimulationConfigManager;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;

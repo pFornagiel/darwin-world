@@ -28,7 +28,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -38,6 +37,8 @@ public class SimulationPresenter implements MapChangeListener {
   private static final String SIMULATION_ERROR_TITLE = "Simulation Error";
   private static final String SIMULATION_ERROR_MESSAGE = "Failed to start simulation: %s";
   private static final String NEW_WINDOW_FAILURE = "New window creation failure.";
+  private static final String SIMULATION_RENDERING_FAILURE = "Simulation rendering failure";
+  private static final String SIMULATION_INITIALISATION_FAILURE = "Simulation initialisation failure";
   private static final String RESUME = "Resume";
   private static final String PAUSE = "Pause";
   private static final String PARAMETERS = "parameters.fxml";
@@ -75,7 +76,6 @@ public class SimulationPresenter implements MapChangeListener {
   private ImageLoader imageLoader;
   private ConfigAnimal animalConfig;
   private ConfigMap mapConfig;
-  private GridRenderer gridRenderer;
   private AnimalRenderer animalRenderer;
   private SimulationStatisticsCSVSaver csvSaver;
 
@@ -135,7 +135,7 @@ public class SimulationPresenter implements MapChangeListener {
       if (mapConfig.saveToCsv())
         csvSaver = new SimulationStatisticsCSVSaver(simulation.hashCode());
 
-      gridRenderer = new GridRenderer(simulationCanvas, gridManager);
+      GridRenderer gridRenderer = new GridRenderer(simulationCanvas, gridManager);
       animalRenderer = new AnimalRenderer(gridRenderer, dataCollector, imageLoader, animalConfig.initialEnergy());
       mapRenderer = new MapRenderer(gridManager, gridRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalRenderer);
 
@@ -146,7 +146,7 @@ public class SimulationPresenter implements MapChangeListener {
       simulationEngine.runAsync();
 
     } catch (Exception e) {
-      showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
+      showError(SIMULATION_ERROR_MESSAGE.formatted(SIMULATION_INITIALISATION_FAILURE));
     }
   }
 
@@ -181,7 +181,7 @@ public class SimulationPresenter implements MapChangeListener {
           csvSaver.saveStatistics(simulationStatistics);
 
       } catch (Exception e) {
-        showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
+        showError(SIMULATION_ERROR_MESSAGE.formatted(SIMULATION_RENDERING_FAILURE));
       } finally {
         latch.countDown();
       }
@@ -195,7 +195,7 @@ public class SimulationPresenter implements MapChangeListener {
         animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
         animalRenderer.drawBorderAroundChosenAnimal(chosenAnimal);
       } catch (Exception e) {
-        showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
+        showError(SIMULATION_ERROR_MESSAGE.formatted(SIMULATION_RENDERING_FAILURE));
       } finally {
         latch.countDown();
       }

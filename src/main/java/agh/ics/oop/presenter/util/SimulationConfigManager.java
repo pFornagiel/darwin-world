@@ -1,4 +1,4 @@
-package agh.ics.oop.presenter;
+package agh.ics.oop.presenter.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.FileReader;
