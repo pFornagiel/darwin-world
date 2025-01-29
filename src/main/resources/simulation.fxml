@@ -19,13 +19,11 @@
         <AnchorPane id="secondaryAnchorPane" stylesheets="@parameters.styles.css" prefHeight="350.0" prefWidth="350.0" BorderPane.alignment="CENTER">
             <children>
                 <!-- Static Background Canvas -->
-                <Canvas fx:id="staticCanvas" width="500.0" height="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                <Canvas fx:id="staticCanvas" width="500.0" height="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
                 <!-- Canvas for drawing elements -->
-                <Canvas fx:id="simulationCanvas" width="500.0" height="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                <Canvas fx:id="simulationCanvas" width="500.0" height="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
             </children>
-            <BorderPane.margin>
-                <Insets left="10.0" right="10.0" />
-            </BorderPane.margin>
+
         </AnchorPane>
     </center>
 

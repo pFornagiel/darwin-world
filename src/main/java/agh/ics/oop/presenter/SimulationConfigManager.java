@@ -13,7 +13,7 @@ public class SimulationConfigManager {
         try (FileWriter writer = new FileWriter(configFilePath.toFile())) {
             gson.toJson(config, writer);
         } catch (IOException e) {
-            System.err.println("Failed to save configuration: " + e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
@@ -21,7 +21,7 @@ public class SimulationConfigManager {
         try (FileReader reader = new FileReader(configFilePath.toFile())) {
             return gson.fromJson(reader, SimulationConfig.class);
         } catch (IOException e) {
-            System.err.println("Failed to load configuration: " + e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
