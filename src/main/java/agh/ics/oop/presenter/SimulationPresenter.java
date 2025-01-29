@@ -28,6 +28,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -135,7 +136,7 @@ public class SimulationPresenter implements MapChangeListener {
         csvSaver = new SimulationStatisticsCSVSaver(simulation.hashCode());
 
       gridRenderer = new GridRenderer(simulationCanvas, gridManager);
-      animalRenderer = new AnimalRenderer(gridManager, gridRenderer, dataCollector, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig.initialEnergy());
+      animalRenderer = new AnimalRenderer(gridRenderer, dataCollector, imageLoader, animalConfig.initialEnergy());
       mapRenderer = new MapRenderer(gridManager, gridRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalRenderer);
 
       startButton.setDisable(true);
@@ -150,11 +151,17 @@ public class SimulationPresenter implements MapChangeListener {
   }
 
   private void onAnimalClicked(Vector2d position) {
-    chosenAnimal =
-        simulationData.animalPositionSet().contains(position)
-            ? dataCollector.getAnimalsAtPosition(position).getFirst()
-            : null;
-    animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
+    if(isPaused){
+      chosenAnimal =
+          simulationData.animalPositionSet().contains(position)
+              ? dataCollector.getAnimalsAtPosition(position).getFirst()
+              : null;
+      animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
+
+      // Trigger redraw to mark the selected animal
+      mapRenderer.drawMap(simulationData, chosenAnimal);
+      animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
+    }
   }
 
   @Override
@@ -162,8 +169,7 @@ public class SimulationPresenter implements MapChangeListener {
     Platform.runLater(() -> {
       try {
         if (dataCollector == null) return;
-        gridRenderer.clearCanvas();
-        mapRenderer.drawMap(simulationData);
+        mapRenderer.drawMap(simulationData, chosenAnimal);
 
         simulationData = dataCollector.getSimulationData();
         simulationStatistics = dataCollector.getSimulationStatistics();

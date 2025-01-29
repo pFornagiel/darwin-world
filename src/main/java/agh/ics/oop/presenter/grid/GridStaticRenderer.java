@@ -2,19 +2,15 @@ package agh.ics.oop.presenter.grid;
 
 import agh.ics.oop.model.datacollectors.SimulationData;
 import agh.ics.oop.model.util.Vector2d;
+import agh.ics.oop.presenter.util.ColorProvider;
 import agh.ics.oop.presenter.util.ImageLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
-import java.util.Comparator;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class GridStaticRenderer extends GridRenderer {
-  private static final Color GRASS_COLOR = Color.rgb(114, 117, 25);
-  private static final Color BORDER_COLOR = Color.rgb(153, 77, 26);
-  private static final Color VERDANT_COLOR = Color.GREEN;
+
 
   private static final Random random = new Random();
 
@@ -35,10 +31,10 @@ public class GridStaticRenderer extends GridRenderer {
     boolean isMapTooLarge = mapWidth * mapHeight > maxMapSizeForImages;
 
     if (isMapTooLarge) {
-      gc.setFill(GRASS_COLOR);
+      gc.setFill(ColorProvider.BACKGROUND_COLOR);
       gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
       for (Vector2d position : simulationData.verdantFieldPositionSet()) {
-        drawColor(VERDANT_COLOR, position);
+        drawColor(ColorProvider.VERDANT_COLOR, position);
       }
     } else {
       for (int i = 0; i < mapWidth; i++) {
@@ -54,8 +50,8 @@ public class GridStaticRenderer extends GridRenderer {
   private void drawBorderCell(Vector2d upperPosition, Vector2d lowerPosition) {
     boolean isMapTooLarge = mapWidth * mapHeight > maxMapSizeForImages;
     if (isMapTooLarge) {
-      drawColor(BORDER_COLOR, upperPosition);
-      drawColor(BORDER_COLOR, lowerPosition);
+      drawColor(ColorProvider.MAP_BORDER_COLOR, upperPosition);
+      drawColor(ColorProvider.MAP_BORDER_COLOR, lowerPosition);
     } else {
       drawElement(imageLoader.getBorderImage(), upperPosition);
       drawElement(imageLoader.getBorderImage(), lowerPosition);

@@ -7,10 +7,16 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 public class AnimalColor {
-    public static Color getAnimalColor(AnimalData animalData, SimulationStatistics stats, int animalEnergy){
+    private static final double OPACITY = 1.0;
+    public static Color getAnimalColor(AnimalData animalData, int animalEnergy, Color color){
         if(animalData == null) return Color.GRAY;
-        double ONE = 1.0;
-        double r = 0.0, g = 0.0, b = Math.min((double) animalData.energy() / animalEnergy, ONE);
-        return new Color(r, g, b, ONE);
+        double energyRatio = Math.min((double) animalData.energy() / animalEnergy, 1.0);
+
+        // Interpolate between dark gray and the base color
+        double r = ColorProvider.DYING_COLOR.getRed() + (color.getRed() - ColorProvider.DYING_COLOR.getRed()) * energyRatio;
+        double g = ColorProvider.DYING_COLOR.getGreen() + (color.getGreen() - ColorProvider.DYING_COLOR.getGreen()) * energyRatio;
+        double b = ColorProvider.DYING_COLOR.getBlue() + (color.getBlue() - ColorProvider.DYING_COLOR.getBlue()) * energyRatio;
+
+        return new Color(r, g, b, OPACITY);
     }
 }

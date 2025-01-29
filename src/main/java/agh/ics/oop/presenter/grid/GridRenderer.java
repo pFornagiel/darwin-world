@@ -58,14 +58,14 @@ public class GridRenderer {
     );
   }
 
-  public void drawBorder(Vector2d position) {
+  public void drawBorder(Vector2d position, Color color) {
     DoubleVector2d canvasPos = gridManager.mapToCanvasPosition(position);
     double cellSize = gridManager.getCellSize();
 
     Color originalStrokeColor = (Color) gc.getStroke();
     double originalStrokeWidth = gc.getLineWidth();
 
-    gc.setStroke(Color.VIOLET);
+    gc.setStroke(color);
     gc.setLineWidth(3);
 
     gc.strokeRect(
