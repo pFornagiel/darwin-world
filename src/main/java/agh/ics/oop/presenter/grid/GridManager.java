@@ -20,7 +20,7 @@ public class GridManager {
   private final Canvas staticCanvas;
   private final double cellSize;
 
-  public GridManager(Canvas simulationCanvas, Canvas staticCanvas , Vector2d mapSize) {
+  public GridManager(Canvas simulationCanvas, Canvas staticCanvas, Vector2d mapSize) {
     this.simulationCanvas = simulationCanvas;
     this.staticCanvas = staticCanvas;
     this.mapSize = mapSize;
@@ -54,11 +54,21 @@ public class GridManager {
     return Math.max(MIN_CELL_SIZE, Math.max(cellSizeByWidth, cellSizeByHeight));
   }
 
-  private void initialiseCanvasDimensions(){
-    simulationCanvas.setWidth(cellSize*mapSizeWithOffset.getX());
-    simulationCanvas.setHeight(cellSize*mapSizeWithOffset.getY());
-    staticCanvas.setWidth(cellSize*mapSizeWithOffset.getX());
-    staticCanvas.setHeight(cellSize*mapSizeWithOffset.getY());
+  private void initialiseCanvasDimensions() {
+    double canvasWidth = cellSize * mapSizeWithOffset.getX();
+    double canvasHeight = cellSize * mapSizeWithOffset.getY();
+
+    double windowWidth = simulationCanvas.getScene().getWindow().getWidth();
+
+    double translateX = (windowWidth - canvasWidth) / 2;
+
+    simulationCanvas.setWidth(canvasWidth);
+    simulationCanvas.setHeight(canvasHeight);
+    staticCanvas.setWidth(canvasWidth);
+    staticCanvas.setHeight(canvasHeight);
+
+    simulationCanvas.setTranslateX(translateX);
+    staticCanvas.setTranslateX(translateX);
   }
 
   public DoubleVector2d mapToCanvasPosition(Vector2d mapPosition) {
