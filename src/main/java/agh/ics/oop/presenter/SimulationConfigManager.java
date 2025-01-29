@@ -4,22 +4,24 @@ import com.google.gson.GsonBuilder;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class SimulationConfigManager {
-    private static final String CONFIG_FILE = "config.json";
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public static void saveConfig(SimulationConfig config) {
-        try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
+
+    public static void saveConfig(SimulationConfig config, Path configFilePath) {
+        try (FileWriter writer = new FileWriter(configFilePath.toFile())) {
             gson.toJson(config, writer);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Failed to save configuration: " + e.getMessage());
         }
     }
-    public static SimulationConfig loadConfig() {
-        try (FileReader reader = new FileReader(CONFIG_FILE)) {
+
+    public static SimulationConfig loadConfig(Path configFilePath) {
+        try (FileReader reader = new FileReader(configFilePath.toFile())) {
             return gson.fromJson(reader, SimulationConfig.class);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Failed to load configuration: " + e.getMessage());
             return null;
         }
     }

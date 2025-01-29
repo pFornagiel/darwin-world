@@ -9,8 +9,14 @@ import javafx.fxml.FXML;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.scene.control.*;
 import agh.ics.oop.model.simulation.SimulationApp;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ParametersPresenter {
 
@@ -74,14 +80,43 @@ public class ParametersPresenter {
 
     @FXML
     private void load() {
+        Path configsFolderPath = Paths.get(System.getProperty("user.dir"), "configs");
+
+        if (!Files.exists(configsFolderPath)) {
+            try {
+                Files.createDirectories(configsFolderPath);
+            } catch (IOException e) {
+                showError("Failed to create configs folder: " + e.getMessage());
+                return;
+            }
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Configuration File");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON Files", "*.json")
+        );
+
+        fileChooser.setInitialDirectory(configsFolderPath.toFile());
+
+        File selectedFile = fileChooser.showOpenDialog(mapWidth.getScene().getWindow());
+
+        if (selectedFile == null) {
+            return;
+        }
+
         try {
-            SimulationConfig config = configManager.loadConfig();
+            SimulationConfig config = configManager.loadConfig(selectedFile.toPath());
+            if (config == null) {
+                showError("Failed to load configuration: Invalid configuration file.");
+                return;
+            }
             mapConfig = config.mapConfig();
             plantConfig = config.plantConfig();
             animalConfig = config.animalConfig();
             updateFieldsFromConfigs();
         } catch (IllegalArgumentException e) {
-            showError(e.getMessage());
+            showError("Failed to load configuration: " + e.getMessage());
         }
     }
 
@@ -115,7 +150,7 @@ public class ParametersPresenter {
 
             StageUtil.openNewStage(SIMULATION_FXML, SIMULATION, simulation, loader -> {
                 SimulationPresenter presenter = loader.getController();
-                presenter.initializeSimulation(simulation,animalConfig);
+                presenter.initializeSimulation(simulation, animalConfig, mapConfig);
             });
             closeWindow(event);
         } catch (IllegalArgumentException e) {

@@ -6,11 +6,11 @@ import agh.ics.oop.model.worldelement.util.Genotype;
 
 public class SimulationStatisticsCSVSaver {
     private final Path csvFilePath;
-    private static final String HEADER = "day,animals,plants,freeFields,avgEnergy,avgLifespan,avgChildren,mostPopularGenotype";
+    private static final String HEADER = "day;animals;plants;freeFields;avgEnergy;avgLifespan;avgChildren;mostPopularGenotype";
     private int lastDay = -1;
 
-    public SimulationStatisticsCSVSaver() {
-        this.csvFilePath = Paths.get("simulation_stats.csv");
+    public SimulationStatisticsCSVSaver(int hash) {
+        this.csvFilePath = Paths.get(String.format("simulation_csv_%d.csv", hash));
         initializeFile();
     }
 
@@ -18,7 +18,7 @@ public class SimulationStatisticsCSVSaver {
         try {
             Files.write(csvFilePath, (HEADER + System.lineSeparator()).getBytes());
         } catch (IOException e) {
-            System.err.println("Failed to initialize CSV file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -28,7 +28,7 @@ public class SimulationStatisticsCSVSaver {
     }
 
     private String formatDecimal(double value) {
-        return String.format("%.2f", value).replace('.', ',');
+        return String.format("%.2f", value);
     }
 
     public void saveStatistics(SimulationStatistics stats) {
@@ -43,7 +43,7 @@ public class SimulationStatisticsCSVSaver {
                     "\"none\"" :
                     formatGenotype(stats.mostPopularGenotypes().getFirst());
 
-            String csvLine = String.format("%d,%d,%d,%d,%s,%s,%s,%s",
+            String csvLine = String.format("%d;%d;%d;%d;%s;%s;%s;%s",
                     stats.amountOfDays(),
                     stats.amountOfAnimals(),
                     stats.amountOfPlants(),
@@ -60,11 +60,8 @@ public class SimulationStatisticsCSVSaver {
                     StandardOpenOption.APPEND
             );
         } catch (IOException e) {
-            System.err.println("Failed to save statistics to CSV: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public Path getFilePath() {
-        return csvFilePath;
-    }
 }
