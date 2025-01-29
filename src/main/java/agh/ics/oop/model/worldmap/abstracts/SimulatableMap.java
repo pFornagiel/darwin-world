@@ -17,7 +17,6 @@ public interface SimulatableMap<E extends LivingCreature> extends WorldMap<E> {
 
   E createNewAnimalOnMap(E parent1, E parent2);
 
-  // Method to rotate an animal
   void rotateCreature(E animal);
 
   void moveCreature(E animal);
