@@ -79,6 +79,10 @@ public class Simulation implements Runnable, SimulationVisitor {
     return dayCount;
   }
 
+  public boolean isPuased() {
+    return paused;
+  }
+
 //  DataCollector
   public void acceptDataCollector(SimulationDataCollector dataCollector) {
     dataCollector.setWorldMap(worldMap);
