@@ -124,14 +124,16 @@ public class SimulationPresenter implements MapChangeListener {
       Label[] labels = new Label[] {dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath};
       animalStatisticsUpdater = new AnimalStatisticsUpdater(labels, animalTitle, dataCollector);
 
-      GridManager gridManager = new GridManager(simulationCanvas, dataCollector.getWorldMapSize());
+      GridManager gridManager = new GridManager(simulationCanvas, staticCanvas, dataCollector.getWorldMapSize());
       gridManager.setOnClickEventHandling(this::onAnimalClicked);
 
       GridStaticRenderer gridStaticRenderer = new GridStaticRenderer(staticCanvas, gridManager, imageLoader, MAX_MAP_SIZE_FOR_IMAGES);
       gridStaticRenderer.drawBackground(simulationData);
       gridStaticRenderer.drawBorder();
+
       if (mapConfig.saveToCsv())
         csvSaver = new SimulationStatisticsCSVSaver(simulation.hashCode());
+
       gridRenderer = new GridRenderer(simulationCanvas, gridManager);
       animalRenderer = new AnimalRenderer(gridManager, gridRenderer, dataCollector, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalConfig.initialEnergy());
       mapRenderer = new MapRenderer(gridManager, gridRenderer, imageLoader, MAX_MAP_SIZE_FOR_IMAGES, animalRenderer);

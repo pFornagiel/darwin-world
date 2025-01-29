@@ -7,7 +7,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.util.Comparator;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class GridStaticRenderer extends GridRenderer {
   private static final Color GRASS_COLOR = Color.rgb(114, 117, 25);
@@ -41,7 +43,7 @@ public class GridStaticRenderer extends GridRenderer {
     } else {
       for (int i = 0; i < mapWidth; i++) {
         for (int j = 0; j < mapHeight; j++) {
-          Vector2d position = new Vector2d(j, i);
+          Vector2d position = new Vector2d(i, j);
           Image image = getImageForPosition(simulationData, position);
           drawElement(image, position);
         }
