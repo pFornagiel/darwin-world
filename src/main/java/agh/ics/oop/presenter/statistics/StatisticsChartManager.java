@@ -14,7 +14,7 @@ public class StatisticsChartManager {
     private static final String X_AXIS_LABEL = "Day";
     private static final String Y_AXIS_LABEL = "Count";
     private static final String ANIMAL_SERIES_STYLE = "-fx-stroke: #ff7f0e;";
-    private static final String PLANT_SERIES_STYLE = "-fx-stroke: #1f77b4;";
+    private static final String PLANT_SERIES_STYLE = "-fx-stroke: #67AE0A;";
 
     private final LineChart<Number, Number> chart;
     private XYChart.Series<Number, Number> animalSeries;
