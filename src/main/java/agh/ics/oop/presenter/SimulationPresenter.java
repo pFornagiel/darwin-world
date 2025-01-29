@@ -193,6 +193,7 @@ public class SimulationPresenter implements MapChangeListener {
     Platform.runLater(() -> {
       try {
         animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
+        animalRenderer.drawBorderAroundChosenAnimal(chosenAnimal);
       } catch (Exception e) {
         showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
       } finally {
