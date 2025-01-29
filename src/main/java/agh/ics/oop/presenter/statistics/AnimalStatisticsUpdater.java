@@ -2,12 +2,9 @@ package agh.ics.oop.presenter.statistics;
 
 import agh.ics.oop.model.datacollectors.AnimalStatistics;
 import agh.ics.oop.model.datacollectors.SimulationDataCollector;
-import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
-import agh.ics.oop.model.worldelement.util.Genotype;
 import javafx.scene.control.Label;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 

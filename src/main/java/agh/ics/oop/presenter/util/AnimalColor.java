@@ -1,11 +1,8 @@
 package agh.ics.oop.presenter.util;
 
 import agh.ics.oop.model.datacollectors.AnimalData;
-import agh.ics.oop.model.datacollectors.SimulationStatistics;
-import agh.ics.oop.model.worldelement.util.Genotype;
 import javafx.scene.paint.Color;
 
-import java.util.List;
 public class AnimalColor {
     private static final double OPACITY = 1.0;
     public static Color getAnimalColor(AnimalData animalData, int animalEnergy, Color color){

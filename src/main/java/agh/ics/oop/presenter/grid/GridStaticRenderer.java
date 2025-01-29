@@ -60,14 +60,14 @@ public class GridStaticRenderer extends GridRenderer {
 
   public void drawBorder() {
 
-    for (int x = 0 - gridOffset.getX(); x < mapWidth + gridOffset.getX(); x++) {
-      Vector2d upperPosition = new Vector2d(x, 0 - gridOffset.getY());
+    for (int x = -gridOffset.getX(); x < mapWidth + gridOffset.getX(); x++) {
+      Vector2d upperPosition = new Vector2d(x, -gridOffset.getY());
       Vector2d lowerPosition = new Vector2d(x, mapHeight - 1 + gridOffset.getY());
       drawBorderCell(upperPosition, lowerPosition);
     }
 
-    for (int y = 0 - gridOffset.getY(); y < mapHeight + 2 * gridOffset.getY(); y++) {
-      Vector2d upperPosition = new Vector2d(0 - gridOffset.getX(), y);
+    for (int y = -gridOffset.getY(); y < mapHeight + 2 * gridOffset.getY(); y++) {
+      Vector2d upperPosition = new Vector2d(-gridOffset.getX(), y);
       Vector2d lowerPosition = new Vector2d(mapWidth - 1 + gridOffset.getX(), y);
       drawBorderCell(upperPosition, lowerPosition);
     }

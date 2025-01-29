@@ -1,9 +1,5 @@
 package agh.ics.oop.model.simulation;
 
-import agh.ics.oop.model.configuration.ConfigAnimal;
-import agh.ics.oop.model.configuration.ConfigMap;
-import agh.ics.oop.model.configuration.ConfigPlant;
-import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Application;
 import javafx.stage.Stage;
