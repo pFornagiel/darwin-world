@@ -31,7 +31,7 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    getMainClass().set('agh.ics.oop.model.simulation.SimulationApp')
+    getMainClass().set('agh.ics.oop.MainGUI')
 }
 
 javafx {
