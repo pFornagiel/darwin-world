@@ -10,17 +10,20 @@ import java.nio.file.*;
 
 public class ConfigurationManager {
 
-    private static final String CONFIGURATION_ERROR = "Configuration Error";
     private static final String CONFIG_FOLDER = "configs";
     private static final String JSON_EXTENSION = ".json";
     private static final String DEFAULT_FILE_NAME = "simulation_config";
+    private static final String USER_DIR = "user.dir";
+
+    private static final String CONFIGURATION_ERROR = "Configuration Error";
     private static final String SAVE_ERROR_TITLE = "Save Error";
     private static final String SAVE_ERROR_HEADER = "Failed to create directory";
-    private static final String SAVE_ERROR_MESSAGE = "Could not create directory: ";
+    private static final String SAVE_ERROR_MESSAGE = "Could not create directory: %s: %s";
+    private static final String DIRECTORY_ERROR_MESSAGE = "Failed to create config folder: %s";
     private static final String JSON_FILTER_DESCRIPTION = "JSON Files";
 
     private Path getConfigFolderPath() {
-        return Paths.get(System.getProperty("user.dir"), CONFIG_FOLDER);
+        return Paths.get(System.getProperty(USER_DIR), CONFIG_FOLDER);
     }
 
     private void ensureConfigFolderExists() {
@@ -29,7 +32,7 @@ public class ConfigurationManager {
             try {
                 Files.createDirectories(configFolderPath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to create config folder: " + e.getMessage());
+                throw new RuntimeException(String.format(DIRECTORY_ERROR_MESSAGE, e.getMessage()));
             }
         }
     }
@@ -48,7 +51,7 @@ public class ConfigurationManager {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(getConfigFolderPath().toFile());
-        fileChooser.setInitialFileName(DEFAULT_FILE_NAME + JSON_EXTENSION);
+        fileChooser.setInitialFileName(String.format("%s%s", DEFAULT_FILE_NAME, JSON_EXTENSION));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter(JSON_FILTER_DESCRIPTION, "*" + JSON_EXTENSION)
         );
@@ -61,7 +64,7 @@ public class ConfigurationManager {
         Path configFilePath = selectedFile.toPath();
         String fileName = configFilePath.getFileName().toString();
         if (!fileName.toLowerCase().endsWith(JSON_EXTENSION)) {
-            configFilePath = configFilePath.resolveSibling(fileName + JSON_EXTENSION);
+            configFilePath = configFilePath.resolveSibling(String.format("%s%s", fileName, JSON_EXTENSION));
         }
 
         Path parentDir = configFilePath.getParent();
@@ -69,7 +72,11 @@ public class ConfigurationManager {
             try {
                 Files.createDirectories(parentDir);
             } catch (IOException e) {
-                showErrorDialog(SAVE_ERROR_TITLE, SAVE_ERROR_HEADER, SAVE_ERROR_MESSAGE + parentDir + ": " + e.getMessage());
+                showErrorDialog(
+                        SAVE_ERROR_TITLE,
+                        SAVE_ERROR_HEADER,
+                        String.format(SAVE_ERROR_MESSAGE, parentDir, e.getMessage())
+                );
                 return;
             }
         }

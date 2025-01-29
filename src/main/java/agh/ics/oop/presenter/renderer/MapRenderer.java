@@ -7,7 +7,6 @@ import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.ColorProvider;
 import agh.ics.oop.presenter.util.ImageLoader;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 public class MapRenderer {
     private final ElementRenderer elementRenderer;
