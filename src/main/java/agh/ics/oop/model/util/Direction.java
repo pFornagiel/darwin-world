@@ -2,6 +2,20 @@ package agh.ics.oop.model.util;
 
 import java.util.Random;
 
+/**
+ * Represents the eight directions in a 2D coordinate system.
+ * Each direction is associated with a unit vector and a name.
+ *
+ * <p>The enum provides utility methods for:
+ * <ul>
+ *   <li>Getting a random direction</li>
+ *   <li>Finding the next, previous, and opposite direction</li>
+ *   <li>Rotating by a specified number of steps</li>
+ *   <li>Converting to a unit vector representation</li>
+ * </ul>
+ *
+ * @see Vector2d
+ */
 public enum Direction {
   NORTH,
   NORTH_EAST,

@@ -3,6 +3,13 @@ package agh.ics.oop.model.util.random;
 import java.util.Iterator;
 import java.util.Random;
 
+/**
+ * A generator for producing random, non-repeating numbers within a specified range.
+ * The numbers are selected from the range [0, upperBound), ensuring no repeats.
+ *
+ * This class implements the {@link Iterable} interface, allowing iteration over
+ * the sequence of random non-repeating numbers.
+ */
 public class RandomNonRepeatingNumbersGenerator implements Iterable<Integer> {
   private static final Random rand = new Random();
 

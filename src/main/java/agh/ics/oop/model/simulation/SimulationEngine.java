@@ -6,6 +6,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * Manages and executes multiple {@link Simulation} instances either synchronously or asynchronously.
+ * Provides different execution modes, including direct execution, threaded execution, and execution
+ * using a thread pool.
+ *
+ * <p>Functionalities:
+ * <ul>
+ *   <li>Running simulations synchronously on the main thread</li>
+ *   <li>Running simulations asynchronously using individual threads</li>
+ *   <li>Running simulations in a thread pool for efficient resource management</li>
+ *   <li>Awaiting the completion of asynchronous simulations</li>
+ * </ul>
+ *
+ * <p>This class ensures proper thread management and orderly execution of simulations.
+ */
 public class SimulationEngine {
   private final List<Simulation> simulationList;
   private final ArrayList<Thread> simulationThreadList = new ArrayList<>();

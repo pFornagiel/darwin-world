@@ -7,6 +7,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+
+/**
+ * Generates random positions on a 2D grid with a weighted probability distribution.
+ * The distribution follows a Gaussian-like function centered around the "equator"
+ * (middle rows of the grid), making certain rows more likely to be selected.
+ *
+ * <p>Implements {@link Iterable} to allow iteration over randomly generated positions.
+ */
 public class WeightedEquatorRandomPositionGenerator implements Iterable<Vector2d> {
   private static final Random rand = new Random();
   private static final double VERDANT_TILES_PERCENTAGE = .2;

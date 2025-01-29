@@ -8,6 +8,22 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+
+/**
+ * Represents the genotype of an {@link Animal}, determining its behavior and mutations.
+ * A genotype is a sequence of genes, each represented as an integer.
+ *
+ * <p>Genotypes can be created randomly or inherited through reproduction, incorporating
+ * mutations within specified constraints.
+ *
+ * <p>Functionalities:
+ * <ul>
+ *   <li>Random gene activation</li>
+ *   <li>Sequential gene activation</li>
+ *   <li>Genotype comparison and hashing</li>
+ *   <li>Gene mutation during inheritance</li>
+ * </ul>
+ */
 public class Genotype {
   private static final int DISTINCT_GENES_NUMBER = 8;
   private static final Random rand = new Random();

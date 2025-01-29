@@ -17,6 +17,21 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+
+/**
+ * Represents a single simulation instance that runs on a specified world map.
+ * Implements the {@link Runnable} interface to support multithreaded execution
+ * and the {@link SimulationVisitor} pattern for different map types.
+ *
+ * <p>Funcitonalities:
+ * <ul>
+ *   <li>Manages the simulation logic for different map variants</li>
+ *   <li>Handles pausing and resuming of the simulation</li>
+ *   <li>Supports observer notification for UI updates</li>
+ *   <li>Integrates with data collectors for tracking simulation metrics</li>
+ *   <li>Uses a {@link CountDownLatch} for synchronized updates</li>
+ * </ul>
+ */
 public class Simulation implements Runnable, SimulationVisitor {
   private final SimulatableMap<Animal> worldMap;
   private final AnimalFactory animalFactory;

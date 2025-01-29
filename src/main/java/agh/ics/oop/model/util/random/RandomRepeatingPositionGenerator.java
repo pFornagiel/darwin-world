@@ -5,6 +5,13 @@ import agh.ics.oop.model.util.Vector2d;
 import java.util.Iterator;
 import java.util.Random;
 
+
+/**
+ * Generates random positions on a 2D grid with repetition allowed.
+ * Positions are generated within a given width and height range.
+ *
+ *  * <p>Implements {@link Iterable} to allow iteration over randomly generated positions.
+ */
 public class RandomRepeatingPositionGenerator implements Iterable<Vector2d>{
   private final int maxWidth;
   private final int maxHeight;

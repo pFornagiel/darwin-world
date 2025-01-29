@@ -2,6 +2,20 @@ package agh.ics.oop.model.util;
 
 import java.util.*;
 
+
+/**
+ * A custom map implementation that maintains entries sorted by their values in descending order.
+ * If two values are equal, the order of insertion determines their relative ordering.
+ *
+ * <p>This class uses an internal {@code TreeMap} with a custom comparator to ensure the correct ordering.
+ * Additionally, an insertion order map is maintained to resolve tie-breaking cases where values are equal.
+ *
+ * <p>Operations such as insertion, retrieval, and removal are provided, along with a method
+ * to retrieve entries as a sorted list.
+ *
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values, which must be {@link Comparable}
+ */
 public class ValueSortedMap<K, V extends Comparable<V>> {
   private final Map<K, Integer> insertionOrder = new HashMap<>();
   private int nextOrder = 0;

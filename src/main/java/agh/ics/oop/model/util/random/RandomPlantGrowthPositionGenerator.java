@@ -9,6 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
+/**
+ * A generator for randomly selecting positions for plant growth on a map.
+ * The generator prioritizes verdant tiles over non-verdant tiles based on a weighted probability.
+ *
+ *  * <p>Implements {@link Iterable} to allow iteration over randomly generated positions.
+ * @param <M> The type of map tile (extends {@link MapTile}) associated with the positions.
+ */
 public class RandomPlantGrowthPositionGenerator<M extends MapTile> implements Iterable<Vector2d> {
   private static final Random rand = new Random();
   private static final int VERDANT_TILE_PROBABILITY_MULTIPLIER = 8;
