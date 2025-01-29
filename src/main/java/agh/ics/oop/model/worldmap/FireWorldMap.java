@@ -22,7 +22,7 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
   private static final Vector2d MOVE_DOWN = new Vector2d(0,1);
   private static final List<Vector2d> MOVE_LIST = List.of(MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN);
 
-  int maxFireDuration = 0;
+  private final int maxFireDuration;
 
   public FireWorldMap(int mapWidth, int mapHeight, AnimalFactory animalFactory, int maxFireDuration) {
     super(mapWidth, mapHeight, animalFactory);
@@ -61,7 +61,7 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
   @Override
   public void killDyingCreature(Animal animal) {
     super.killDyingCreature(animal);
-    if(firePositionSet.contains(animal.getPosition())){
+    if(animal.isAlive() && firePositionSet.contains(animal.getPosition())){
       killAnimal(animal);
     }
   }
@@ -102,28 +102,6 @@ public class FireWorldMap extends AbstractAnimalMap<FireMapTile> {
       extenguish(position);
     }
   }
-
-  @Override
-  public String toString() {
-//    Temporary solution
-    Boundary currentBoundary = getBoundaries();
-    String map = "";
-    for(int i=0;i<currentBoundary.upperBoundary().getY();i++){
-      for(int j=0; j<currentBoundary.upperBoundary().getX();j++){
-        FireMapTile position = tileMap.get(new Vector2d(j,i));
-        if(position.isOccupied()){
-          map += position.getElementList().getFirst().toString() + ' ';
-        } else if(position.isOnFire()) {
-          map += "▣ ";
-        } else {
-          map += tileMap.get(new Vector2d(j,i)).isPlantGrown() ? "■ " : "□ ";
-        }
-      }
-      map += "\n";
-    }
-    return map;
-  }
-
 
   @Override
   public void accept(SimulationVisitor visitor){

@@ -1,56 +1,41 @@
 package agh.ics.oop.model.simulation;
 
-import agh.ics.oop.presenter.SimulationPresenter;
+import agh.ics.oop.presenter.util.StageUtil;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.layout.Region;
-
-import java.io.IOException;
+import java.util.ArrayList;
 
 public class SimulationApp extends Application {
 
   private static Stage primaryStage;
-  private static SimulationPresenter presenter;
-  private static final String title = "Simulation Parameters";
-  @Override
-  public void start(Stage stage) throws Exception {
-    primaryStage = stage;
-    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("parameters.fxml"));
-    Parent viewRoot = loader.load();
-    createStage(viewRoot);
-    primaryStage.show();
+  private static final String PARAMETERS = "parameters.fxml";
+  private static final String SIMULATION_PARAMETERS = "Simulation Parameters";
+  private static final SimulationEngine engine = new SimulationEngine(new ArrayList<>());
+
+  public static void addSimulation(Simulation simulation) {
+    engine.getSimulationList().add(simulation);
   }
-  public static void initMap() {
-//    GrassField grassField = new GrassField(5);
-//    presenter.setWorldMap(grassField);
-//    grassField.addToListeners(presenter);
-  }
-  private static void createStage(Parent viewRoot) {
-    Scene scene = new Scene(viewRoot);
-    primaryStage.setScene(scene);
-    primaryStage.setTitle(title);
-    if (viewRoot instanceof Region) {
-      primaryStage.minWidthProperty().bind(((Region) viewRoot).minWidthProperty());
-      primaryStage.minHeightProperty().bind(((Region) viewRoot).minHeightProperty());
+  public static void removeSimulation(Simulation simulation) {
+    if (simulation == null) {
+      return;
+    }
+    synchronized (engine.getSimulationList()) {
+      if (engine.getSimulationList().contains(simulation)) {
+        engine.getSimulationList().remove(simulation);
+        if (engine.getSimulationList().isEmpty()) {
+          System.exit(0);
+        }
+      }
     }
   }
-
-  /**
-   * Switches the current scene to a new one based on the given FXML file.
-   *
-   * @param fxmlFile The name of the FXML file to load.
-   */
-  public static void switchScene(String fxmlFile) {
+  public void start(Stage stage) {
     try {
-      FXMLLoader loader = new FXMLLoader(SimulationApp.class.getClassLoader().getResource(fxmlFile));
-      Parent root = loader.load();
-      presenter = loader.getController();
-      createStage(root);
-    } catch (IOException e) {
-      System.err.println("Failed to load FXML: " + fxmlFile);
+      primaryStage = stage;
+      primaryStage.setResizable(false);
+      StageUtil.openNewStage(PARAMETERS, SIMULATION_PARAMETERS, null, null);
+      primaryStage.setScene(primaryStage.getScene());
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

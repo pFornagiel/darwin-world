@@ -47,7 +47,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
       verdantFieldPositionSet.add(verdantTilePosition);
     }
   }
-
 //  Placing and removing elements
   public void removeElement(E element){
     Vector2d elementPosition = element.getPosition();
@@ -60,6 +59,7 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
       elementPositionSet.remove(elementPosition);
     }
     elementSet.remove(element);
+
   }
 
   @Override
@@ -70,6 +70,7 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     tileMap.get(position).addElement(element);
     elementPositionSet.add(position);
     elementSet.add(element);
+
   }
   @Override
   public void placeElement(E element) {
@@ -110,6 +111,8 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
     if(!canMoveTo(position)){
       throw new ElementNotOnTheMapException(element);
     }
+    Vector2d oldPosition = element.getPosition();
+
     removeElement(element);
     placeElement(element, position);
   }
@@ -182,25 +185,6 @@ public abstract class AbstractWorldMap<E extends WorldElement, M extends MapTile
   public UUID getId() {
     return id;
   }
-
-  @Override
-  public String toString() {
-//    Temporary solution
-    Boundary currentBoundary = getBoundaries();
-    String map = "";
-    for(int i=0;i<currentBoundary.upperBoundary().getY();i++){
-      for(int j=0; j<currentBoundary.upperBoundary().getX();j++){
-        M position = tileMap.get(new Vector2d(j,i));
-        if(position.isOccupied()){
-          map += position.getElementList().getFirst().toString() + ' ';
-        } else {
-          map += tileMap.get(new Vector2d(j,i)).isPlantGrown() ? "■ " : "□ ";
-        }
-      }
-      map += "\n";
-    }
-    return map;
-  }
-
+  
 
 }

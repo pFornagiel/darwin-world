@@ -31,7 +31,7 @@ public class WeightedEquatorRandomPositionGenerator implements Iterable<Vector2d
     for (int i = 0; i < this.maxHeight; i++) {
       ArrayList<Integer> row = new ArrayList<>();
       for (int j = 0; j < maxWidth; j++) {
-        row.add(i*maxHeight + j);
+        row.add((maxWidth * i) + j);
       }
       rowArray.add(row);
     }
@@ -54,7 +54,7 @@ public class WeightedEquatorRandomPositionGenerator implements Iterable<Vector2d
     ArrayList<Integer> currentRow = rowArray.get(row);
     int idx = rand.nextInt(currentRow.size());
     int currentNumber = currentRow.get(idx);
-    Vector2d currentVector = new Vector2d(currentNumber%this.maxWidth, currentNumber/this.maxHeight);
+    Vector2d currentVector = new Vector2d(currentNumber%this.maxWidth, currentNumber/this.maxWidth);
     currentRow.remove(idx);
     if(currentRow.isEmpty()) {
       totalWeight -= rowWeights[row];

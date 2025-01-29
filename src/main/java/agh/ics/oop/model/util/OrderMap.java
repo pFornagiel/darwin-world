@@ -3,14 +3,19 @@ package agh.ics.oop.model.util;
 import agh.ics.oop.model.exception.util.ElementAtKeyDoesNotExistException;
 
 public class OrderMap<K> extends ValueSortedMap<K, Integer> {
-  public void decrement(K key) {
 
+  public void decrement(K key) {
     Integer currentValue = get(key);
     if (currentValue == null || currentValue == 0) {
       throw new ElementAtKeyDoesNotExistException(key.toString());
     }
-    super.put(key, currentValue - 1);
+    if(currentValue-1 == 0) {
+      super.remove(key);
+    } else {
+      super.put(key, currentValue - 1);
+    }
   }
+
   public void increment(K key) {
     Integer currentValue = get(key);
     if (currentValue == null) {

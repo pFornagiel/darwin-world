@@ -3,17 +3,28 @@ package agh.ics.oop.model.util;
 import java.util.*;
 
 public class ValueSortedMap<K, V extends Comparable<V>> {
+  private final Map<K, Integer> insertionOrder = new HashMap<>();
+  private int nextOrder = 0;
+
   private final Map<K, V> map = new HashMap<>();
   private final Comparator<K> valueComparator = (k1, k2) -> {
-    int compare = -map.get(k1).compareTo(map.get(k2)); // Sort descending
+    if(map.get(k1) == null) return -1;
+    if(map.get(k2) == null) return 1;
+    int compare = -map.get(k1).compareTo(map.get(k2));
     if (compare == 0) {
-      return k1.hashCode() - k2.hashCode(); // Ensure uniqueness of keys
+      return insertionOrder.get(k1) - insertionOrder.get(k2);
     }
     return compare;
+
   };
+
   private final TreeMap<K, V> sortedMap = new TreeMap<>(valueComparator);
 
   public void put(K key, V value) {
+    if (!insertionOrder.containsKey(key)) {
+      insertionOrder.put(key, nextOrder++);
+    }
+    sortedMap.remove(key);
     map.put(key, value);
     sortedMap.put(key, value);
   }
