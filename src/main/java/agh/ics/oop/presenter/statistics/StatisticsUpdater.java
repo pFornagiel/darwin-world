@@ -13,6 +13,7 @@ public class StatisticsUpdater {
     private static final String DEFAULT_GENOTYPE_TEXT = "-";
     private static final String AVERAGE_ENERGY_FORMAT = "%.2f";
     private static final String AVERAGE_CHILDREN_FORMAT = "%.2f";
+    private static final String DAY_LABEL_FORMAT = "Day: %d";
 
     private final Label freeFields;
     private final Label genotype1;
@@ -21,9 +22,10 @@ public class StatisticsUpdater {
     private final Label averageEnergy;
     private final Label averageLifespan;
     private final Label averageChildren;
+    private final Label day;
 
     public StatisticsUpdater(Label freeFields, Label genotype1, Label genotype2, Label genotype3,
-                             Label averageEnergy, Label averageLifespan, Label averageChildren) {
+                             Label averageEnergy, Label averageLifespan, Label averageChildren, Label day) {
         this.freeFields = freeFields;
         this.genotype1 = genotype1;
         this.genotype2 = genotype2;
@@ -31,6 +33,7 @@ public class StatisticsUpdater {
         this.averageEnergy = averageEnergy;
         this.averageLifespan = averageLifespan;
         this.averageChildren = averageChildren;
+        this.day = day;
     }
 
     public void updateStatistics(SimulationStatistics statistics) {
@@ -44,6 +47,7 @@ public class StatisticsUpdater {
             }
         }
 
+        day.setText(String.format(DAY_LABEL_FORMAT, statistics.amountOfDays()));
         freeFields.setText(String.valueOf(statistics.amountOfFreeFields()));
         averageEnergy.setText(String.format(AVERAGE_ENERGY_FORMAT, statistics.averageEnergy()));
         averageLifespan.setText(String.valueOf(roundToTwoDecimal(statistics.averageLifespan())));

@@ -57,6 +57,8 @@ public class SimulationPresenter implements MapChangeListener {
   @FXML
   private Button startButton;
   @FXML
+  private Label day;
+  @FXML
   private Label freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren;
   @FXML
   private Label dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath, animalTitle;
@@ -96,7 +98,7 @@ public class SimulationPresenter implements MapChangeListener {
       showError(e.getMessage());
     }
 
-    statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren);
+    statisticsUpdater = new StatisticsUpdater(freeFields, genotype1, genotype2, genotype3, averageEnergy, averageLifespan, averageChildren,day);
   }
 
   @FXML
@@ -158,7 +160,6 @@ public class SimulationPresenter implements MapChangeListener {
               : null;
       animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
 
-      // Trigger redraw to mark the selected animal
       mapRenderer.drawMap(simulationData, chosenAnimal);
       animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
     }
