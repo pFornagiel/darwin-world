@@ -72,7 +72,8 @@ public class ParametersPresenter {
         try {
             validateAndCreateConfigs();
             SimulationConfig config = new SimulationConfig(mapConfig, plantConfig, animalConfig);
-            configManager.saveConfig(config);
+            Stage stage = (Stage) saveToCsv.getScene().getWindow();
+            configManager.saveConfig(config,stage);
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         }
