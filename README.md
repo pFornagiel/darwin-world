@@ -5,6 +5,7 @@ The simulation features customizable parameters, real-time statistics, and visua
 ## Features  
 
 ### Simulation Configuration Window  
+![Bez tytułu](https://github.com/user-attachments/assets/2e1bac15-b2ff-4bab-895e-29a70d7ec4d4)
 - Custom parameter input fields for simulation setup  
 - Save/Load functionality for simulation configurations  
 - Parameter validation and error handling  
@@ -12,6 +13,7 @@ The simulation features customizable parameters, real-time statistics, and visua
 - Visual feedback for input validation  
 
 ### Main Simulation Window  
+![screen](https://github.com/user-attachments/assets/28446f22-be21-4cd7-b298-4d6cbb187732)
 - Real-time visualization of the ecosystem  
 - Sprite-based rendering for smaller maps  
 - Color-based rendering for larger maps  
