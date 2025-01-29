@@ -10,7 +10,8 @@ public class ConfigTestSingleton {
       1000,
       MapVariant.FIRES,
       2,
-      4
+      4,
+      false
   );
   private static final ConfigAnimal animalConfig = new ConfigAnimal(
       30,
