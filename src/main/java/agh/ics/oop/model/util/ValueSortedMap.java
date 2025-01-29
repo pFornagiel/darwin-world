@@ -8,7 +8,8 @@ public class ValueSortedMap<K, V extends Comparable<V>> {
 
   private final Map<K, V> map = new HashMap<>();
   private final Comparator<K> valueComparator = (k1, k2) -> {
-    if(map.get(k2) == null || map.get(k1) == null) return -1;
+    if(map.get(k1) == null) return -1;
+    if(map.get(k2) == null) return 1;
     int compare = -map.get(k1).compareTo(map.get(k2));
     if (compare == 0) {
       return insertionOrder.get(k1) - insertionOrder.get(k2);
