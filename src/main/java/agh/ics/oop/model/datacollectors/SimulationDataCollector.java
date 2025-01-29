@@ -3,11 +3,7 @@ package agh.ics.oop.model.datacollectors;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
-import agh.ics.oop.model.worldmap.BaseWorldMap;
-import agh.ics.oop.model.worldmap.FireWorldMap;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
-
-import java.util.Collections;
 import java.util.List;
 
 public class SimulationDataCollector {

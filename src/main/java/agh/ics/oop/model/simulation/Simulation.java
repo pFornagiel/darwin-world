@@ -8,7 +8,6 @@ import agh.ics.oop.model.worldelement.abstracts.Animal;
 import agh.ics.oop.model.worldelement.abstracts.AnimalFactory;
 import agh.ics.oop.model.worldmap.BaseWorldMap;
 import agh.ics.oop.model.worldmap.FireWorldMap;
-import agh.ics.oop.model.worldmap.abstracts.MapChangeListener;
 import agh.ics.oop.model.worldmap.abstracts.SimulatableMap;
 
 import java.util.*;
@@ -28,11 +27,10 @@ public class Simulation implements Runnable, SimulationVisitor {
   private final ConfigPlant configPlant;
   private final ConfigAnimal configAnimal;
 
-  private boolean isRunning = true;
   private boolean paused = false;
-
   private final ReentrantLock pauseLock = new ReentrantLock();
   private final Condition unpausedCondition = pauseLock.newCondition();
+  private CountDownLatch pauseLatch;
 
   private final List<MapChangeListener> observers = new ArrayList<>();
 
@@ -43,34 +41,33 @@ public class Simulation implements Runnable, SimulationVisitor {
     this.configAnimal = configAnimal;
     this.configPlant = configPlant;
     this.animalFactory = new AnimalFactory(
-            configAnimal.genomeLength(),
-            configAnimal.maxMutations(),
-            configAnimal.minMutations(),
-            configAnimal.energyToReproduce(),
-            configAnimal.energyConsumedByParents(),
-            configPlant.energyPerPlant(),
-            configAnimal.initialEnergy(),
-            configAnimal.behaviorVariant()
+        configAnimal.genomeLength(),
+        configAnimal.maxMutations(),
+        configAnimal.minMutations(),
+        configAnimal.energyToReproduce(),
+        configAnimal.energyConsumedByParents(),
+        configPlant.energyPerPlant(),
+        configAnimal.initialEnergy(),
+        configAnimal.behaviorVariant()
     );
     this.worldMap = initialiseWorldMap();
 
   }
 
-  private SimulatableMap<Animal> initialiseWorldMap(){
-    SimulatableMap<Animal> worldMap = switch (configMap.mapVariant()){
+  private SimulatableMap<Animal> initialiseWorldMap() {
+    SimulatableMap<Animal> worldMap = switch (configMap.mapVariant()) {
       case MapVariant.FIRES ->
-              new FireWorldMap(configMap.width(), configMap.height(), animalFactory, configMap.fireDuration());
-      case MapVariant.EQUATORS ->
-              new BaseWorldMap(configMap.width(), configMap.height(), animalFactory);
+          new FireWorldMap(configMap.width(), configMap.height(), animalFactory, configMap.fireDuration());
+      case MapVariant.EQUATORS -> new BaseWorldMap(configMap.width(), configMap.height(), animalFactory);
     };
 
     RandomRepeatingPositionGenerator animalPositionGenerator = new RandomRepeatingPositionGenerator(
-            configMap.width(),
-            configMap.height(),
-            configAnimal.initialAnimalCount()
+        configMap.width(),
+        configMap.height(),
+        configAnimal.initialAnimalCount()
     );
 
-    for(Vector2d animalPosition: animalPositionGenerator) {
+    for (Vector2d animalPosition : animalPositionGenerator) {
       Animal animal = animalFactory.createAnimal(animalPosition);
       worldMap.placeElement(animal);
       worldMap.incrementGenotypeCount(animal.getGenotype());
@@ -80,21 +77,34 @@ public class Simulation implements Runnable, SimulationVisitor {
     return worldMap;
   }
 
-//  Observers
+//  Getters
+  public int getDayCount() {
+    return dayCount;
+  }
+
+//  DataCollector
+  public void acceptDataCollector(SimulationDataCollector dataCollector) {
+    dataCollector.setWorldMap(worldMap);
+  }
+
+  //  Observers
   public void addObserver(MapChangeListener observer) {
     observers.add(observer);
   }
 
-  public void removeObserver(MapChangeListener observer) {
-    observers.remove(observer);
-  }
-
-  private void notifyObservers(CountDownLatch latch) {
+  private void notifyChangeObservers(CountDownLatch latch) {
     for (MapChangeListener observer : observers) {
       observer.mapChanged(latch);
     }
   }
 
+  private void notifyPauseObservers(CountDownLatch latch) {
+    for (MapChangeListener observer : observers) {
+      observer.mapPaused(latch);
+    }
+  }
+
+//  Pause logic
   public synchronized void togglePause() {
     paused = !paused;
     if (!paused) {
@@ -104,6 +114,9 @@ public class Simulation implements Runnable, SimulationVisitor {
       } finally {
         pauseLock.unlock();
       }
+    } else {
+      pauseLatch = new CountDownLatch(observers.size());
+      notifyPauseObservers(pauseLatch);
     }
   }
 
@@ -112,31 +125,13 @@ public class Simulation implements Runnable, SimulationVisitor {
     try {
       while (paused) {
         try {
+          pauseLatch.await();
           unpausedCondition.await(); // Wait until notified by `resume()`
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt(); // Restore interrupted status
           System.out.printf(INTERRUPT_ERROR_MESSAGE, e.getMessage());
         }
       }
-    } finally {
-      pauseLock.unlock();
-    }
-  }
-
-  public void pause() {
-    pauseLock.lock();
-    try {
-      paused = true;
-    } finally {
-      pauseLock.unlock();
-    }
-  }
-
-  public void resume() {
-    pauseLock.lock();
-    try {
-      paused = false;
-      unpausedCondition.signalAll(); // Notify all waiting threads
     } finally {
       pauseLock.unlock();
     }
@@ -150,6 +145,7 @@ public class Simulation implements Runnable, SimulationVisitor {
     }
   }
 
+//  Simulation logic
   private void baseSimulationSteps(SimulatableMap<Animal> worldMap) {
     Set<Animal> animalSet = new HashSet<>(worldMap.getElements());
     dayCount++;
@@ -170,14 +166,25 @@ public class Simulation implements Runnable, SimulationVisitor {
     worldMap.growPlants(configPlant.dailyPlantGrowth());
   }
 
+  private void fireSimulationSteps(FireWorldMap worldMap) {
+    if (dayCount % configMap.fireOutburstInterval() == 0) {
+      worldMap.randomFireOutburst();
+    }
+    worldMap.spreadFire();
+    worldMap.updateFireDuration();
+  }
+
+//  Visitors
   @Override
   public void visit(BaseWorldMap worldMap) {
-    while (isRunning && !worldMap.getElements().isEmpty()) {
+    while (!worldMap.getElements().isEmpty()) {
       checkPaused(); // Check and wait if paused
       CountDownLatch latch = new CountDownLatch(observers.size());
       baseSimulationSteps(worldMap);
-      notifyObservers(latch);
-      try{
+
+      notifyChangeObservers(latch);
+
+      try {
         sleep();
         latch.await();
       } catch (InterruptedException e) {
@@ -188,32 +195,21 @@ public class Simulation implements Runnable, SimulationVisitor {
 
   @Override
   public void visit(FireWorldMap worldMap) {
-    while (isRunning && !worldMap.getElements().isEmpty()) {
+    while (!worldMap.getElements().isEmpty()) {
       checkPaused(); // Check and wait if paused
       CountDownLatch latch = new CountDownLatch(observers.size());
       baseSimulationSteps(worldMap);
-      if (dayCount % configMap.fireOutburstInterval() == 0) {
-        worldMap.randomFireOutburst();
-      }
-      worldMap.spreadFire();
-      worldMap.updateFireDuration();
-      notifyObservers(latch);
+      fireSimulationSteps(worldMap);
 
-      try{
+      notifyChangeObservers(latch);
+
+      try {
         sleep();
         latch.await();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
     }
-  }
-
-  public int getDayCount() {
-    return dayCount;
-  }
-
-  public void acceptDataCollector(SimulationDataCollector dataCollector) {
-    dataCollector.setWorldMap(worldMap);
   }
 
   @Override

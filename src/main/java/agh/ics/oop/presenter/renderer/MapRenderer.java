@@ -1,9 +1,6 @@
 package agh.ics.oop.presenter.renderer;
 
-import agh.ics.oop.model.configuration.ConfigAnimal;
 import agh.ics.oop.model.datacollectors.SimulationData;
-import agh.ics.oop.model.datacollectors.SimulationDataCollector;
-import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.util.ImageLoader;
@@ -16,7 +13,6 @@ public class MapRenderer {
 
     private final ElementRenderer elementRenderer;
     private final AnimalRenderer animalRenderer;
-    private final GridRenderer gridRenderer;
     private final ImageLoader imageLoader;
     private final int maxMapSizeForImages;
     private final int mapArea;
@@ -32,7 +28,6 @@ public class MapRenderer {
         this.imageLoader = imageLoader;
         this.elementRenderer = new ElementRenderer(gridRenderer);
         this.animalRenderer = animalRenderer;
-        this.gridRenderer = gridRenderer;
         this.mapArea = gridManager.getGridArea();
     }
 

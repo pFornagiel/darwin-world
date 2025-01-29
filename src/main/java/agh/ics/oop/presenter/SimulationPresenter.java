@@ -9,7 +9,7 @@ import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.Vector2d;
 import agh.ics.oop.model.worldelement.abstracts.Animal;
-import agh.ics.oop.model.worldmap.abstracts.MapChangeListener;
+import agh.ics.oop.model.simulation.MapChangeListener;
 import agh.ics.oop.presenter.grid.GridManager;
 import agh.ics.oop.presenter.grid.GridRenderer;
 import agh.ics.oop.presenter.grid.GridStaticRenderer;
@@ -104,7 +104,6 @@ public class SimulationPresenter implements MapChangeListener {
 
   @FXML
   private void onPauseButtonClicked() {
-      animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
       isPaused = !isPaused;
       simulation.togglePause();
       pauseButton.setText(isPaused ? RESUME : PAUSE);
@@ -115,6 +114,7 @@ public class SimulationPresenter implements MapChangeListener {
       simulation.addObserver(this);
       dataCollector = new SimulationDataCollector(simulation);
       simulationData = dataCollector.getSimulationData();
+      simulationStatistics = dataCollector.getSimulationStatistics();
 
       Label[] labels = new Label[] {dayCount, plantCount, energy, children, descendants, genome, activeGene, dayOfDeath};
       animalStatisticsUpdater = new AnimalStatisticsUpdater(labels, animalTitle, dataCollector);
@@ -154,13 +154,29 @@ public class SimulationPresenter implements MapChangeListener {
     Platform.runLater(() -> {
       try {
         if (dataCollector == null) return;
+        gridRenderer.clearCanvas();
+        mapRenderer.drawMap(simulationData);
+
         simulationData = dataCollector.getSimulationData();
         simulationStatistics = dataCollector.getSimulationStatistics();
         animalStatisticsUpdater.updateAnimalStatistics(chosenAnimal);
         chartManager.updateChart(simulationStatistics);
         statisticsUpdater.updateStatistics(simulationStatistics);
-        gridRenderer.clearCanvas();
+
+      } catch (Exception e) {
+        showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
+      } finally {
+        latch.countDown();
+      }
+    });
+  }
+
+  @Override
+  public void mapPaused(CountDownLatch latch) {
+    Platform.runLater(() -> {
+      try {
         mapRenderer.drawMap(simulationData);
+        animalRenderer.drawDominantAnimalElements(simulationData.animalPositionSet(), simulationStatistics);
       } catch (Exception e) {
         showError(SIMULATION_ERROR_MESSAGE.formatted(e.getMessage()));
       } finally {
@@ -181,5 +197,4 @@ public class SimulationPresenter implements MapChangeListener {
     this.simulation = simulation;
     this.animalConfig = animalConfig;
   }
-
 }
