@@ -167,10 +167,10 @@ public class ParametersPresenter {
 
         int fireInterval = fireMap.isSelected()
                 ? validator.validateNonNegativeInt(fireOutburstInterval.getText(), FIRE_OUTBURST_INTERVAL)
-                : -1;
+                : 0;
         int fireDurationValue = fireMap.isSelected()
                 ? validator.validateNonNegativeInt(fireDuration.getText(), FIRE_DURATION)
-                : -1;
+                : 0;
 
         mapConfig = new ConfigMap(
                 width,
@@ -203,7 +203,7 @@ public class ParametersPresenter {
         int breedEnergyNeededValue = validator.validatePositiveInt(breedEnergyNeeded.getText(), BREED_ENERGY_NEEDED);
         int breedEnergyUsageValue = validator.validatePositiveInt(breedEnergyUsage.getText(), BREED_ENERGY_USAGE);
         int minMutationsValue = validator.validateNonNegativeInt(minMutations.getText(), MIN_MUTATIONS);
-        int maxMutationsValue = validator.validatePositiveInt(maxMutations.getText(), MAX_MUTATIONS);
+        int maxMutationsValue = validator.validateNonNegativeInt(maxMutations.getText(), MAX_MUTATIONS);
         int genesCountValue = validator.validateInRange(genesCount.getText(), 2, 10, GENES_COUNT);
 
         validator.validateMutations(minMutationsValue, maxMutationsValue);
