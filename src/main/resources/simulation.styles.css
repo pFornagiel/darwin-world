@@ -26,18 +26,18 @@
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
-    -fx-background-color: #3498db;
+    -fx-background-color: #67AE0A;
     -fx-border-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
     -fx-padding: 8px 16px;
 }
 
 .button:hover {
-    -fx-background-color: #2980b9;
+    -fx-background-color: #497a06;
 }
 
 .button:pressed {
-    -fx-background-color: #1c5980;
+    -fx-background-color: #325204;
 }
 
 .line-chart {

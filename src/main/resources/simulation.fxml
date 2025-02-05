@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="550.0" minWidth="700.0" stylesheets="@simulation.styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+<BorderPane prefHeight="800" minHeight="550.0" minWidth="700.0" stylesheets="@simulation.styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <center>
         <VBox spacing="10">
             <padding>

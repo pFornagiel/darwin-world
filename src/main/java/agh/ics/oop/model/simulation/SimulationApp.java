@@ -46,9 +46,9 @@ public class SimulationApp extends Application {
   public void start(Stage stage) {
     try {
       primaryStage = stage;
-      primaryStage.setResizable(false);
       StageUtil.openNewStage(PARAMETERS, SIMULATION_PARAMETERS, null, null);
       primaryStage.setScene(primaryStage.getScene());
+      primaryStage.setResizable(false);
     } catch (Exception e) {
       e.printStackTrace();
     }

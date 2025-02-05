@@ -1,7 +1,12 @@
 
 .split-pane {
+    -fx-background-color: 'transparent';
+}
+
+.main-pane{
     -fx-background-image: url("img/forest.jpg");
-    -fx-background-size: cover;
+    -fx-background-size: stretch;
+
 }
 .root {
     -fx-font-family: 'Segoe UI', sans-serif;
@@ -11,7 +16,7 @@
 
 .label {
     -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: white;
 }
 
 .text-field {
@@ -26,17 +31,17 @@
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
-    -fx-background-color: #3498db;
+    -fx-background-color: #67AE0A;
     -fx-border-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
 }
 
 .button:hover {
-    -fx-background-color: #2980b9;
+    -fx-background-color: #497a06;
 }
 
 .button:pressed {
-    -fx-background-color: #1c5980;
+    -fx-background-color: #325204;
 }
 
 .check-box {
@@ -52,7 +57,7 @@
 }
 
 .check-box:selected .mark {
-    -fx-background-color: #3498db;
+    -fx-background-color: #67AE0A;
 }
 
 .split-pane-divider {
