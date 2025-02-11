@@ -2,8 +2,9 @@ plugins {
     id 'java'
     id 'application'
     id 'org.javamodularity.moduleplugin' version '1.8.12'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.beryx.jlink' version '2.25.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 java {
@@ -31,13 +32,19 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    getMainClass().set('agh.ics.oop.MainGUI')
+    mainClass = 'agh.ics.oop.MainGUI'
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'agh.ics.oop.MainGUI'
+    }
 }
 
 javafx {
-    version = '21'
-    modules = ['javafx.controls', 'javafx.fxml']
-}
+    version = '21.0.5'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']}
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'

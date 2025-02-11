@@ -12,7 +12,17 @@
 <?import javafx.scene.image.Image?>
 
 
-<AnchorPane styleClass="main-pane" maxHeight="500.0" maxWidth="710.0" minHeight="500.0" minWidth="710.0" prefHeight="500.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.ParametersPresenter" stylesheets="@parameters.styles.css">
+<AnchorPane styleClass="main-pane"
+            maxHeight="500.0"
+            maxWidth="710.0"
+            minHeight="500.0"
+            minWidth="710.0"
+            prefHeight="500.0"
+            prefWidth="710.0"
+            xmlns="http://javafx.com/javafx/21.0.5"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="agh.ics.oop.presenter.ParametersPresenter"
+            stylesheets="@parameters.styles.css">
    <children>
 
       <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" AnchorPane.topAnchor="-10.0" AnchorPane.leftAnchor="160.0">

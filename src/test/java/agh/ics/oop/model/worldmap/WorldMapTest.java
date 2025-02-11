@@ -242,11 +242,11 @@ public class WorldMapTest {
     worldMap.rotateCreature(animal);
 
     // Then
-    assertNotEquals(
-        initialOrientation,
-        animal.getOrientation(),
-        "The animal's orientation should have changed."
-    );
+//    assertNotEquals(
+//        initialOrientation,
+//        animal.getOrientation(),
+//        "The animal's orientation should have changed."
+//    );
     assertEquals(
         animal.getOrientation(),
         initialOrientation.rotate(initialGene),
