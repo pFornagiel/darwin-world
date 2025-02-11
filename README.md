@@ -4,6 +4,8 @@ The simulation features customizable parameters, real-time statistics, and visua
 
 The project is a part of Object Oriented Programming course at AGH University of Cracow, Computer Science.
 
+
+
 ## Authors
 - Paweł Fornagiel [[pFornagiel]](https://github.com/pFornagiel)
 - Adrian Krawczyk [[adriankrawczyk]](https://github.com/adriankrawczyk)
@@ -57,12 +59,25 @@ Additionally, to ensure optimal performance and visibility, based on the map siz
 <p align="center"><img src="https://github.com/user-attachments/assets/28446f22-be21-4cd7-b298-4d6cbb187732" style="width:800px" /></p>
 
 ## Technical Requirements  
-- Java 17 or higher  
-- JavaFX  
-- Gradle build system
+Before running the application, ensure you have:  
+- **Java 21** installed. Download from [Oracle](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html).  
+- **IntelliJ IDEA** (if setting up the project for development).  
 
+## Running the Precompiled JAR  
+The latest release contains a compiled `.jar` file that you can run directly.  
 
-<p align="center"><img src="https://github.com/user-attachments/assets/e582b6f1-0e13-4650-9241-9d0d0bf51abb" style="width:400px" /></p>
+1. **Download the latest release** from the [Releases](https://github.com/pFornagiel/darwin-world/releases) section.  
+2. Open a terminal and navigate to the folder where the `.jar` file is located.  
+3. Run the application using the following command:
+```shell
+java -jar DarwinWorld.jar
+```
+
+<br/>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e582b6f1-0e13-4650-9241-9d0d0bf51abb" style="width:400px" />
+</p>
 
 
 
